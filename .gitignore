@@ -1,0 +1,23 @@
+# Metadados locais de ferramentas Salesforce (não pertencem ao projeto)
+.sf/
+.sfdx/
+
+# Segredos e credenciais — nunca versionar
+.env
+.env.*
+*.key
+*.pem
+.clasprc.json
+*service-account*.json
+credentials*.json
+
+# Dependências e artefatos
+node_modules/
+dist/
+build/
+coverage/
+.agent/
+
+# Sistema
+.DS_Store
+Thumbs.db
