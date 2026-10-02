@@ -5,17 +5,17 @@ import {
   Aviso, AreaTexto, Botao, Campo, CampoSelecao, EstadoErro, Esqueleto, Gaveta, GavetaConteudo, Rotulo, Selo, TabelaDados, dataBR,
 } from '@carteira/ui';
 import { useConsulta, type Delegacao, type PropsMfe, type Situacao } from '@carteira/sdk';
+import { CalendarioDelegacoes, VARIANTE, aVencer } from './calendario';
 
 /** MFE do domínio 02 — Delegação temporária (J2: cobertura de férias). A situação vem derivada do servidor. */
-const VARIANTE: Record<Situacao, 'neutro' | 'tag' | 'informativo' | 'atencao'> = {
-  Submetida: 'atencao', Rejeitada: 'neutro', Revogada: 'neutro', Agendada: 'informativo', 'Em Vigor': 'tag', Concluída: 'neutro',
-};
 
 export default function DelegacaoMfe({ api, sessao, versao, ehGerenteGeral, emitir }: PropsMfe) {
   const lista = useConsulta(() => api.delegacoes(), [sessao.papel, sessao.dataSimulada, versao]);
   const atores = useConsulta(() => api.atores(), [sessao.dataSimulada, versao]);
   const [nova, setNova] = React.useState(false);
   const [erroAcao, setErroAcao] = React.useState<string | null>(null);
+  const [visao, setVisao] = React.useState<'tabela' | 'calendario'>('tabela');
+  const referencia = sessao.dataSimulada ?? diaCorrente();
 
   const nomes = React.useMemo(() => {
     const m = new Map<string, string>();
@@ -35,6 +35,9 @@ export default function DelegacaoMfe({ api, sessao, versao, ehGerenteGeral, emit
 
   if (lista.carregando && !lista.dados) return <div aria-busy="true"><Esqueleto className="h-80" /></div>;
   if (lista.erro) return <EstadoErro mensagem={lista.erro.message} aoTentar={lista.recarregar} />;
+
+  const itens = lista.dados?.itens ?? [];
+  const vencendo = aVencer(itens, referencia);
 
   const colunas: ColumnDef<Delegacao, any>[] = [
     { accessorKey: 'id_delegacao', header: 'Código', meta: { rotulo: 'Código' } },
@@ -75,7 +78,20 @@ export default function DelegacaoMfe({ api, sessao, versao, ehGerenteGeral, emit
         <Botao onClick={() => setNova(true)}><CalendarClock aria-hidden className="size-4" /> Nova delegação</Botao>
       </header>
       {erroAcao ? <Aviso variante="critico" titulo="Operação não concluída">{erroAcao}</Aviso> : null}
-      <TabelaDados colunas={colunas} dados={lista.dados?.itens ?? []} rotulo="Delegações" tamanhoPagina={10} buscaPlaceholder="Buscar delegação…" />
+      {vencendo.length > 0 ? (
+        <Aviso variante="atencao" titulo={`${vencendo.length} ${vencendo.length === 1 ? 'cobertura vence' : 'coberturas vencem'} em até 7 dias`}>
+          {vencendo.map((d) => `${d.id_posicao_origem} (até ${dataBR(d.data_fim)})`).join(' · ')} — renove ou planeje a devolução.
+        </Aviso>
+      ) : null}
+      <div className="flex gap-2" role="group" aria-label="Modo de visualização">
+        <Botao tamanho="sm" variante={visao === 'tabela' ? 'secundario' : 'fantasma'} onClick={() => setVisao('tabela')}>Tabela</Botao>
+        <Botao tamanho="sm" variante={visao === 'calendario' ? 'secundario' : 'fantasma'} onClick={() => setVisao('calendario')}>Calendário</Botao>
+      </div>
+      {visao === 'tabela' ? (
+        <TabelaDados colunas={colunas} dados={itens} rotulo="Delegações" tamanhoPagina={10} buscaPlaceholder="Buscar delegação…" />
+      ) : (
+        <CalendarioDelegacoes itens={itens} nomes={nomes} referencia={referencia} />
+      )}
       <Gaveta open={nova} onOpenChange={setNova}>
         {nova ? (
           <GavetaConteudo titulo="Nova delegação" descricao="Fica Submetida até a aprovação do Gerente Geral; só então concede acesso.">
@@ -85,6 +101,11 @@ export default function DelegacaoMfe({ api, sessao, versao, ehGerenteGeral, emit
       </Gaveta>
     </div>
   );
+}
+
+/** Dia corrente (AAAA-MM-DD) no fuso de São Paulo — referência do calendário quando não há data simulada. */
+function diaCorrente(): string {
+  try { return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' }); } catch { return new Date().toISOString().slice(0, 10); }
 }
 
 function FormularioDelegacao({ api, ehGerenteGeral, dataPadrao, aoConcluir }: { api: PropsMfe['api']; ehGerenteGeral: boolean; dataPadrao: string | null; aoConcluir: () => void }) {

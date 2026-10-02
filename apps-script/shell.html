@@ -69,11 +69,11 @@
   });
 
   // frontend/shell/src/main.gas.tsx
-  var React2 = __toESM(require_react(), 1);
+  var React3 = __toESM(require_react(), 1);
   var import_client = __toESM(require_client(), 1);
 
   // frontend/shell/src/App.tsx
-  var React = __toESM(require_react(), 1);
+  var React2 = __toESM(require_react(), 1);
 
   // node_modules/lucide-react/dist/esm/createLucideIcon.mjs
   var import_react3 = __toESM(require_react(), 1);
@@ -349,22 +349,8 @@
   __iconData3.node;
   var Landmark = createLucideIcon(__iconData3);
 
-  // node_modules/lucide-react/dist/esm/icons/layout-dashboard.mjs
-  var __iconData4 = {
-    name: "layout-dashboard",
-    size: 24,
-    node: [
-      ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
-      ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
-      ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
-      ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
-    ]
-  };
-  __iconData4.node;
-  var LayoutDashboard = createLucideIcon(__iconData4);
-
   // node_modules/lucide-react/dist/esm/icons/presentation.mjs
-  var __iconData5 = {
+  var __iconData4 = {
     name: "presentation",
     size: 24,
     node: [
@@ -373,11 +359,11 @@
       ["path", { d: "m7 21 5-5 5 5", key: "bip4we" }]
     ]
   };
-  __iconData5.node;
-  var Presentation = createLucideIcon(__iconData5);
+  __iconData4.node;
+  var Presentation = createLucideIcon(__iconData4);
 
   // node_modules/lucide-react/dist/esm/icons/rotate-ccw.mjs
-  var __iconData6 = {
+  var __iconData5 = {
     name: "rotate-ccw",
     size: 24,
     node: [
@@ -385,8 +371,20 @@
       ["path", { d: "M3 3v5h5", key: "1xhq8a" }]
     ]
   };
+  __iconData5.node;
+  var RotateCcw = createLucideIcon(__iconData5);
+
+  // node_modules/lucide-react/dist/esm/icons/search.mjs
+  var __iconData6 = {
+    name: "search",
+    size: 24,
+    node: [
+      ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
+      ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
+    ]
+  };
   __iconData6.node;
-  var RotateCcw = createLucideIcon(__iconData6);
+  var Search = createLucideIcon(__iconData6);
 
   // node_modules/lucide-react/dist/esm/icons/users.mjs
   var __iconData7 = {
@@ -403,7 +401,7 @@
   var Users = createLucideIcon(__iconData7);
 
   // frontend/shell/src/App.tsx
-  var import_ui2 = __toESM(require_ui(), 1);
+  var import_ui4 = __toESM(require_ui(), 1);
   var import_sdk = __toESM(require_sdk(), 1);
 
   // frontend/shell/src/paginas/Capa.tsx
@@ -456,7 +454,7 @@
           ] })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "relative px-6 py-12 md:px-12 md:py-16", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-micro-cap uppercase text-secondary-foreground", children: "Prova de conceito \xB7 dados sint\xE9ticos" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-micro-cap uppercase text-secondary-foreground", children: "Porto Bank \xB7 Prova de conceito \xB7 dados sint\xE9ticos" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { id: "titulo-capa", className: "mt-3 max-w-3xl text-display-xl text-foreground", children: "Gest\xE3o de carteira por Posi\xE7\xE3o, n\xE3o por pessoa" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-4 max-w-2xl text-body-lg text-secondary-foreground", children: "Cinco mesas de atendimento, uma carteira por mesa. Trocar o gerente, cobrir f\xE9rias ou rebalancear a ag\xEAncia n\xE3o exige migrar um \xFAnico cliente." })
         ] })
@@ -499,14 +497,182 @@
     ] });
   }
 
-  // frontend/shell/src/App.tsx
+  // frontend/shell/src/marca.tsx
+  var import_ui2 = __toESM(require_ui(), 1);
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
+  function MarcaPortoBank({ sobre = "sidebar", className }) {
+    const escuro = sobre === "sidebar";
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { className: (0, import_ui2.cn)("flex items-center gap-2", className), role: "img", "aria-label": "Porto Bank", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+        "span",
+        {
+          "aria-hidden": true,
+          className: "flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-on-primary text-heading-sm font-bold",
+          children: "P"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { className: "flex min-w-0 flex-col leading-tight", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: (0, import_ui2.cn)("truncate text-heading-sm font-bold tracking-tight", escuro ? "text-sidebar-foreground" : "text-foreground"), children: "Porto Bank" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: (0, import_ui2.cn)("truncate text-caption", escuro ? "text-sidebar-muted" : "text-muted-foreground"), children: "Gest\xE3o de Carteira" })
+      ] })
+    ] });
+  }
+
+  // frontend/shell/src/busca-global.tsx
+  var React = __toESM(require_react(), 1);
+  var import_ui3 = __toESM(require_ui(), 1);
+  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+  function BuscaGlobal({ api, versao, emitir }) {
+    const [aberta, setAberta] = React.useState(false);
+    const [termo, setTermo] = React.useState("");
+    const [debounced, setDebounced] = React.useState("");
+    const [itens, setItens] = React.useState([]);
+    const [total, setTotal] = React.useState(0);
+    const [buscando, setBuscando] = React.useState(false);
+    const [ativo, setAtivo] = React.useState(0);
+    const entradaRef = React.useRef(null);
+    React.useEffect(() => {
+      const aoTeclar = (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          setAberta((a) => !a);
+        }
+      };
+      window.addEventListener("keydown", aoTeclar);
+      return () => window.removeEventListener("keydown", aoTeclar);
+    }, []);
+    React.useEffect(() => {
+      if (aberta) {
+        setTermo("");
+        setItens([]);
+        setTotal(0);
+        setAtivo(0);
+        window.setTimeout(() => {
+          var _a3;
+          return (_a3 = entradaRef.current) == null ? void 0 : _a3.focus();
+        }, 50);
+      }
+    }, [aberta]);
+    React.useEffect(() => {
+      const t = window.setTimeout(() => setDebounced(termo.trim()), 250);
+      return () => window.clearTimeout(t);
+    }, [termo]);
+    React.useEffect(() => {
+      let viva = true;
+      if (debounced.length < 2) {
+        setItens([]);
+        setTotal(0);
+        setBuscando(false);
+        return;
+      }
+      setBuscando(true);
+      api.clientes({ q: debounced, limit: 8 }).then(
+        (r) => {
+          if (viva) {
+            setItens(r.itens);
+            setTotal(r.total);
+            setAtivo(0);
+            setBuscando(false);
+          }
+        },
+        () => {
+          if (viva) {
+            setItens([]);
+            setTotal(0);
+            setBuscando(false);
+          }
+        }
+      );
+      return () => {
+        viva = false;
+      };
+    }, [debounced, versao]);
+    const escolher = (id) => {
+      setAberta(false);
+      emitir({ tipo: "cliente-selecionado", idCliente: id });
+    };
+    const aoTeclarLista = (e) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setAtivo((a) => Math.min(a + 1, itens.length - 1));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setAtivo((a) => Math.max(a - 1, 0));
+      } else if (e.key === "Enter" && itens[ativo]) {
+        e.preventDefault();
+        escolher(itens[ativo].id_cliente);
+      }
+    };
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Botao, { variante: "secundario", onClick: () => setAberta(true), "aria-keyshortcuts": "Control+k Meta+k", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Search, { "aria-hidden": true, className: "size-4" }),
+        " Buscar cliente\u2026",
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("kbd", { className: "tnum text-caption text-muted-foreground", "aria-hidden": true, children: "Ctrl+K" })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Dialogo, { open: aberta, onOpenChange: setAberta, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.DialogoConteudo, { titulo: "Buscar cliente", descricao: "Busca em todas as carteiras que o seu papel pode ver.", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { onKeyDown: aoTeclarLista, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Rotulo, { htmlFor: "busca-global", children: "Nome ou c\xF3digo (m\xEDnimo 2 letras)" }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+            import_ui3.Campo,
+            {
+              id: "busca-global",
+              ref: entradaRef,
+              value: termo,
+              onChange: (e) => setTermo(e.target.value),
+              placeholder: "Ex.: Ana Souza ou CLI-9001",
+              autoComplete: "off",
+              role: "combobox",
+              "aria-expanded": itens.length > 0,
+              "aria-controls": "busca-resultados",
+              "aria-activedescendant": itens[ativo] ? "achado-".concat(itens[ativo].id_cliente) : void 0
+            }
+          )
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mt-3", "aria-live": "polite", children: [
+          buscando ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex flex-col gap-2", "aria-busy": "true", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Esqueleto, { className: "h-12" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Esqueleto, { className: "h-12" })
+          ] }) : debounced.length >= 2 && itens.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.EstadoVazio, { titulo: "Nenhum cliente encontrado", children: "Tente outro nome ou c\xF3digo. A busca respeita o seu acesso." }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("ul", { id: "busca-resultados", role: "listbox", "aria-label": "Clientes encontrados", className: "flex max-h-80 flex-col gap-1 overflow-y-auto", children: itens.map((c, i) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { id: "achado-".concat(c.id_cliente), role: "option", "aria-selected": i === ativo, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+            "button",
+            {
+              type: "button",
+              tabIndex: -1,
+              onMouseEnter: () => setAtivo(i),
+              onClick: () => escolher(c.id_cliente),
+              className: i === ativo ? "flex w-full items-center justify-between gap-3 rounded-md bg-secondary px-3 py-2 text-left" : "flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left hover:bg-secondary",
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("span", { className: "min-w-0", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "block truncate text-body-md text-foreground", children: c.nome_razao_social }),
+                  /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("span", { className: "tnum block truncate text-caption text-muted-foreground", children: [
+                    c.id_cliente,
+                    c.id_posicao ? " \xB7 ".concat(c.id_posicao) : "",
+                    c.cpf_cnpj_mascarado ? " \xB7 ".concat(c.cpf_cnpj_mascarado) : ""
+                  ] })
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "tnum shrink-0 text-body-md text-foreground", children: c.volume_aum !== void 0 ? (0, import_ui3.moeda)(c.volume_aum) : "" })
+              ]
+            }
+          ) }, c.id_cliente)) }),
+          total > itens.length ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("p", { className: "tnum mt-2 text-caption text-muted-foreground", children: [
+            "Mostrando ",
+            itens.length,
+            " de ",
+            total,
+            " \u2014 refine a busca."
+          ] }) : null
+        ] })
+      ] }) })
+    ] });
+  }
+
+  // frontend/shell/src/App.tsx
+  var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
   var ROTAS = [
-    { id: "capa", rotulo: "Apresenta\xE7\xE3o", icone: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Presentation, { "aria-hidden": true, className: "size-4" }) },
-    { id: "cockpit", rotulo: "Torre de Controle", icone: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Gauge, { "aria-hidden": true, className: "size-4" }) },
-    { id: "posicoes", rotulo: "Posi\xE7\xF5es", icone: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Landmark, { "aria-hidden": true, className: "size-4" }) },
-    { id: "carteira", rotulo: "Carteira", icone: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Users, { "aria-hidden": true, className: "size-4" }) },
-    { id: "delegacoes", rotulo: "Delega\xE7\xF5es", icone: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(CalendarClock, { "aria-hidden": true, className: "size-4" }) }
+    { id: "capa", rotulo: "Apresenta\xE7\xE3o", icone: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Presentation, { "aria-hidden": true, className: "size-4" }) },
+    { id: "cockpit", rotulo: "Torre de Controle", icone: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Gauge, { "aria-hidden": true, className: "size-4" }) },
+    { id: "posicoes", rotulo: "Posi\xE7\xF5es", icone: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Landmark, { "aria-hidden": true, className: "size-4" }) },
+    { id: "carteira", rotulo: "Carteira", icone: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Users, { "aria-hidden": true, className: "size-4" }) },
+    { id: "delegacoes", rotulo: "Delega\xE7\xF5es", icone: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(CalendarClock, { "aria-hidden": true, className: "size-4" }) }
   ];
   var rotaDoHash = () => {
     const h = window.location.hash.replace(/^#\/?/, "");
@@ -533,35 +699,35 @@
   function App({ mfes: mfes2 }) {
     var _a3, _b, _c;
     const { cockpit: Cockpit, posicoes: Posicoes, carteira: Carteira, delegacao: Delegacao } = mfes2;
-    const [rota, setRota] = React.useState(rotaDoHash);
-    const [sessao, setSessao] = React.useState(lerSessao);
-    const [versao, setVersao] = React.useState(0);
-    const [comando, setComando] = React.useState();
-    const sessaoRef = React.useRef(sessao);
+    const [rota, setRota] = React2.useState(rotaDoHash);
+    const [sessao, setSessao] = React2.useState(lerSessao);
+    const [versao, setVersao] = React2.useState(0);
+    const [comando, setComando] = React2.useState();
+    const sessaoRef = React2.useRef(sessao);
     sessaoRef.current = sessao;
-    const api = React.useMemo(() => (0, import_sdk.criarApi)({ baseUrl: "/api/v1", obterSessao: () => sessaoRef.current, fetchImpl: (0, import_sdk.ambienteGas)() ? (0, import_sdk.criarFetchGas)() : void 0 }), []);
+    const api = React2.useMemo(() => (0, import_sdk.criarApi)({ baseUrl: "/api/v1", obterSessao: () => sessaoRef.current, fetchImpl: (0, import_sdk.ambienteGas)() ? (0, import_sdk.criarFetchGas)() : void 0 }), []);
     const atores = (0, import_sdk.useConsulta)(() => api.atores(), [sessao.dataSimulada, versao]);
-    React.useEffect(() => {
+    React2.useEffect(() => {
       const aoMudarHash = () => setRota(rotaDoHash());
       window.addEventListener("hashchange", aoMudarHash);
       return () => window.removeEventListener("hashchange", aoMudarHash);
     }, []);
-    React.useEffect(() => {
+    React2.useEffect(() => {
       try {
         window.localStorage.setItem("carteira.sessao", JSON.stringify({ papel: sessao.papel }));
       } catch {
       }
     }, [sessao]);
-    React.useEffect(() => {
+    React2.useEffect(() => {
       var _a4;
       const lista = (_a4 = atores.dados) == null ? void 0 : _a4.atores;
       if (lista && !lista.some((a) => a.papel === sessao.papel && (a.papel === "GG" || a.id_gerente))) setSessao((s) => ({ ...s, papel: "GG" }));
     }, [atores.dados, sessao.papel]);
-    const navegar = React.useCallback((destino) => {
+    const navegar = React2.useCallback((destino) => {
       window.location.hash = "/".concat(destino);
       setRota(destino);
     }, []);
-    const emitir = React.useCallback((e) => {
+    const emitir = React2.useCallback((e) => {
       window.dispatchEvent(new CustomEvent(import_sdk.EVENTO_MFE, { detail: e }));
       if (e.tipo === "navegar") navegar(e.destino === "cockpit" ? "cockpit" : e.destino);
       else if (e.tipo === "abrir-redistribuicao") {
@@ -582,13 +748,10 @@
       await api.recarregarDados();
       setVersao((v) => v + 1);
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.ProvedorDica, { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "min-h-screen md:grid md:grid-cols-[15rem_1fr]", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("nav", { "aria-label": "Principal", className: "flex gap-1 overflow-x-auto bg-sidebar p-3 text-sidebar-foreground md:sticky md:top-0 md:h-screen md:flex-col md:gap-2 md:p-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "hidden items-center gap-2 px-2 pb-4 pt-2 md:flex", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(LayoutDashboard, { "aria-hidden": true, className: "size-5" }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-heading-sm", children: "Carteira Banc\xE1ria" })
-        ] }),
-        ROTAS.map((r) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_ui4.ProvedorDica, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "min-h-screen md:grid md:grid-cols-[15rem_1fr]", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("nav", { "aria-label": "Principal", className: "flex gap-1 overflow-x-auto bg-sidebar p-3 text-sidebar-foreground md:sticky md:top-0 md:h-screen md:flex-col md:gap-2 md:p-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "hidden px-2 pb-4 pt-2 md:block", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(MarcaPortoBank, {}) }),
+        ROTAS.map((r) => /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
           "a",
           {
             href: "#/".concat(r.id),
@@ -597,7 +760,7 @@
               navegar(r.id);
             },
             "aria-current": rota === r.id ? "page" : void 0,
-            className: (0, import_ui2.cn)("flex min-h-10 items-center gap-2 whitespace-nowrap rounded-md px-3 text-button-sm hover:bg-sidebar-active", rota === r.id ? "bg-sidebar-active text-sidebar-foreground" : "text-sidebar-muted"),
+            className: (0, import_ui4.cn)("flex min-h-10 items-center gap-2 whitespace-nowrap rounded-md px-3 text-button-sm hover:bg-sidebar-active", rota === r.id ? "bg-sidebar-active text-sidebar-foreground" : "text-sidebar-muted"),
             children: [
               r.icone,
               r.rotulo
@@ -605,12 +768,12 @@
           },
           r.id
         )),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mt-auto hidden px-3 pb-2 text-micro text-sidebar-muted md:block", children: "POC \xB7 dados sint\xE9ticos" })
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "mt-auto hidden px-3 pb-2 text-micro text-sidebar-muted md:block", children: "POC \xB7 dados sint\xE9ticos" })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex min-w-0 flex-col", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("header", { className: "sticky top-0 z-20 flex flex-wrap items-end gap-4 border-b border-border bg-card px-6 py-3", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-            import_ui2.CampoSelecao,
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex min-w-0 flex-col", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("header", { className: "sticky top-0 z-20 flex flex-wrap items-end gap-4 border-b border-border bg-card px-6 py-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+            import_ui4.CampoSelecao,
             {
               id: "visualizar-como",
               rotulo: "Visualizar como",
@@ -620,50 +783,51 @@
               opcoes: ((_b = (_a3 = atores.dados) == null ? void 0 : _a3.atores) != null ? _b : [{ papel: "GG", rotulo: "Gerente Geral", id_gerente: null }]).filter((a) => a.papel === "GG" || a.id_gerente).map((a) => ({ valor: a.papel, rotulo: a.rotulo }))
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "data-simulada", children: "Data da demonstra\xE7\xE3o" }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Campo, { id: "data-simulada", type: "date", className: "tnum w-44", value: (_c = sessao.dataSimulada) != null ? _c : hojeISO(), onChange: (e) => setSessao((s) => ({ ...s, dataSimulada: !e.target.value || e.target.value === hojeISO() ? null : e.target.value })) })
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_ui4.Rotulo, { htmlFor: "data-simulada", children: "Data da demonstra\xE7\xE3o" }),
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_ui4.Campo, { id: "data-simulada", type: "date", className: "tnum w-44", value: (_c = sessao.dataSimulada) != null ? _c : hojeISO(), onChange: (e) => setSessao((s) => ({ ...s, dataSimulada: !e.target.value || e.target.value === hojeISO() ? null : e.target.value })) })
           ] }),
-          sessao.dataSimulada ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { variante: "fantasma", onClick: () => setSessao((s) => ({ ...s, dataSimulada: null })), children: "Voltar para hoje" }) : null,
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "ml-auto flex flex-wrap gap-2", children: [
-            (0, import_sdk.ambienteGas)() ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { variante: "fantasma", onClick: () => void recarregar(), children: "Recarregar da planilha" }) : null,
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Botao, { variante: "secundario", onClick: () => void reiniciar(), children: [
-              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(RotateCcw, { "aria-hidden": true, className: "size-4" }),
+          sessao.dataSimulada ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_ui4.Botao, { variante: "fantasma", onClick: () => setSessao((s) => ({ ...s, dataSimulada: null })), children: "Voltar para hoje" }) : null,
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "ml-auto flex flex-wrap gap-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BuscaGlobal, { api, versao, emitir }),
+            (0, import_sdk.ambienteGas)() ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_ui4.Botao, { variante: "fantasma", onClick: () => void recarregar(), children: "Recarregar da planilha" }) : null,
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_ui4.Botao, { variante: "secundario", onClick: () => void reiniciar(), children: [
+              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(RotateCcw, { "aria-hidden": true, className: "size-4" }),
               " Reiniciar cen\xE1rio"
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "px-6 pt-4", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Aviso, { variante: "atencao", titulo: "Modo simula\xE7\xE3o", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "px-6 pt-4", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_ui4.Aviso, { variante: "atencao", titulo: "Modo simula\xE7\xE3o", children: [
           "O papel e a data s\xE3o simulados para a demonstra\xE7\xE3o; n\xE3o h\xE1 autentica\xE7\xE3o real nesta POC.",
-          sessao.dataSimulada ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
+          sessao.dataSimulada ? /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_jsx_runtime4.Fragment, { children: [
             " Data simulada: ",
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("strong", { className: "tnum font-normal text-foreground", children: (0, import_ui2.dataBR)(sessao.dataSimulada) }),
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("strong", { className: "tnum font-normal text-foreground", children: (0, import_ui4.dataBR)(sessao.dataSimulada) }),
             "."
           ] }) : null,
           " Todos os dados s\xE3o sint\xE9ticos."
         ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("main", { className: "mx-auto w-full max-w-[1440px] flex-1 p-6", id: "conteudo", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(React.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { "aria-busy": "true", className: "flex flex-col gap-4", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-10 w-72" }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-96" })
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("main", { className: "mx-auto w-full max-w-[1440px] flex-1 p-6", id: "conteudo", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(React2.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { "aria-busy": "true", className: "flex flex-col gap-4", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_ui4.Esqueleto, { className: "h-10 w-72" }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_ui4.Esqueleto, { className: "h-96" })
         ] }), children: [
-          rota === "capa" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Capa, { definirSessao: setSessao, navegar }) : null,
-          rota === "cockpit" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Cockpit, { ...props }) : null,
-          rota === "posicoes" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Posicoes, { ...props }) : null,
-          rota === "carteira" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Carteira, { ...props }) : null,
-          rota === "delegacoes" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Delegacao, { ...props }) : null
+          rota === "capa" ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Capa, { definirSessao: setSessao, navegar }) : null,
+          rota === "cockpit" ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Cockpit, { ...props }) : null,
+          rota === "posicoes" ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Posicoes, { ...props }) : null,
+          rota === "carteira" ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Carteira, { ...props }) : null,
+          rota === "delegacoes" ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Delegacao, { ...props }) : null
         ] }) })
       ] })
     ] }) });
   }
 
   // frontend/shell/src/main.gas.tsx
-  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
   var w = window;
   var _a;
   var mfes = (_a = w.CARTEIRA_MFES) != null ? _a : {};
   var faltando = ["cockpit", "posicoes", "carteira", "delegacao"].filter((k) => !mfes[k]);
   var raiz = document.getElementById("raiz");
-  var Contencao = class extends React2.Component {
+  var Contencao = class extends React3.Component {
     constructor() {
       super(...arguments);
       __publicField(this, "state", { erro: null });
@@ -676,7 +840,7 @@
       (_c = w.CARTEIRA_MOSTRAR) == null ? void 0 : _c.call(w, "render: ".concat(erro.message, "\n").concat((_a3 = erro.stack) != null ? _a3 : "", "\n").concat((_b = info.componentStack) != null ? _b : ""));
     }
     render() {
-      return this.state.erro ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("p", { style: { fontFamily: "sans-serif", padding: 24, color: "#7a0000" }, children: [
+      return this.state.erro ? /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("p", { style: { fontFamily: "sans-serif", padding: 24, color: "#7a0000" }, children: [
         "Erro ao exibir a tela: ",
         this.state.erro.message
       ] }) : this.props.children;
@@ -687,7 +851,7 @@
     const erros = (_a2 = w.CARTEIRA_ERROS) != null ? _a2 : [];
     raiz.textContent = "Micro-frontends ausentes: ".concat(faltando.join(", ")).concat(erros.length ? " | erros de carga: ".concat(erros.join(" ; ")) : "");
   } else {
-    (0, import_client.createRoot)(raiz).render(/* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Contencao, { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(App, { mfes }) }));
+    (0, import_client.createRoot)(raiz).render(/* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Contencao, { children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(App, { mfes }) }));
   }
 })();
 

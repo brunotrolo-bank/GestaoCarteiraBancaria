@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { Gauge, Landmark, LayoutDashboard, Presentation, RotateCcw, Users, CalendarClock } from 'lucide-react';
+import { Gauge, Landmark, Presentation, RotateCcw, Users, CalendarClock } from 'lucide-react';
 import { Aviso, Botao, Campo, CampoSelecao, Esqueleto, ProvedorDica, Rotulo, cn, dataBR } from '@carteira/ui';
 import { EVENTO_MFE, ambienteGas, criarApi, criarFetchGas, useConsulta, type EventoMfe, type PropsMfe, type Sessao, type ComandoMfe } from '@carteira/sdk';
 import { Capa } from './paginas/Capa';
+import { MarcaPortoBank } from './marca';
+import { BuscaGlobal } from './busca-global';
 
 /** Micro-frontends injetados pelo ponto de entrada: build-time (Vite) ou runtime (Apps Script, via `window.CARTEIRA_MFES`). */
 export type Mfe = React.ComponentType<PropsMfe>;
@@ -104,9 +106,8 @@ export function App({ mfes }: { mfes: Mfes }) {
     <ProvedorDica>
       <div className="min-h-screen md:grid md:grid-cols-[15rem_1fr]">
         <nav aria-label="Principal" className="flex gap-1 overflow-x-auto bg-sidebar p-3 text-sidebar-foreground md:sticky md:top-0 md:h-screen md:flex-col md:gap-2 md:p-4">
-          <div className="hidden items-center gap-2 px-2 pb-4 pt-2 md:flex">
-            <LayoutDashboard aria-hidden className="size-5" />
-            <span className="text-heading-sm">Carteira Bancária</span>
+          <div className="hidden px-2 pb-4 pt-2 md:block">
+            <MarcaPortoBank />
           </div>
           {ROTAS.map((r) => (
             <a
@@ -140,6 +141,7 @@ export function App({ mfes }: { mfes: Mfes }) {
             </div>
             {sessao.dataSimulada ? <Botao variante="fantasma" onClick={() => setSessao((s) => ({ ...s, dataSimulada: null }))}>Voltar para hoje</Botao> : null}
             <div className="ml-auto flex flex-wrap gap-2">
+              <BuscaGlobal api={api} versao={versao} emitir={emitir} />
               {ambienteGas() ? <Botao variante="fantasma" onClick={() => void recarregar()}>Recarregar da planilha</Botao> : null}
               <Botao variante="secundario" onClick={() => void reiniciar()}><RotateCcw aria-hidden className="size-4" /> Reiniciar cenário</Botao>
             </div>

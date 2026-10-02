@@ -60,7 +60,7 @@
   });
 
   // frontend/mfe-delegacao/src/index.tsx
-  var React = __toESM(require_react(), 1);
+  var React2 = __toESM(require_react(), 1);
 
   // node_modules/lucide-react/dist/esm/createLucideIcon.mjs
   var import_react3 = __toESM(require_react(), 1);
@@ -302,9 +302,31 @@
   __iconData.node;
   var CalendarClock = createLucideIcon(__iconData);
 
+  // node_modules/lucide-react/dist/esm/icons/chevron-left.mjs
+  var __iconData2 = {
+    name: "chevron-left",
+    size: 24,
+    node: [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]]
+  };
+  __iconData2.node;
+  var ChevronLeft = createLucideIcon(__iconData2);
+
+  // node_modules/lucide-react/dist/esm/icons/chevron-right.mjs
+  var __iconData3 = {
+    name: "chevron-right",
+    size: 24,
+    node: [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]]
+  };
+  __iconData3.node;
+  var ChevronRight = createLucideIcon(__iconData3);
+
   // frontend/mfe-delegacao/src/index.tsx
-  var import_ui = __toESM(require_ui(), 1);
+  var import_ui2 = __toESM(require_ui(), 1);
   var import_sdk = __toESM(require_sdk(), 1);
+
+  // frontend/mfe-delegacao/src/calendario.tsx
+  var React = __toESM(require_react(), 1);
+  var import_ui = __toESM(require_ui(), 1);
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
   var VARIANTE = {
     Submetida: "atencao",
@@ -314,16 +336,150 @@
     "Em Vigor": "tag",
     Conclu\u00EDda: "neutro"
   };
+  var diaISO = (d) => "".concat(d.getFullYear(), "-").concat(String(d.getMonth() + 1).padStart(2, "0"), "-").concat(String(d.getDate()).padStart(2, "0"));
+  var SOMENTE_DIA = (iso) => iso.slice(0, 10);
+  function gradeDoMes(ano, mes) {
+    const primeiro = new Date(ano, mes - 1, 1);
+    const inicio = new Date(primeiro);
+    inicio.setDate(inicio.getDate() - primeiro.getDay());
+    const semanas = [];
+    const cursor = new Date(inicio);
+    for (let s = 0; s < 6; s += 1) {
+      const semana = [];
+      for (let d = 0; d < 7; d += 1) {
+        semana.push({ data: diaISO(cursor), foraDoMes: cursor.getMonth() !== mes - 1 });
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      semanas.push(semana);
+      if (cursor.getMonth() !== mes - 1 && cursor.getDay() === 0) break;
+    }
+    return semanas;
+  }
+  function delegacoesNoDia(itens, dia) {
+    return itens.filter((d) => SOMENTE_DIA(d.data_inicio) <= dia && dia <= SOMENTE_DIA(d.data_fim));
+  }
+  var ATIVAS = ["Agendada", "Em Vigor"];
+  function aVencer(itens, referencia, dias = 7) {
+    const ref = SOMENTE_DIA(referencia);
+    return itens.filter((d) => ATIVAS.includes(d.situacao) && ref < SOMENTE_DIA(d.data_fim) && SOMENTE_DIA(d.data_fim) <= deslocar(ref, dias)).sort((a, b) => SOMENTE_DIA(a.data_fim).localeCompare(SOMENTE_DIA(b.data_fim)));
+  }
+  function deslocar(iso, dias) {
+    const d = new Date("".concat(iso, "T12:00:00"));
+    d.setDate(d.getDate() + dias);
+    return diaISO(d);
+  }
+  var MESES = ["janeiro", "fevereiro", "mar\xE7o", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+  var DIAS_SEMANA = ["D", "S", "T", "Q", "Q", "S", "S"];
+  function CalendarioDelegacoes({ itens, nomes, referencia }) {
+    var _a;
+    const ref = SOMENTE_DIA(referencia);
+    const [ano, setAno] = React.useState(Number(ref.slice(0, 4)));
+    const [mes, setMes] = React.useState(Number(ref.slice(5, 7)));
+    const [selecionado, setSelecionado] = React.useState(ref);
+    const mudarMes = (delta) => {
+      const d = new Date(ano, mes - 1 + delta, 1);
+      setAno(d.getFullYear());
+      setMes(d.getMonth() + 1);
+    };
+    const voltarHoje = () => {
+      setAno(Number(ref.slice(0, 4)));
+      setMes(Number(ref.slice(5, 7)));
+      setSelecionado(ref);
+    };
+    const semanas = React.useMemo(() => gradeDoMes(ano, mes), [ano, mes]);
+    const porDia = React.useMemo(() => {
+      const m = /* @__PURE__ */ new Map();
+      for (const s of semanas) for (const dia of s) m.set(dia.data, delegacoesNoDia(itens, dia.data));
+      return m;
+    }, [semanas, itens]);
+    const doSelecionado = (_a = porDia.get(selecionado)) != null ? _a : [];
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-4", "aria-label": "Calend\xE1rio de delega\xE7\xF5es", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-wrap items-center justify-between gap-2", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-heading-md capitalize text-foreground", "aria-live": "polite", children: [
+          MESES[mes - 1],
+          " de ",
+          ano
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex gap-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { tamanho: "sm", variante: "fantasma", onClick: () => mudarMes(-1), "aria-label": "M\xEAs anterior", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronLeft, { "aria-hidden": true, className: "size-4" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { tamanho: "sm", variante: "fantasma", onClick: voltarHoje, children: "Hoje" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { tamanho: "sm", variante: "fantasma", onClick: () => mudarMes(1), "aria-label": "Pr\xF3ximo m\xEAs", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { "aria-hidden": true, className: "size-4" }) })
+        ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { role: "grid", "aria-label": "".concat(MESES[mes - 1], " de ").concat(ano), className: "grid grid-cols-7 gap-1", children: [
+        DIAS_SEMANA.map((d, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { role: "columnheader", "aria-label": ["domingo", "segunda", "ter\xE7a", "quarta", "quinta", "sexta", "s\xE1bado"][i], className: "pb-1 text-center text-caption text-muted-foreground", children: d }, "".concat(d, "-").concat(i))),
+        semanas.flat().map((dia) => {
+          var _a2;
+          const lista = (_a2 = porDia.get(dia.data)) != null ? _a2 : [];
+          const ehRef = dia.data === ref;
+          const ehSel = dia.data === selecionado;
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+            "button",
+            {
+              type: "button",
+              role: "gridcell",
+              "aria-selected": ehSel,
+              "aria-label": "".concat(dia.data.slice(8, 10), " de ").concat(MESES[mes - 1]).concat(lista.length > 0 ? ", ".concat(lista.length, " delega\xE7\xF5es") : ""),
+              onClick: () => setSelecionado(dia.data),
+              className: ehSel ? "flex min-h-16 flex-col items-center gap-1 rounded-md border-2 border-primary bg-card p-1" : "flex min-h-16 flex-col items-center gap-1 rounded-md border border-border bg-card p-1 hover:border-primary",
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: dia.foraDoMes ? "tnum text-caption text-muted-foreground" : ehRef ? "tnum flex size-6 items-center justify-center rounded-md bg-primary text-on-primary text-caption" : "tnum text-caption text-foreground", children: dia.data.slice(8, 10) }),
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "flex flex-wrap justify-center gap-1", "aria-hidden": true, children: lista.slice(0, 3).map((d) => {
+                  var _a3;
+                  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+                    "span",
+                    {
+                      title: "".concat(d.id_posicao_origem, " \u2192 ").concat((_a3 = nomes.get(d.id_gerente_delegado)) != null ? _a3 : d.id_gerente_delegado, " (").concat(d.situacao, ")"),
+                      className: d.situacao === "Em Vigor" ? "size-2 rounded-md bg-primary" : d.situacao === "Agendada" ? "size-2 rounded-md bg-atencao" : "size-2 rounded-md bg-muted-foreground"
+                    },
+                    d.id_delegacao
+                  );
+                }) })
+              ]
+            },
+            dia.data
+          );
+        })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { "aria-live": "polite", children: doSelecionado.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-body-md text-secondary-foreground", children: [
+        "Nenhuma cobertura em ",
+        (0, import_ui.dataBR)(selecionado),
+        "."
+      ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", { className: "flex flex-col gap-2", children: doSelecionado.map((d) => {
+        var _a2;
+        return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { className: "flex flex-wrap items-center gap-2 rounded-md border border-border bg-card px-3 py-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: VARIANTE[d.situacao], children: d.situacao }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "text-body-md text-foreground", children: [
+            d.id_posicao_origem,
+            " \u2192 ",
+            (_a2 = nomes.get(d.id_gerente_delegado)) != null ? _a2 : d.id_gerente_delegado
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "tnum text-caption text-muted-foreground", children: [
+            (0, import_ui.dataBR)(d.data_inicio),
+            " a ",
+            (0, import_ui.dataBR)(d.data_fim),
+            " \xB7 ",
+            d.motivo
+          ] })
+        ] }, d.id_delegacao);
+      }) }) })
+    ] });
+  }
+
+  // frontend/mfe-delegacao/src/index.tsx
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   function DelegacaoMfe({ api, sessao, versao, ehGerenteGeral, emitir }) {
-    var _a, _b;
+    var _a, _b, _c;
     const lista = (0, import_sdk.useConsulta)(() => api.delegacoes(), [sessao.papel, sessao.dataSimulada, versao]);
     const atores = (0, import_sdk.useConsulta)(() => api.atores(), [sessao.dataSimulada, versao]);
-    const [nova, setNova] = React.useState(false);
-    const [erroAcao, setErroAcao] = React.useState(null);
-    const nomes = React.useMemo(() => {
-      var _a2, _b2, _c, _d;
+    const [nova, setNova] = React2.useState(false);
+    const [erroAcao, setErroAcao] = React2.useState(null);
+    const [visao, setVisao] = React2.useState("tabela");
+    const referencia = (_a = sessao.dataSimulada) != null ? _a : diaCorrente();
+    const nomes = React2.useMemo(() => {
+      var _a2, _b2, _c2, _d;
       const m = /* @__PURE__ */ new Map();
-      for (const a of (_b2 = (_a2 = atores.dados) == null ? void 0 : _a2.atores) != null ? _b2 : []) if (a.id_gerente) m.set(a.id_gerente, (_d = (_c = a.rotulo.split("\u2014")[1]) == null ? void 0 : _c.trim()) != null ? _d : a.id_gerente);
+      for (const a of (_b2 = (_a2 = atores.dados) == null ? void 0 : _a2.atores) != null ? _b2 : []) if (a.id_gerente) m.set(a.id_gerente, (_d = (_c2 = a.rotulo.split("\u2014")[1]) == null ? void 0 : _c2.trim()) != null ? _d : a.id_gerente);
       return m;
     }, [atores.dados]);
     async function agir(fn) {
@@ -335,8 +491,10 @@
         setErroAcao(e instanceof Error ? e.message : "Falha na opera\xE7\xE3o.");
       }
     }
-    if (lista.carregando && !lista.dados) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { "aria-busy": "true", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-80" }) });
-    if (lista.erro) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.EstadoErro, { mensagem: lista.erro.message, aoTentar: lista.recarregar });
+    if (lista.carregando && !lista.dados) return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { "aria-busy": "true", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-80" }) });
+    if (lista.erro) return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.EstadoErro, { mensagem: lista.erro.message, aoTentar: lista.recarregar });
+    const itens = (_c = (_b = lista.dados) == null ? void 0 : _b.itens) != null ? _c : [];
+    const vencendo = aVencer(itens, referencia);
     const colunas = [
       { accessorKey: "id_delegacao", header: "C\xF3digo", meta: { rotulo: "C\xF3digo" } },
       { accessorKey: "id_posicao_origem", header: "Posi\xE7\xE3o coberta", meta: { rotulo: "Posi\xE7\xE3o coberta" } },
@@ -344,14 +502,14 @@
         var _a2;
         return (_a2 = nomes.get(d.id_gerente_delegado)) != null ? _a2 : d.id_gerente_delegado;
       }, meta: { rotulo: "Delegado" } },
-      { id: "periodo", header: "Per\xEDodo", accessorFn: (d) => d.data_inicio, cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "tnum", children: [
-        (0, import_ui.dataBR)(row.original.data_inicio),
+      { id: "periodo", header: "Per\xEDodo", accessorFn: (d) => d.data_inicio, cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { className: "tnum", children: [
+        (0, import_ui2.dataBR)(row.original.data_inicio),
         " a ",
-        (0, import_ui.dataBR)(row.original.data_fim)
+        (0, import_ui2.dataBR)(row.original.data_fim)
       ] }), meta: { rotulo: "Per\xEDodo" } },
       { accessorKey: "escopo", header: "Escopo", meta: { rotulo: "Escopo" } },
       { accessorKey: "motivo", header: "Motivo", meta: { rotulo: "Motivo" } },
-      { accessorKey: "situacao", header: "Situa\xE7\xE3o", cell: ({ getValue }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: VARIANTE[getValue()], children: getValue() }), meta: { rotulo: "Situa\xE7\xE3o" } },
+      { accessorKey: "situacao", header: "Situa\xE7\xE3o", cell: ({ getValue }) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Selo, { variante: VARIANTE[getValue()], children: getValue() }), meta: { rotulo: "Situa\xE7\xE3o" } },
       {
         id: "acoes",
         header: "A\xE7\xF5es",
@@ -359,18 +517,18 @@
         cell: ({ row }) => {
           const d = row.original;
           const ativa = d.status_aprovacao === "Submetida" || d.status_aprovacao === "Aprovada";
-          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "flex flex-wrap gap-2", children: [
-            ehGerenteGeral && d.status_aprovacao === "Submetida" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { tamanho: "sm", variante: "secundario", onClick: (e) => {
+          return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { className: "flex flex-wrap gap-2", children: [
+            ehGerenteGeral && d.status_aprovacao === "Submetida" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { tamanho: "sm", variante: "secundario", onClick: (e) => {
                 e.stopPropagation();
                 void agir(() => api.aprovarDelegacao(d.id_delegacao));
               }, children: "Aprovar" }),
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { tamanho: "sm", variante: "fantasma", onClick: (e) => {
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { tamanho: "sm", variante: "fantasma", onClick: (e) => {
                 e.stopPropagation();
                 void agir(() => api.rejeitarDelegacao(d.id_delegacao));
               }, children: "Rejeitar" })
             ] }) : null,
-            ativa ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { tamanho: "sm", variante: "fantasma", onClick: (e) => {
+            ativa ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { tamanho: "sm", variante: "fantasma", onClick: (e) => {
               e.stopPropagation();
               void agir(() => api.revogarDelegacao(d.id_delegacao));
             }, children: "Revogar" }) : null
@@ -379,38 +537,53 @@
         meta: { rotulo: "A\xE7\xF5es" }
       }
     ];
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-6", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "flex flex-wrap items-end justify-between gap-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "text-display-lg text-foreground", children: "Delega\xE7\xF5es" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-1 text-body-md text-secondary-foreground", children: "Cobertura tempor\xE1ria de uma posi\xE7\xE3o por outro gerente. Expira sozinha no dia seguinte ao fim; o titular ausente fica em somente leitura." })
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-col gap-6", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("header", { className: "flex flex-wrap items-end justify-between gap-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h1", { className: "text-display-lg text-foreground", children: "Delega\xE7\xF5es" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mt-1 text-body-md text-secondary-foreground", children: "Cobertura tempor\xE1ria de uma posi\xE7\xE3o por outro gerente. Expira sozinha no dia seguinte ao fim; o titular ausente fica em somente leitura." })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Botao, { onClick: () => setNova(true), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CalendarClock, { "aria-hidden": true, className: "size-4" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Botao, { onClick: () => setNova(true), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(CalendarClock, { "aria-hidden": true, className: "size-4" }),
           " Nova delega\xE7\xE3o"
         ] })
       ] }),
-      erroAcao ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", titulo: "Opera\xE7\xE3o n\xE3o conclu\xEDda", children: erroAcao }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.TabelaDados, { colunas, dados: (_b = (_a = lista.dados) == null ? void 0 : _a.itens) != null ? _b : [], rotulo: "Delega\xE7\xF5es", tamanhoPagina: 10, buscaPlaceholder: "Buscar delega\xE7\xE3o\u2026" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Gaveta, { open: nova, onOpenChange: setNova, children: nova ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.GavetaConteudo, { titulo: "Nova delega\xE7\xE3o", descricao: "Fica Submetida at\xE9 a aprova\xE7\xE3o do Gerente Geral; s\xF3 ent\xE3o concede acesso.", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormularioDelegacao, { api, ehGerenteGeral, dataPadrao: sessao.dataSimulada, aoConcluir: () => {
+      erroAcao ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: "critico", titulo: "Opera\xE7\xE3o n\xE3o conclu\xEDda", children: erroAcao }) : null,
+      vencendo.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Aviso, { variante: "atencao", titulo: "".concat(vencendo.length, " ").concat(vencendo.length === 1 ? "cobertura vence" : "coberturas vencem", " em at\xE9 7 dias"), children: [
+        vencendo.map((d) => "".concat(d.id_posicao_origem, " (at\xE9 ").concat((0, import_ui2.dataBR)(d.data_fim), ")")).join(" \xB7 "),
+        " \u2014 renove ou planeje a devolu\xE7\xE3o."
+      ] }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex gap-2", role: "group", "aria-label": "Modo de visualiza\xE7\xE3o", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { tamanho: "sm", variante: visao === "tabela" ? "secundario" : "fantasma", onClick: () => setVisao("tabela"), children: "Tabela" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { tamanho: "sm", variante: visao === "calendario" ? "secundario" : "fantasma", onClick: () => setVisao("calendario"), children: "Calend\xE1rio" })
+      ] }),
+      visao === "tabela" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.TabelaDados, { colunas, dados: itens, rotulo: "Delega\xE7\xF5es", tamanhoPagina: 10, buscaPlaceholder: "Buscar delega\xE7\xE3o\u2026" }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(CalendarioDelegacoes, { itens, nomes, referencia }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Gaveta, { open: nova, onOpenChange: setNova, children: nova ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.GavetaConteudo, { titulo: "Nova delega\xE7\xE3o", descricao: "Fica Submetida at\xE9 a aprova\xE7\xE3o do Gerente Geral; s\xF3 ent\xE3o concede acesso.", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(FormularioDelegacao, { api, ehGerenteGeral, dataPadrao: sessao.dataSimulada, aoConcluir: () => {
         setNova(false);
         emitir({ tipo: "dados-alterados", origem: "delegacao" });
       } }) }) : null })
     ] });
   }
+  function diaCorrente() {
+    try {
+      return (/* @__PURE__ */ new Date()).toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+    } catch {
+      return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+    }
+  }
   function FormularioDelegacao({ api, ehGerenteGeral, dataPadrao, aoConcluir }) {
     var _a, _b, _c, _d;
     const posicoes = (0, import_sdk.useConsulta)(() => api.posicoes(), []);
     const atores = (0, import_sdk.useConsulta)(() => api.atores(), []);
-    const [origem, setOrigem] = React.useState("");
-    const [delegado, setDelegado] = React.useState("");
+    const [origem, setOrigem] = React2.useState("");
+    const [delegado, setDelegado] = React2.useState("");
     const base = dataPadrao != null ? dataPadrao : (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-    const [inicio, setInicio] = React.useState(base);
-    const [fim, setFim] = React.useState(base);
-    const [escopo, setEscopo] = React.useState("Total");
-    const [motivo, setMotivo] = React.useState("");
-    const [erro, setErro] = React.useState(null);
-    const [enviando, setEnviando] = React.useState(false);
+    const [inicio, setInicio] = React2.useState(base);
+    const [fim, setFim] = React2.useState(base);
+    const [escopo, setEscopo] = React2.useState("Total");
+    const [motivo, setMotivo] = React2.useState("");
+    const [erro, setErro] = React2.useState(null);
+    const [enviando, setEnviando] = React2.useState(false);
     const origens = ((_b = (_a = posicoes.dados) == null ? void 0 : _a.itens) != null ? _b : []).filter((p) => ehGerenteGeral || p.origens.some((o) => o.origem === "Titular"));
     const delegados = ((_d = (_c = atores.dados) == null ? void 0 : _c.atores) != null ? _d : []).filter((a) => a.id_gerente);
     async function enviar(e) {
@@ -426,26 +599,26 @@
         setEnviando(false);
       }
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", { onSubmit: enviar, className: "flex flex-col gap-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "deleg-origem", rotulo: "Posi\xE7\xE3o a ser coberta", valor: origem, aoMudar: setOrigem, opcoes: origens.map((p) => ({ valor: p.id_posicao, rotulo: "".concat(p.nome_posicao, " (").concat(p.id_posicao, ")") })) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "deleg-delegado", rotulo: "Gerente delegado", valor: delegado, aoMudar: setDelegado, opcoes: delegados.map((a) => ({ valor: a.id_gerente, rotulo: a.rotulo })) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-2 gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "deleg-inicio", children: "In\xEDcio (inclusive)" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "deleg-inicio", type: "date", value: inicio, onChange: (e) => setInicio(e.target.value), required: true })
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("form", { onSubmit: enviar, className: "flex flex-col gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CampoSelecao, { id: "deleg-origem", rotulo: "Posi\xE7\xE3o a ser coberta", valor: origem, aoMudar: setOrigem, opcoes: origens.map((p) => ({ valor: p.id_posicao, rotulo: "".concat(p.nome_posicao, " (").concat(p.id_posicao, ")") })) }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CampoSelecao, { id: "deleg-delegado", rotulo: "Gerente delegado", valor: delegado, aoMudar: setDelegado, opcoes: delegados.map((a) => ({ valor: a.id_gerente, rotulo: a.rotulo })) }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "grid grid-cols-2 gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "deleg-inicio", children: "In\xEDcio (inclusive)" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Campo, { id: "deleg-inicio", type: "date", value: inicio, onChange: (e) => setInicio(e.target.value), required: true })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "deleg-fim", children: "Fim (inclusive)" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "deleg-fim", type: "date", value: fim, onChange: (e) => setFim(e.target.value), required: true })
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "deleg-fim", children: "Fim (inclusive)" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Campo, { id: "deleg-fim", type: "date", value: fim, onChange: (e) => setFim(e.target.value), required: true })
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "deleg-escopo", rotulo: "Escopo", valor: escopo, aoMudar: setEscopo, opcoes: ["Total", "Apenas Consulta", "Apenas Emergencial"].map((t) => ({ valor: t, rotulo: t })) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "deleg-motivo", children: "Motivo" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.AreaTexto, { id: "deleg-motivo", value: motivo, onChange: (e) => setMotivo(e.target.value), required: true })
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CampoSelecao, { id: "deleg-escopo", rotulo: "Escopo", valor: escopo, aoMudar: setEscopo, opcoes: ["Total", "Apenas Consulta", "Apenas Emergencial"].map((t) => ({ valor: t, rotulo: t })) }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "deleg-motivo", children: "Motivo" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.AreaTexto, { id: "deleg-motivo", value: motivo, onChange: (e) => setMotivo(e.target.value), required: true })
       ] }),
-      erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", children: erro }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex justify-end", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { type: "submit", disabled: !origem || !delegado || !motivo || enviando, children: enviando ? "Enviando\u2026" : "Submeter delega\xE7\xE3o" }) })
+      erro ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: "critico", children: erro }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "flex justify-end", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { type: "submit", disabled: !origem || !delegado || !motivo || enviando, children: enviando ? "Enviando\u2026" : "Submeter delega\xE7\xE3o" }) })
     ] });
   }
 

@@ -145,7 +145,7 @@ async function front(): Promise<void> {
   <head>
     <meta charset="UTF-8" />
     <base target="_top" />
-    <title>Gestão de Carteira Bancária — POC</title>
+    <title>Porto Bank — Gestão de Carteira</title>
     <?!= incluir('estilos') ?>
     <script>
       // diagnóstico de carga: registra erros de cada script (arquivo em carga = window.__etapa) e o shell os mostra se algo faltar
