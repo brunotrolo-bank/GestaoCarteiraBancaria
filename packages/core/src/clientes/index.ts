@@ -3,7 +3,7 @@ import { emTransacao, proximoId } from '../model/db.ts';
 import { diaDe } from '../shared/dates.ts';
 import type { Clock } from '../shared/clock.ts';
 import { exigir } from '../shared/errors.ts';
-import { auditar, publicar } from '../shared/registro.ts';
+import { auditar, publicar } from '../model/registro.ts';
 import { exigirGerenteGeral, obterPosicao } from '../posicoes/index.ts';
 import { decidirCliente, exigirAcessoCliente } from '../acesso/index.ts';
 import { apenasDigitos, documentoValido, mascararDocumento } from './documento.ts';

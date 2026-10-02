@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
 import { posicoes, addDays, intervalosSobrepostos, FixedClock, meioDia } from '@carteira/core';
-import { assinaturaCarteira, cenario, esperaErro, ger, GG } from './helpers.ts';
+import { assinaturaCarteira, cenario, esperaErro, ger, GG, execucoes } from './helpers.ts';
 
 describe('01 Posições e Ocupação', () => {
   it('AC-POS-01 (J1): troca de titular não altera nenhum cliente nem vínculo', () => {
@@ -109,7 +109,7 @@ describe('01 Posições e Ocupação', () => {
           }
         }
       }),
-      { numRuns: 150 },
+      { numRuns: execucoes(150) },
     );
   });
 });

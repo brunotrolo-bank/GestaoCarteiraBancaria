@@ -52,3 +52,12 @@ flowchart LR
 | ENV-4 | Vincular Apps Script ao projeto GCP `gestao-carteira-poc` | Opcional; só se a POC exigir APIs/quotas próprias |
 
 **Aba atual da planilha:** `Página1` (vazia na verificação de estrutura). O desenho das abas da POC virá do domínio 06 (dicionário de dados), não foi alterado.
+
+
+## 7. Atualização da execução (2026-10-01)
+- **Planilha populada**: 14 abas (uma por tabela do dicionário) com o cenário *demo* — 5 posições, 8 gerentes, 6 ocupações, 2 delegações, **370 clientes**, 784 produtos, 529 interações — carga idempotente validada por releitura e hash (`npm run sheets:carga`).
+- **Apps Script publicado** via clasp: `rules.js` (regras), `schema.js` (gerado), `Codigo.js` (`homologar`, `diagnostico`, `getPosicoesPermitidas`, `getClientesPorPapel`, `ping`) e manifesto restrito (`webapp.access: MYSELF`, sem implantação).
+- **Homologação**: `npm run sheets:homologar` executa o **código real do Apps Script** sobre os dados vivos: **52 checks, 52 OK** (esquema das 14 abas, integridade, J2, J3, isolamento, mascaramento) e grava a aba `homologacao_resultado`. Teste de **equivalência TypeScript ≡ Apps Script** por propriedade (delegações aleatórias, revogações, instantes arbitrários).
+- **`clasp run` indisponível**: tentativas de executar `ping`/`diagnostico`/`homologar` remotamente falham com *"server error occurred while reading from storage. Error code NOT_FOUND"* (inclusive para a função trivial `ping`, ou seja, o problema é da execução remota, não do código). Provável exigência de projeto GCP padrão/implantação de API executável (ação manual no editor). **Por isso a homologação roda o mesmo código em sandbox Node**; no editor, `homologar()` produz o mesmo resultado (aba sobrescrita).
+- **API sobre o Sheets vivo** (`STORE=sheets`): leituras, escrita (`trocarTitular`) com persistência confirmada e *reset* devolvendo o hash original (`npm run sheets:smoke`).
+- O projeto GCP `gestao-carteira-poc` e a service account seguem **sem billing** e sem chaves em disco.

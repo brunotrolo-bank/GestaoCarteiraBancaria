@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
 import { clientes, delegacao, posicoes, FixedClock, gerarCpf, gerarCnpj, mascararDocumento, cpfValido, cnpjValido, type Db } from '@carteira/core';
 import { hashDb } from '@carteira/data';
-import { assinaturaCarteira, cenario, em, esperaErro, ger, GG } from './helpers.ts';
+import { assinaturaCarteira, cenario, em, esperaErro, ger, GG, execucoes } from './helpers.ts';
 
 const doPosicao = (db: Db, p: string, status = 'Ativo'): string[] => db.dim_clientes.filter((c) => c.id_posicao_carteira === p && c.status === status).map((c) => c.id_cliente);
 
@@ -17,7 +17,7 @@ describe('03 Clientes e Carteira', () => {
     expect(mascararDocumento(cpf)).toMatch(/^\*\*\*\.\d{3}\.\d{3}-\*\*$/);
     expect(mascararDocumento(cnpj)).toMatch(/^\*\*\.\*\*\*\.\d{3}\/\d{4}-\*\*$/);
     expect(mascararDocumento(cpf)).not.toContain(cpf.slice(0, 3));
-    fc.assert(fc.property(fc.stringMatching(/^\d{9}$/), (b) => cpfValido(gerarCpf(b)) || /^(\d)\1{8}$/.test(b) === false), { numRuns: 100 });
+    fc.assert(fc.property(fc.stringMatching(/^\d{9}$/), (b) => cpfValido(gerarCpf(b)) || /^(\d)\1{8}$/.test(b) === false), { numRuns: execucoes(100) });
   });
 
   it('AC-CLI-01: documento inválido ou duplicado; dados fora de domínio', () => {

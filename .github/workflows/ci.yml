@@ -1,0 +1,69 @@
+name: CI
+
+# Gates do 00-consolidacao §7/§9: arquitetura, contrato, tipos, testes com cobertura, E2E. Mutação roda por agendamento/manual (lenta).
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Fronteiras de arquitetura
+        run: npm run lint:arq
+      - name: Contrato OpenAPI (Spectral)
+        run: npm run lint:openapi
+      - name: Tipos
+        run: npx tsc -p tsconfig.json --noEmit
+      - name: Testes com cobertura (limiares: ramos 90%, linhas 95%)
+        run: npx vitest run --coverage
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: gates
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Jornadas J1/J2/J3 (API + front reais)
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: telas-e-traces
+          path: |
+            docs/telas
+            test-results
+          if-no-files-found: ignore
+
+  mutacao:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Mutação nos núcleos 01–04 (meta ≥ 80%)
+        run: npx stryker run
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-mutacao
+          path: reports/mutation

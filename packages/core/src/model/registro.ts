@@ -1,6 +1,6 @@
-import type { Db } from '../model/types.ts';
-import { proximoId } from '../model/db.ts';
-import type { Clock } from './clock.ts';
+import type { Db } from './types.ts';
+import { proximoId } from './db.ts';
+import type { Clock } from '../shared/clock.ts';
 
 /** Auditoria append-only (FR-DAD-007). Nunca recebe PII em claro (CPF/CNPJ): só ids e dados de negócio. */
 export function auditar(

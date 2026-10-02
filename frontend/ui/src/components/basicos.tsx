@@ -44,7 +44,7 @@ Campo.displayName = 'Campo';
 
 export const Rotulo = ({ className, ...props }: React.LabelHTMLAttributes<HTMLLabelElement>) => (
   // eslint-disable-next-line jsx-a11y/label-has-associated-control
-  <label className={cn('mb-1 block text-caption text-muted-foreground', className)} {...props} />
+  <label className={cn('mb-1 block text-caption text-secondary-foreground', className)} {...props} />
 );
 
 export const AreaTexto = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(({ className, ...props }, ref) => (

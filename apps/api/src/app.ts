@@ -1,6 +1,6 @@
 import { z, ZodError } from 'zod';
 import {
-  acesso, clientes, delegacao, DomainError, FixedClock, insights, isISODate, meioDia, diaDe, posicoes,
+  acesso, auditar, clientes, delegacao, DomainError, FixedClock, insights, isISODate, meioDia, diaDe, posicoes,
   type Clock, type Db, type Ator, type CodigoErro,
 } from '@carteira/core';
 import type { Store } from './store.ts';
@@ -289,6 +289,11 @@ export function criarApp(opcoes: OpcoesApp): { fetch: (req: Request) => Promise<
     } catch (erro) {
       if (erro instanceof DomainError) {
         status = STATUS[erro.codigo] ?? 422;
+        // FR-ACE-012: decisões de acesso NEGADAS são auditadas (sem corpo nem PII; só rota, código e ator).
+        if ((erro.codigo === 'ACESSO_NEGADO' || erro.codigo === 'NAO_AUTORIZADO') && ator !== '-') {
+          auditar(opcoes.store.db, opcoes.store.clock, ator, 'ACESSO_NEGADO', 'api', alvo.rota.caminho, { codigo: erro.codigo, metodo: req.method });
+          await opcoes.store.persistir();
+        }
         return finalizar(problema(status, erro.codigo, erro.message, correlacao, erro.detalhe ? { detalhe: erro.detalhe } : {}));
       }
       if (erro instanceof ZodError) { status = 400; return finalizar(problema(400, 'DADOS_INVALIDOS', erro.message, correlacao)); }

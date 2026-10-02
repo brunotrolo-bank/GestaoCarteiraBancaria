@@ -53,3 +53,25 @@ flowchart LR
 1. **Billing** do projeto GCP, só quando decidir publicar no Cloud Run.
 2. ~~Criação do repositório remoto~~ — **existe**; falta autorizar `git init`/*push* e decidir **público × privado** (ver cuidados acima).
 3. **Liberação para iniciar o desenvolvimento** (hoje: "não desenvolva nada ainda").
+
+
+## Estado de implementação (2026-10-01) e desvios
+| Decisão | Implementado | Desvio / pendência |
+|---|---|---|
+| D-01 monolito modular | ✅ `packages/core` com módulos por domínio; fronteiras verificadas por `npm run lint:arq` | — |
+| D-02 persistência | ✅ Adaptador **Google Sheets** (`packages/data/src/sheets.ts`, `apps/api/src/store.ts`) + memória | ⛔ **Adaptador Postgres não implementado** (sem Docker/servidor); DDL gerado em `data/ddl/postgres.sql` e validado só pelo parser do Postgres |
+| D-03 read models | ✅ calculados na aplicação | — |
+| D-04 autorização | ✅ núcleo puro (`acesso`), propriedade ≡ oráculo; equivalência com a versão JavaScript do Apps Script | spike OpenFGA não realizado |
+| D-05 papel simulado | ✅ flag `SIMULACAO_PAPEL` na API e no MCP | autenticação real: futuro |
+| D-06 camada semântica | ✅ métricas em código (`insights`) | spike Cube não realizado |
+| D-07 Node + TypeScript | ✅ | — |
+| D-08 hospedagem | local | Cloud Run/billing: não acionado |
+| D-09 eventos | ✅ outbox em `log_eventos` | broker externo: futuro |
+| D-10 MFE | 🟡 **Desvio (ADR):** composição em *build-time* via workspaces + `React.lazy`, contrato de props/eventos (`PropsMfe`, `EventoMfe`); Module Federation em runtime fica como evolução | Decisão tomada na execução: menor risco para a POC, sem retrabalho nos MFEs |
+| D-11 MCP stdio | ✅ `apps/mcp` (5 ferramentas) | — |
+| D-12 monorepo | ✅ npm workspaces | — |
+| D-13 observabilidade | ✅ logs JSON com `correlation_id`, sem PII | traços/métricas: futuro |
+| D-14 CI/CD | ✅ `.github/workflows/ci.yml` (gates, E2E, mutação agendada); commits direto na `main` | deploy no Cloud Run: não acionado |
+| D-15 design system | ✅ shadcn/ui (padrão: Radix + cva + Tailwind, **componentes escritos à mão, sem o CLI**) + tokens gerados do DESIGN | — |
+
+> Detalhe tarefa a tarefa: [../status-execucao.md](../status-execucao.md).

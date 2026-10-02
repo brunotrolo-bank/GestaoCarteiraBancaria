@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
 import { delegacao, posicoes, addDays, diaDe, FixedClock, meioDia, type Delegacao } from '@carteira/core';
-import { cenario, em, esperaErro, ger, GG } from './helpers.ts';
+import { cenario, em, esperaErro, ger, GG, execucoes } from './helpers.ts';
 
 const PERIODO = { data_inicio: '2026-11-01', data_fim: '2026-11-15' };
 const base = { id_posicao_origem: 'POS-AG01-001', id_gerente_delegado: 'GER-102', motivo: 'Férias', escopo: 'Total' as const, ...PERIODO };
@@ -118,7 +118,7 @@ describe('02 Delegação', () => {
         expect(delegacao.vigente(d, meioDia(dia))).toBe(dia >= inicio && dia <= fim);
         expect(diaDe(meioDia(dia))).toBe(dia);
       }),
-      { numRuns: 300 },
+      { numRuns: execucoes(300) },
     );
   });
 });

@@ -3,7 +3,7 @@ import { emTransacao, proximoId } from '../model/db.ts';
 import { addDays, diaDe, intervalosSobrepostos, isISODate, noIntervalo, type ISODate } from '../shared/dates.ts';
 import type { Clock } from '../shared/clock.ts';
 import { DomainError, exigir } from '../shared/errors.ts';
-import { auditar, publicar } from '../shared/registro.ts';
+import { auditar, publicar } from '../model/registro.ts';
 
 const SEGMENTOS_POSICAO: SegmentoPosicao[] = ['Private', 'Alta Renda', 'Middle Market', 'Misto'];
 const TRANSICOES: Record<StatusPosicao, StatusPosicao[]> = {

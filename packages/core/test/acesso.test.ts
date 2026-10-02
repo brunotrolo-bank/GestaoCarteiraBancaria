@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
 import { acesso, delegacao, posicoes, noIntervalo, diaDe, FixedClock, type Db, type EscopoDelegacao } from '@carteira/core';
-import { cenario, em, GG, ger } from './helpers.ts';
+import { cenario, em, GG, ger, execucoes } from './helpers.ts';
 
 const ids = (db: Db, g: string, instante: Date): string[] => acesso.posicoesPermitidas(db, g, instante).sort();
 
@@ -151,7 +151,7 @@ describe('04 Acesso e Visibilidade', () => {
         expect(decisao.permitido).toBe(oraculo(db, idGerente, idPosicao, instante));
         expect(decisao.modo === 'Negado').toBe(!decisao.permitido);
       }),
-      { numRuns: 400 },
+      { numRuns: execucoes(400) },
     );
   });
 });

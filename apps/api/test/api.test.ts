@@ -207,6 +207,18 @@ describe('07 API REST', () => {
     expect(resp.headers.get('x-correlation-id')).toBeTruthy();
   });
 
+  it('FR-ACE-012: acessos negados são auditados (ator, rota e código), sem PII', async () => {
+    const { chamar, store } = novoApp();
+    const alheio = store.db.dim_clientes.find((c) => c.id_posicao_carteira === POS(3))!;
+    await chamar('GET', `/clientes/${alheio.id_cliente}/visao-360`, { papel: POS(2) });
+    await chamar('POST', `/posicoes/${POS(3)}/titular`, { papel: POS(2), corpo: { id_gerente: 'GER-106', data_inicio: '2026-10-05', tipo_vinculo: 'Interino' } });
+    const negados = store.db.log_auditoria.filter((l) => l.acao === 'ACESSO_NEGADO');
+    expect(negados).toHaveLength(2);
+    expect(negados.every((l) => l.ator === 'GER-102')).toBe(true);
+    expect(JSON.stringify(negados)).not.toContain(alheio.cpf_cnpj);
+    expect(JSON.parse(negados[0]!.detalhe)).toMatchObject({ codigo: 'ACESSO_NEGADO', metodo: 'GET' });
+  });
+
   it('simulação: data inválida é rejeitada; reset restaura o cenário', async () => {
     const { chamar, store } = novoApp();
     expect((await chamar('GET', '/posicoes', { papel: GG, data: '2026-13-45' })).status).toBe(422);

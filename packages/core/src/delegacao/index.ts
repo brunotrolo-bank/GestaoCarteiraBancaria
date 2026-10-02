@@ -3,7 +3,7 @@ import { emTransacao, proximoId } from '../model/db.ts';
 import { diaDe, intervalosSobrepostos, isISODate, noIntervalo } from '../shared/dates.ts';
 import type { Clock } from '../shared/clock.ts';
 import { exigir } from '../shared/errors.ts';
-import { auditar, publicar } from '../shared/registro.ts';
+import { auditar, publicar } from '../model/registro.ts';
 import { exigirGerenteGeral, obterGerente, obterPosicao, titularVigente } from '../posicoes/index.ts';
 
 export type Situacao = 'Submetida' | 'Rejeitada' | 'Revogada' | 'Agendada' | 'Em Vigor' | 'Concluída';

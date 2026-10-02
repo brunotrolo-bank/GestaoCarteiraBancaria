@@ -1,5 +1,6 @@
 import { mkdirSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 const TELAS = 'docs/telas';
 mkdirSync(TELAS, { recursive: true });
@@ -144,3 +145,52 @@ test('acessibilidade: navegação por teclado chega ao seletor de papel e aos bo
   await expect(page.getByRole('option').first()).toBeVisible();
   await page.keyboard.press('Escape');
 });
+
+test('tipografia do DESIGN: Inter 300 nos títulos, ss01 global e tnum alinhando os dígitos', async ({ page }) => {
+  await abrir(page, 'cockpit');
+  const h1 = page.getByRole('heading', { name: 'Torre de Controle' });
+  expect(await h1.evaluate((e) => getComputedStyle(e).fontWeight)).toBe('300');
+  expect(await h1.evaluate((e) => getComputedStyle(e).letterSpacing)).not.toBe('normal');
+  expect(await page.evaluate(() => getComputedStyle(document.body).fontFeatureSettings)).toContain('ss01');
+  expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toContain('Inter');
+  await page.evaluate(() => document.fonts.ready);
+  const larguras = await page.evaluate(() => {
+    const medir = (txt: string, cls: string): number => {
+      const s = document.createElement('span');
+      s.className = cls;
+      s.textContent = txt;
+      s.style.position = 'absolute';
+      s.style.whiteSpace = 'nowrap';
+      document.body.appendChild(s);
+      const w = s.getBoundingClientRect().width;
+      s.remove();
+      return w;
+    };
+    return { tn1: medir('1111', 'tnum'), tn0: medir('0000', 'tnum'), p1: medir('1111', ''), p0: medir('0000', '') };
+  });
+  expect(Math.abs(larguras.tn1 - larguras.tn0)).toBeLessThan(0.05); // tnum: dígitos de largura igual
+  expect(Math.abs(larguras.p1 - larguras.p0)).toBeGreaterThan(0.5); // sem tnum o Inter é proporcional
+  // toda célula monetária da tabela usa tnum
+  const tabela = page.getByRole('table', { name: 'Posições' });
+  const celulaAum = tabela.getByRole('cell').filter({ hasText: /R\$/ }).first();
+  await expect(celulaAum).toHaveClass(/tnum/);
+});
+
+test('botões do cockpit são pill (raio 9999px) com altura ≥ 40px', async ({ page }) => {
+  await abrir(page, 'cockpit');
+  const botao = page.getByRole('button', { name: 'Simular redistribuição' });
+  const estilo = await botao.evaluate((e) => ({ raio: getComputedStyle(e).borderTopLeftRadius, h: e.getBoundingClientRect().height, padding: getComputedStyle(e).padding }));
+  expect(Number.parseFloat(estilo.raio)).toBeGreaterThanOrEqual(1000);
+  expect(estilo.h).toBeGreaterThanOrEqual(40);
+  expect(estilo.padding).toBe('8px 16px');
+});
+
+for (const [rota, papel, data] of [['capa', 'GG', null], ['cockpit', 'GG', null], ['posicoes', 'GG', null], ['carteira', 'POS-AG01-002', '2026-11-05'], ['delegacoes', 'GG', null]] as const) {
+  test(`acessibilidade automática (axe, WCAG 2.2 AA): sem violações graves em ${rota}`, async ({ page }) => {
+    await abrir(page, rota, papel, data);
+    await page.waitForLoadState('networkidle');
+    const r = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
+    const graves = r.violations.filter((v) => v.impact === 'critical' || v.impact === 'serious');
+    expect(graves.map((v) => `${v.id}: ${v.help} (${v.nodes.length}) ${v.nodes[0]?.target?.join(' ')}`)).toEqual([]);
+  });
+}

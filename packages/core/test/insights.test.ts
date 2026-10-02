@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
 import { insights, clientes, delegacao, posicoes, FixedClock, type Db } from '@carteira/core';
-import { cenario, em, esperaErro, GG, ger } from './helpers.ts';
+import { cenario, em, esperaErro, GG, ger, execucoes } from './helpers.ts';
 import { criarSeed } from '@carteira/data';
 
 const ctx = (idGerente: string, dia: string) => ({ idGerente, instante: em(dia) });
@@ -53,7 +53,7 @@ describe('05 Insights, 360° e Torre de Controle', () => {
         expect(Math.round(r.posicoes.reduce((a, p) => a + p.aum_total * 100, 0))).toBe(Math.round(r.aum_total * 100));
         expect(r.por_segmento.reduce((a, s) => a + s.clientes, 0)).toBe(r.total_clientes);
       }),
-      { numRuns: 40 },
+      { numRuns: execucoes(40) },
     );
   });
 
@@ -137,7 +137,7 @@ describe('05 Insights, 360° e Torre de Controle', () => {
         const esperado = db.dim_clientes.reduce((a, c) => a + Math.round(c.volume_aum * 100), 0) / 100;
         expect(r.aum_total).toBe(esperado);
       }),
-      { numRuns: 60 },
+      { numRuns: execucoes(60) },
     );
     void delegacao; void ger;
   });

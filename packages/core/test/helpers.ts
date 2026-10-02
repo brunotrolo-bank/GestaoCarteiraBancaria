@@ -26,3 +26,6 @@ export function esperaErro(fn: () => unknown, codigo: string): void {
 }
 
 export const em = (dia: string, hora = '12:00:00'): Date => new Date(`${dia}T${hora}-03:00`);
+
+/** Em teste de mutação (Stryker) as propriedades rodam com menos amostras: cada mutante reexecuta a suíte. */
+export const execucoes = (n: number): number => (process.env.__STRYKER_ACTIVE_MUTANT__ ? Math.min(n, 25) : n);

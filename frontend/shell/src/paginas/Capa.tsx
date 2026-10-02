@@ -89,7 +89,7 @@ export function Capa({ definirSessao, navegar }: { definirSessao: (s: Sessao) =>
           <li>Visualizar como Posição 02 em 05/11 e em 16/11: a cobertura entra e sai sozinha (2 min).</li>
           <li>Abrir a visão 360° de um cliente: documento mascarado, produtos, histórico e CRM (1 min).</li>
         </ol>
-        <p className="text-caption text-muted-foreground">Use "Reiniciar cenário" no topo para voltar ao estado inicial entre apresentações.</p>
+        <p className="text-caption text-secondary-foreground">Use "Reiniciar cenário" no topo para voltar ao estado inicial entre apresentações.</p>
       </section>
     </div>
   );

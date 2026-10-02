@@ -116,7 +116,7 @@ AbasLista.displayName = 'AbasLista';
 export const AbasGatilho = React.forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>>(({ className, ...props }, ref) => (
   <TabsPrimitive.Trigger
     ref={ref}
-    className={cn('-mb-px inline-flex min-h-10 items-center gap-2 border-b-2 border-transparent px-1 text-button-md text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground', className)}
+    className={cn('-mb-px inline-flex min-h-10 items-center gap-2 border-b-2 border-transparent px-1 text-button-md text-secondary-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground', className)}
     {...props}
   />
 ));
@@ -146,7 +146,7 @@ export function CampoSelecao({ id, rotulo, valor, aoMudar, opcoes, placeholder =
 }) {
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-1 block text-caption text-muted-foreground">{rotulo}</label>
+      <label htmlFor={id} className="mb-1 block text-caption text-secondary-foreground">{rotulo}</label>
       <Selecao value={valor} onValueChange={aoMudar}>
         <SelecaoGatilho id={id} aria-label={rotulo}><SelecaoValor placeholder={placeholder} /></SelecaoGatilho>
         <SelecaoConteudo>

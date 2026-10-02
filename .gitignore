@@ -23,3 +23,6 @@ coverage/
 Thumbs.db
 test-results/
 playwright-report/
+reports/
+.stryker-tmp/
+.stryker-*.json
