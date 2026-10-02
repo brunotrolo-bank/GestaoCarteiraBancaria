@@ -20,6 +20,7 @@ export function esperaErro(fn: () => unknown, codigo: string): void {
   } catch (e) {
     expect(e).toBeInstanceOf(DomainError);
     expect((e as DomainError).codigo).toBe(codigo);
+    expect((e as DomainError).message.length, 'a mensagem de erro deve explicar o problema').toBeGreaterThan(8);
     return;
   }
   throw new Error(`Esperava DomainError ${codigo}, mas não houve erro`);
@@ -29,3 +30,18 @@ export const em = (dia: string, hora = '12:00:00'): Date => new Date(`${dia}T${h
 
 /** Em teste de mutação (Stryker) as propriedades rodam com menos amostras: cada mutante reexecuta a suíte. */
 export const execucoes = (n: number): number => (process.env.__STRYKER_ACTIVE_MUTANT__ ? Math.min(n, 25) : n);
+
+/** Captura o DomainError lançado (para inspecionar `detalhe`). */
+export function capturaErro(fn: () => unknown): DomainError {
+  try {
+    fn();
+  } catch (e) {
+    expect(e).toBeInstanceOf(DomainError);
+    return e as DomainError;
+  }
+  throw new Error('Esperava DomainError, mas não houve erro');
+}
+
+/** Última auditoria / evento da ação/tipo informado (prova o conteúdo registrado). */
+export const ultimaAuditoria = (db: Db, acao: string) => db.log_auditoria.filter((l) => l.acao === acao).at(-1);
+export const ultimoEvento = (db: Db, tipo: string) => db.log_eventos.filter((e) => e.tipo === tipo).at(-1);

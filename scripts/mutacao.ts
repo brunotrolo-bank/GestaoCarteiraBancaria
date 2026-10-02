@@ -10,10 +10,10 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 
 const T = 'packages/core/test';
 const ALVOS: Record<string, { mutar: string[]; testes: string[] }> = {
-  posicoes: { mutar: ['packages/core/src/posicoes/index.ts'], testes: ['posicoes', 'bordas', 'acesso'] },
-  delegacao: { mutar: ['packages/core/src/delegacao/index.ts'], testes: ['delegacao', 'acesso', 'bordas'] },
-  acesso: { mutar: ['packages/core/src/acesso/index.ts'], testes: ['acesso', 'delegacao', 'clientes', 'insights'] },
-  clientes: { mutar: ['packages/core/src/clientes/index.ts', 'packages/core/src/clientes/documento.ts'], testes: ['clientes', 'bordas', 'insights'] },
+  posicoes: { mutar: ['packages/core/src/posicoes/index.ts'], testes: ['posicoes', 'bordas', 'acesso', 'mutantes-posicoes'] },
+  delegacao: { mutar: ['packages/core/src/delegacao/index.ts'], testes: ['delegacao', 'acesso', 'bordas', 'mutantes-delegacao'] },
+  acesso: { mutar: ['packages/core/src/acesso/index.ts'], testes: ['acesso', 'delegacao', 'clientes', 'insights', 'bordas', 'mutantes-acesso'] },
+  clientes: { mutar: ['packages/core/src/clientes/index.ts', 'packages/core/src/clientes/documento.ts'], testes: ['clientes', 'bordas', 'insights', 'mutantes-clientes'] },
 };
 
 interface Mutante { status: string }
