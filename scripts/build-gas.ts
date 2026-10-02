@@ -151,12 +151,6 @@ async function front(): Promise<void> {
       // diagnóstico de carga: registra erros de cada script (arquivo em carga = window.__etapa) e o shell os mostra se algo faltar
       window.CARTEIRA_ERROS = [];
       window.__etapa = 'inicio';
-      window.CARTEIRA_RASTRO = function (msg) {
-        window.__rastro = (window.__rastro || []).concat(msg).slice(-8);
-        var r = document.getElementById('carteira-rastro');
-        if (!r) { r = document.createElement('div'); r.id = 'carteira-rastro'; r.style.cssText = 'position:fixed;left:8px;top:8px;padding:6px 8px;background:#f5f5f5;color:#333;border:1px solid #bbb;font:11px/1.3 monospace;white-space:pre;z-index:99998;opacity:.9;pointer-events:none'; document.body.appendChild(r); }
-        r.textContent = window.__rastro.join(String.fromCharCode(10));
-      };
       window.CARTEIRA_MOSTRAR = function (msg) {
         window.CARTEIRA_ERROS.push(msg);
         var d = document.getElementById('carteira-erros');
