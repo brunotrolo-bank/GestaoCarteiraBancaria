@@ -1,0 +1,5 @@
+test/**
+*.md
+.clasp.json
+.claspignore
+package.json

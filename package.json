@@ -17,7 +17,9 @@
     "api": "tsx apps/api/src/server.ts",
     "mcp": "tsx apps/mcp/src/server.ts",
     "sheets:carga": "tsx scripts/sheets-carga.ts",
-    "sheets:homologar": "tsx scripts/sheets-homologar.ts"
+    "sheets:homologar": "tsx scripts/sheets-homologar.ts",
+    "schema:apps-script": "tsx scripts/gerar-schema-apps-script.ts",
+    "apps-script:push": "cd apps-script && clasp push --force"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",

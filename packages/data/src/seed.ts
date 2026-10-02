@@ -1,5 +1,5 @@
 import {
-  criarDbVazio, gerarCnpj, gerarCpf,
+  criarDbVazio, gerarCnpj, gerarCpf, NOMES_TABELAS, TABELAS,
   type Cliente, type Db, type Delegacao, type Gerente, type InteracaoCrm, type Ocupacao, type Posicao, type ProdutoCliente,
   type SegmentoCliente, type SegmentoPosicao, type VinculoCarteira,
 } from '@carteira/core';
@@ -226,9 +226,14 @@ export function criarSeed(opcoes: OpcoesSeed): Db {
   return db;
 }
 
+/** Forma canônica: tabelas e colunas na ordem do esquema, independente da ordem das chaves nos objetos. */
+function canonico(db: Db): unknown[] {
+  return NOMES_TABELAS.map((t) => [t, (db[t] as unknown as Record<string, unknown>[]).map((linha) => TABELAS[t].colunas.map(([c]) => linha[c] ?? null))]);
+}
+
 export function hashDb(db: Db): string {
   // Hash simples e estável (FNV-1a de 32 bits) sobre o JSON canônico das tabelas.
-  const texto = JSON.stringify(db);
+  const texto = JSON.stringify(canonico(db));
   let h = 0x811c9dc5;
   for (let i = 0; i < texto.length; i += 1) { h ^= texto.charCodeAt(i); h = Math.imul(h, 0x01000193); }
   return (h >>> 0).toString(16).padStart(8, '0');

@@ -1,0 +1,138 @@
+/**
+ * Apps Script da POC — HOMOLOGAÇÃO da planilha (dados sintéticos) e consultas "visualizar como".
+ * Regras em rules.js (testadas em Node contra o núcleo TypeScript); esquema em schema.js (gerado).
+ * Não há implantação de web app: execute `homologar` pelo editor (▶) ou publique manualmente quando precisar.
+ */
+var SPREADSHEET_ID = '1ftzp2MniTBOxbn8IX6dYPpeZEZKPSc5AX5Q5zVw4W8g';
+var ABA_RESULTADO = 'homologacao_resultado';
+
+function lerTabelas_() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var t = {};
+  Object.keys(ESQUEMA).forEach(function (nome) {
+    var aba = ss.getSheetByName(nome);
+    if (!aba) throw new Error('Aba ausente: ' + nome);
+    var valores = aba.getDataRange().getValues();
+    var cab = valores[0].map(String);
+    var colunas = ESQUEMA[nome].colunas;
+    var idx = {};
+    colunas.forEach(function (c) {
+      idx[c.nome] = cab.indexOf(c.nome);
+      if (idx[c.nome] < 0) throw new Error('Aba ' + nome + ': coluna ausente ' + c.nome);
+    });
+    t[nome] = valores.slice(1).filter(function (l) { return l.some(function (c) { return c !== ''; }); }).map(function (l) {
+      var o = {};
+      colunas.forEach(function (c) {
+        var v = l[idx[c.nome]];
+        if (v instanceof Date) v = Utilities.formatDate(v, FUSO, 'yyyy-MM-dd');
+        o[c.nome] = c.tipo === 'number' ? Number(v === '' ? 0 : v) : (v === '' ? '' : String(v));
+      });
+      return o;
+    });
+  });
+  return t;
+}
+
+/** Verificação de esquema: cabeçalhos exatamente iguais ao dicionário de dados (domínio 06). */
+function verificarEsquema_() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  return Object.keys(ESQUEMA).map(function (nome) {
+    var aba = ss.getSheetByName(nome);
+    if (!aba) return { check: 'Esquema ' + nome, status: 'FALHA', detalhe: 'Aba ausente' };
+    var cab = aba.getRange(1, 1, 1, aba.getLastColumn()).getValues()[0].map(String);
+    var esperado = ESQUEMA[nome].colunas.map(function (c) { return c.nome; });
+    var ok = cab.length === esperado.length && esperado.every(function (n, i) { return cab[i] === n; });
+    return { check: 'Esquema ' + nome, status: ok ? 'OK' : 'FALHA', detalhe: ok ? esperado.length + ' colunas' : 'Cabeçalho difere do dicionário' };
+  });
+}
+
+var REGRAS_INTEGRIDADE = ['PK_DUPLICADA', 'FK', 'DOMINIO', 'INTERVALO', 'OCUPACAO_SOBREPOSTA', 'GERENTE_EM_DUAS_POSICOES', 'DELEGACAO_SOBREPOSTA',
+  'DOCUMENTO_INVALIDO', 'DOCUMENTO_DUPLICADO', 'DOCUMENTO_NAO_SINTETICO', 'VINCULO_VIGENTE', 'PROJECAO_DIVERGENTE'];
+
+/** Monta a lista de resultados a partir das tabelas (testável em Node com a mesma lógica). */
+function avaliarHomologacao(t, resultadosEsquema) {
+  var resultados = (resultadosEsquema || []).slice();
+  Object.keys(ESQUEMA).forEach(function (nome) { resultados.push({ check: 'Linhas ' + nome, status: 'OK', detalhe: t[nome].length + ' linhas' }); });
+  var violacoes = verificarIntegridade(t, ESQUEMA);
+  REGRAS_INTEGRIDADE.forEach(function (r) {
+    var n = violacoes.filter(function (v) { return v.regra === r; });
+    resultados.push({ check: 'Integridade ' + r, status: n.length === 0 ? 'OK' : 'FALHA', detalhe: n.length === 0 ? '0 violações' : n.length + ' violações; ex.: ' + n[0].tabela + ' ' + n[0].chave });
+  });
+  verificarCenarios(t).forEach(function (c) { resultados.push(c); });
+  return resultados;
+}
+
+/** Executa todas as verificações e grava o resultado na aba homologacao_resultado. */
+function homologar() {
+  var inicio = new Date();
+  var resultados = avaliarHomologacao(lerTabelas_(), verificarEsquema_());
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var aba = ss.getSheetByName(ABA_RESULTADO) || ss.insertSheet(ABA_RESULTADO);
+  aba.clear();
+  var carimbo = Utilities.formatDate(new Date(), FUSO, "yyyy-MM-dd'T'HH:mm:ssXXX");
+  var linhas = [['instante', 'check', 'status', 'detalhe']].concat(resultados.map(function (r) { return [carimbo, r.check, r.status, r.detalhe]; }));
+  aba.getRange(1, 1, linhas.length, 4).setValues(linhas);
+  aba.getRange(1, 1, 1, 4).setFontWeight('bold');
+  aba.setFrozenRows(1);
+  var resumo = {
+    total: resultados.length,
+    ok: resultados.filter(function (r) { return r.status === 'OK'; }).length,
+    falhas: resultados.filter(function (r) { return r.status === 'FALHA'; }).length,
+    na: resultados.filter(function (r) { return r.status === 'N/A'; }).length,
+    duracao_ms: new Date() - inicio,
+  };
+  Logger.log(JSON.stringify(resumo));
+  return resumo;
+}
+
+/** Diagnóstico de acesso: quem executa o script e se enxerga a planilha (útil quando openById falha). */
+function diagnostico() {
+  var saida = { executando_como: Session.getEffectiveUser().getEmail(), spreadsheet_id: SPREADSHEET_ID };
+  try {
+    var f = DriveApp.getFileById(SPREADSHEET_ID);
+    saida.arquivo = f.getName();
+    saida.dono = f.getOwner() ? f.getOwner().getEmail() : '(sem dono visível)';
+  } catch (e) { saida.erro_drive = String(e); }
+  try {
+    saida.abas = SpreadsheetApp.openById(SPREADSHEET_ID).getSheets().map(function (s) { return s.getName(); });
+  } catch (e) { saida.erro_planilha = String(e); }
+  Logger.log(JSON.stringify(saida));
+  return saida;
+}
+
+/** Posições que o gerente (por e-mail) pode operar numa data — versão atualizada da função do Plano Geral. */
+function getPosicoesPermitidas(userEmail, dataISO) {
+  var t = lerTabelas_();
+  var g = t.dim_gerentes.filter(function (x) { return x.email_corporativo.toLowerCase() === String(userEmail).toLowerCase(); })[0];
+  if (!g) return [];
+  return posicoesPermitidas(t, g.id_gerente, instanteDe_(dataISO)).map(function (p) { return p.id_posicao; });
+}
+
+function getClientesUsuarioLogado() {
+  var t = lerTabelas_();
+  var email = Session.getActiveUser().getEmail();
+  var g = t.dim_gerentes.filter(function (x) { return x.email_corporativo.toLowerCase() === email.toLowerCase(); })[0];
+  return g ? clientesVisiveis(t, g.id_gerente, new Date()) : [];
+}
+
+/** "Visualizar como": papel = 'GG' ou id da posição (ex.: 'POS-AG01-002'); data opcional (AAAA-MM-DD). */
+function getClientesPorPapel(papel, dataISO) {
+  var t = lerTabelas_();
+  var instante = instanteDe_(dataISO);
+  var ator = resolverPapel(t, papel, instante);
+  return ator ? clientesVisiveis(t, ator, instante) : [];
+}
+
+function instanteDe_(dataISO) {
+  return dataISO ? new Date(dataISO + 'T12:00:00-03:00') : new Date();
+}
+
+/** Somente para desenvolvimento no editor (sem implantação): ?papel=POS-AG01-002&data=2026-11-05 */
+function doGet(e) {
+  var p = (e && e.parameter) || {};
+  var clientes = getClientesPorPapel(p.papel || 'GG', p.data);
+  return ContentService.createTextOutput(JSON.stringify({ papel: p.papel || 'GG', data: p.data || null, total: clientes.length, clientes: clientes.slice(0, 50) })).setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Teste de vida do projeto (sem acesso a serviços). */
+function ping() { return "pong " + new Date().toISOString(); }

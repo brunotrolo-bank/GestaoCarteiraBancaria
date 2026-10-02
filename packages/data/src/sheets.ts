@@ -112,4 +112,22 @@ export async function gravarDb(spreadsheetId: string, db: Db, tabelas: NomeTabel
   });
 }
 
+/** Lê matrizes brutas (valores não formatados) de faixas A1. */
+export async function lerMatrizes(spreadsheetId: string, faixas: string[]): Promise<unknown[][][]> {
+  const q = faixas.map((f) => `ranges=${encodeURIComponent(f)}`).join('&');
+  const r = await chamar<{ valueRanges: { values?: unknown[][] }[] }>(spreadsheetId, `/values:batchGet?${q}&valueRenderOption=UNFORMATTED_VALUE`);
+  return r.valueRanges.map((v) => v.values ?? []);
+}
+
+/** Substitui o conteúdo de uma aba (cria se não existir) com a matriz informada, cabeçalho em negrito. */
+export async function gravarMatriz(spreadsheetId: string, aba: string, matriz: (string | number)[][]): Promise<void> {
+  const ids = await garantirAbas(spreadsheetId, [aba]);
+  await chamar(spreadsheetId, '/values:batchClear', { method: 'POST', body: JSON.stringify({ ranges: [`${aba}!A:Z`] }) });
+  await chamar(spreadsheetId, '/values:batchUpdate', { method: 'POST', body: JSON.stringify({ valueInputOption: 'RAW', data: [{ range: `${aba}!A1`, values: matriz }] }) });
+  await chamar(spreadsheetId, ':batchUpdate', {
+    method: 'POST',
+    body: JSON.stringify({ requests: [{ repeatCell: { range: { sheetId: ids.get(aba), startRowIndex: 0, endRowIndex: 1 }, cell: { userEnteredFormat: { textFormat: { bold: true } } }, fields: 'userEnteredFormat.textFormat.bold' } }] }),
+  });
+}
+
 export const SPREADSHEET_ID_PADRAO = '1ftzp2MniTBOxbn8IX6dYPpeZEZKPSc5AX5Q5zVw4W8g';
