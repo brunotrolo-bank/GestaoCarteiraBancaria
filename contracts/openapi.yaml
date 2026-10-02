@@ -1,0 +1,352 @@
+openapi: 3.0.3
+info:
+  title: API Gestão de Carteira Bancária (POC)
+  version: 1.0.0
+  description: |
+    Contrato REST v1 (API-first, domínio 07). O ator vem do contexto da requisição, nunca de e-mail na URL.
+    Na POC, o papel é simulado pelo cabeçalho `X-Papel-Simulado` (feature flag SIMULACAO_PAPEL) e a data de
+    demonstração por `X-Data-Simulada`. CPF/CNPJ trafegam sempre mascarados; a única forma de ver o documento completo
+    é a ação auditada `documento:revelar`. Erros seguem RFC 9457 (`application/problem+json`) com `codigo_dominio` estável.
+servers:
+  - url: http://localhost:3001/api/v1
+tags:
+  - { name: Posições }
+  - { name: Delegações }
+  - { name: Carteira }
+  - { name: Insights }
+  - { name: Acesso }
+  - { name: Simulação }
+components:
+  parameters:
+    PapelSimulado:
+      name: X-Papel-Simulado
+      in: header
+      required: false
+      description: "`GG` ou id da posição (ex.: POS-AG01-002). Só com SIMULACAO_PAPEL ligada."
+      schema: { type: string }
+    DataSimulada:
+      name: X-Data-Simulada
+      in: header
+      required: false
+      description: Data de demonstração (AAAA-MM-DD, fuso America/Sao_Paulo). Só em modo simulação.
+      schema: { type: string, format: date }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: Repetir a requisição com a mesma chave não duplica efeitos (identifica o lote).
+      schema: { type: string }
+    Asof:
+      name: asof
+      in: query
+      required: false
+      description: Consulta *as-of* (AAAA-MM-DD).
+      schema: { type: string, format: date }
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: string }
+  responses:
+    Problema:
+      description: Erro de domínio ou de validação
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problema' }
+  schemas:
+    Problema:
+      type: object
+      required: [type, title, status, detail, codigo_dominio, correlation_id]
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        codigo_dominio:
+          type: string
+          example: OCUPACAO_SOBREPOSTA
+        correlation_id: { type: string }
+        detalhe: { type: object }
+    Ocupacao:
+      type: object
+      properties:
+        id_ocupacao: { type: string }
+        id_posicao: { type: string }
+        id_gerente: { type: string }
+        data_inicio: { type: string, format: date }
+        data_fim: { type: string, format: date, nullable: true }
+        tipo_vinculo: { type: string, enum: [Titular Efetivo, Trainee, Interino] }
+    Delegacao:
+      type: object
+      properties:
+        id_delegacao: { type: string }
+        id_posicao_origem: { type: string }
+        id_gerente_delegado: { type: string }
+        data_inicio: { type: string, format: date }
+        data_fim: { type: string, format: date }
+        motivo: { type: string }
+        escopo: { type: string, enum: [Total, Apenas Consulta, Apenas Emergencial] }
+        status_aprovacao: { type: string, enum: [Submetida, Aprovada, Rejeitada, Revogada] }
+        situacao:
+          type: string
+          description: Derivada do relógio; nunca persistida.
+          enum: [Submetida, Rejeitada, Revogada, Agendada, Em Vigor, Concluída]
+    ClienteMascarado:
+      type: object
+      properties:
+        id_cliente: { type: string }
+        nome_razao_social: { type: string }
+        cpf_cnpj_mascarado: { type: string, example: '***.456.789-**' }
+        segmento_cliente: { type: string, enum: [UHNW, Private, Alta Renda, Varejo] }
+        volume_aum: { type: number }
+        score_risco: { type: integer, minimum: 1, maximum: 1000 }
+        id_posicao: { type: string }
+        status: { type: string, enum: [Ativo, Em Prospecção, Inativo] }
+    NovaTrocaTitular:
+      type: object
+      required: [id_gerente, data_inicio, tipo_vinculo]
+      properties:
+        id_gerente: { type: string }
+        data_inicio: { type: string, format: date }
+        tipo_vinculo: { type: string, enum: [Titular Efetivo, Trainee, Interino] }
+        motivo: { type: string, description: Obrigatório em troca retroativa. }
+    NovaDelegacao:
+      type: object
+      required: [id_posicao_origem, id_gerente_delegado, data_inicio, data_fim, motivo, escopo]
+      properties:
+        id_posicao_origem: { type: string }
+        id_gerente_delegado: { type: string }
+        data_inicio: { type: string, format: date }
+        data_fim: { type: string, format: date }
+        motivo: { type: string }
+        escopo: { type: string, enum: [Total, Apenas Consulta, Apenas Emergencial] }
+    Transferencia:
+      type: object
+      required: [id_posicao_destino, motivo]
+      properties:
+        id_posicao_destino: { type: string }
+        motivo: { type: string }
+        justificativa: { type: string, description: Obrigatória se a capacidade do destino for excedida. }
+    Redistribuicao:
+      type: object
+      required: [ids_clientes, id_posicao_destino, motivo]
+      properties:
+        ids_clientes: { type: array, minItems: 1, items: { type: string } }
+        id_posicao_destino: { type: string }
+        motivo: { type: string }
+        justificativa: { type: string }
+    SimulacaoRedistribuicao:
+      type: object
+      required: [ids_clientes, id_posicao_destino]
+      properties:
+        ids_clientes: { type: array, minItems: 1, items: { type: string } }
+        id_posicao_destino: { type: string }
+    ResumoPosicao:
+      type: object
+      properties:
+        id_posicao: { type: string }
+        nome_posicao: { type: string }
+        clientes_ativos: { type: integer }
+        capacidade: { type: integer }
+        utilizacao: { type: number, description: "Razão (1 = 100%)." }
+        aum_total: { type: number }
+        desbalanceamento: { type: string, enum: [Acima, Abaixo], nullable: true }
+        modo: { type: string, enum: [Escrita, Leitura] }
+paths:
+  /saude:
+    get:
+      operationId: get_saude
+      summary: Verificação de saúde
+      tags: [Simulação]
+      responses: { '200': { description: OK } }
+  /simulacao/atores:
+    get:
+      operationId: get_simulacao_atores
+      summary: Papéis disponíveis para "visualizar como" (modo simulação)
+      tags: [Simulação]
+      parameters: [{ $ref: '#/components/parameters/DataSimulada' }]
+      responses: { '200': { description: Lista de papéis e titulares na data simulada } }
+  /simulacao/reset:
+    post:
+      operationId: post_simulacao_reset
+      summary: Restaura o cenário de demonstração
+      tags: [Simulação]
+      responses: { '200': { description: Reiniciado } }
+  /posicoes:
+    get:
+      operationId: get_posicoes
+      summary: Posições visíveis ao ator, com utilização e AUM
+      tags: [Posições]
+      parameters: [{ $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/DataSimulada' }]
+      responses:
+        '200': { description: Lista de posições, content: { application/json: { schema: { type: object, properties: { itens: { type: array, items: { $ref: '#/components/schemas/ResumoPosicao' } } } } } } }
+        '401': { $ref: '#/components/responses/Problema' }
+  /posicoes/{id}/titular:
+    get:
+      operationId: get_posicoes_por_id_titular
+      summary: Titular da posição numa data (as-of)
+      tags: [Posições]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/Asof' }, { $ref: '#/components/parameters/PapelSimulado' }]
+      responses:
+        '200': { description: Titular vigente ou vaga }
+        '403': { $ref: '#/components/responses/Problema' }
+        '404': { $ref: '#/components/responses/Problema' }
+    post:
+      operationId: post_posicoes_por_id_titular
+      summary: Troca o titular da posição (J1) — só Gerente Geral; não altera nenhum cliente
+      tags: [Posições]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/NovaTrocaTitular' } } } }
+      responses:
+        '201': { description: Nova ocupação, content: { application/json: { schema: { $ref: '#/components/schemas/Ocupacao' } } } }
+        '409': { $ref: '#/components/responses/Problema' }
+        '422': { $ref: '#/components/responses/Problema' }
+  /posicoes/{id}/historico:
+    get:
+      operationId: get_posicoes_por_id_historico
+      summary: Histórico de titularidade da posição
+      tags: [Posições]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }]
+      responses: { '200': { description: Ocupações em ordem cronológica }, '403': { $ref: '#/components/responses/Problema' } }
+  /gerentes:
+    get:
+      operationId: get_gerentes
+      summary: Gerentes e posição atual (Gerente Geral)
+      tags: [Posições]
+      parameters: [{ $ref: '#/components/parameters/PapelSimulado' }]
+      responses: { '200': { description: Lista }, '403': { $ref: '#/components/responses/Problema' } }
+  /delegacoes:
+    get:
+      operationId: get_delegacoes
+      summary: Delegações visíveis ao ator, com situação derivada
+      tags: [Delegações]
+      parameters: [{ $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/DataSimulada' }, { name: posicao, in: query, schema: { type: string } }]
+      responses: { '200': { description: Lista, content: { application/json: { schema: { type: object, properties: { itens: { type: array, items: { $ref: '#/components/schemas/Delegacao' } } } } } } } }
+    post:
+      operationId: post_delegacoes
+      summary: Submete delegação (fica Submetida até aprovação do Gerente Geral)
+      tags: [Delegações]
+      parameters: [{ $ref: '#/components/parameters/PapelSimulado' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/NovaDelegacao' } } } }
+      responses: { '201': { description: Delegação criada }, '409': { $ref: '#/components/responses/Problema' }, '422': { $ref: '#/components/responses/Problema' } }
+  /delegacoes/{id}/aprovacao:
+    post:
+      operationId: post_delegacoes_por_id_aprovacao
+      summary: Aprova (Gerente Geral)
+      tags: [Delegações]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }]
+      responses: { '200': { description: Aprovada }, '403': { $ref: '#/components/responses/Problema' }, '409': { $ref: '#/components/responses/Problema' } }
+  /delegacoes/{id}/rejeicao:
+    post:
+      operationId: post_delegacoes_por_id_rejeicao
+      summary: Rejeita (Gerente Geral)
+      tags: [Delegações]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }]
+      responses: { '200': { description: Rejeitada }, '403': { $ref: '#/components/responses/Problema' } }
+  /delegacoes/{id}/revogacao:
+    post:
+      operationId: post_delegacoes_por_id_revogacao
+      summary: Revoga antecipadamente (titular da origem ou Gerente Geral); efeito cessa no instante
+      tags: [Delegações]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }]
+      responses: { '200': { description: Revogada }, '403': { $ref: '#/components/responses/Problema' }, '409': { $ref: '#/components/responses/Problema' } }
+  /carteira/clientes:
+    get:
+      operationId: get_carteira_clientes
+      summary: Clientes visíveis ao ator (documento sempre mascarado), paginado por cursor
+      tags: [Carteira]
+      parameters:
+        - { $ref: '#/components/parameters/PapelSimulado' }
+        - { $ref: '#/components/parameters/DataSimulada' }
+        - { $ref: '#/components/parameters/Asof' }
+        - { name: posicao, in: query, schema: { type: string } }
+        - { name: segmento, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, maximum: 200, default: 50 } }
+        - { name: cursor, in: query, schema: { type: integer, default: 0 } }
+      responses:
+        '200': { description: Página de clientes, content: { application/json: { schema: { type: object, properties: { itens: { type: array, items: { $ref: '#/components/schemas/ClienteMascarado' } }, total: { type: integer }, proximo_cursor: { type: integer, nullable: true } } } } } }
+  /carteira/minha:
+    get:
+      operationId: get_carteira_minha
+      summary: "\"Minha Carteira\" e \"Carteira Delegada\" separadas, com marca de cobertura temporária"
+      tags: [Carteira]
+      parameters: [{ $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/DataSimulada' }, { $ref: '#/components/parameters/Asof' }]
+      responses: { '200': { description: Seções da carteira } }
+  /clientes/{id}/visao-360:
+    get:
+      operationId: get_clientes_por_id_visao_360
+      summary: Visão 360° do cliente (negada sem titularidade ou delegação)
+      tags: [Carteira]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/Asof' }]
+      responses: { '200': { description: Visão 360° }, '403': { $ref: '#/components/responses/Problema' } }
+  /clientes/{id}/transferencia:
+    post:
+      operationId: post_clientes_por_id_transferencia
+      summary: Transfere um cliente de posição (GG ou quem tem escrita sobre a carteira de origem)
+      tags: [Carteira]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/Transferencia' } } } }
+      responses: { '200': { description: Resultado do lote }, '403': { $ref: '#/components/responses/Problema' }, '422': { $ref: '#/components/responses/Problema' } }
+  /clientes/{id}/documento:revelar:
+    post:
+      operationId: post_clientes_por_id_documento_revelar
+      summary: Revela CPF/CNPJ completo (titular ou GG) — sempre auditado
+      tags: [Carteira]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }]
+      responses: { '200': { description: Documento completo }, '403': { $ref: '#/components/responses/Problema' } }
+  /carteira/redistribuicoes:simular:
+    post:
+      operationId: post_carteira_redistribuicoes_simular
+      summary: Simula redistribuição (dry-run, sem efeitos) — Gerente Geral
+      tags: [Carteira]
+      parameters: [{ $ref: '#/components/parameters/PapelSimulado' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/SimulacaoRedistribuicao' } } } }
+      responses: { '200': { description: Antes/depois e avisos }, '403': { $ref: '#/components/responses/Problema' } }
+  /carteira/redistribuicoes:
+    post:
+      operationId: post_carteira_redistribuicoes
+      summary: Executa redistribuição em bloco, atômica e idempotente — Gerente Geral
+      tags: [Carteira]
+      parameters: [{ $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/Redistribuicao' } } } }
+      responses: { '201': { description: Lote executado }, '403': { $ref: '#/components/responses/Problema' }, '422': { $ref: '#/components/responses/Problema' } }
+  /carteira/redistribuicoes/{id}:desfazer:
+    post:
+      operationId: post_carteira_redistribuicoes_por_id_desfazer
+      summary: Desfaz um lote com movimentações compensatórias — Gerente Geral
+      tags: [Carteira]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }]
+      responses: { '200': { description: Lote desfeito }, '404': { $ref: '#/components/responses/Problema' }, '409': { $ref: '#/components/responses/Problema' } }
+  /insights/agencia:
+    get:
+      operationId: get_insights_agencia
+      summary: Torre de Controle (GG) ou resumo da própria carteira
+      tags: [Insights]
+      parameters: [{ $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/DataSimulada' }, { $ref: '#/components/parameters/Asof' }]
+      responses: { '200': { description: Métricas consolidadas } }
+  /insights/posicoes/{id}:
+    get:
+      operationId: get_insights_posicoes_por_id
+      summary: Métricas de uma posição visível
+      tags: [Insights]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/Asof' }]
+      responses: { '200': { description: Resumo da posição }, '403': { $ref: '#/components/responses/Problema' } }
+  /insights/desbalanceamento:
+    get:
+      operationId: get_insights_desbalanceamento
+      summary: Posições acima de 100% ou abaixo de 50% da capacidade
+      tags: [Insights]
+      parameters: [{ $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/Asof' }]
+      responses: { '200': { description: Lista de posições em alerta } }
+  /acesso/explicacao:
+    get:
+      operationId: get_acesso_explicacao
+      summary: Explica por que o ator vê (ou não) um cliente
+      tags: [Acesso]
+      parameters:
+        - { $ref: '#/components/parameters/PapelSimulado' }
+        - { $ref: '#/components/parameters/Asof' }
+        - { name: cliente, in: query, required: true, schema: { type: string } }
+      responses: { '200': { description: Decisão com origem e motivo } }
