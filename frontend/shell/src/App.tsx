@@ -100,6 +100,8 @@ export function App({ mfes }: { mfes: Mfes }) {
             <a
               key={r.id}
               href={`#/${r.id}`}
+              // No Apps Script (iframe + <base target="_top">) o link nu navegaria a janela externa: navega só pelo hash, sem recarregar
+              onClick={(e) => { e.preventDefault(); navegar(r.id); }}
               aria-current={rota === r.id ? 'page' : undefined}
               className={cn('flex min-h-10 items-center gap-2 whitespace-nowrap rounded-md px-3 text-button-sm hover:bg-sidebar-active', rota === r.id ? 'bg-sidebar-active text-sidebar-foreground' : 'text-sidebar-muted')}
             >
