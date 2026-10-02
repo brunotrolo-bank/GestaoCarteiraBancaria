@@ -10,7 +10,7 @@
  *  - se a conta não enxerga nenhuma, CRIA uma nova planilha no Drive de quem executa e a popula com o cenário demo.
  * Para trocar de conta: copie/transfira o projeto, abra o app (ou rode `instalar`) e publique novamente o web app.
  */
-var PLANILHA_PADRAO = '1ftzp2MniTBOxbn8IX6dYPpeZEZKPSc5AX5Q5zVw4W8g';
+var PLANILHA_PADRAO = '1gp53hQIHFQk_0FscUwqROXTWT-VyrShnFsd4GKGTaFQ';
 var NOME_PLANILHA = 'Gestão de Carteira Bancária — POC (dados sintéticos)';
 var ABA_RESULTADO = 'homologacao_resultado';
 
