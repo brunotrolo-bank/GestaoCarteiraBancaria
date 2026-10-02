@@ -27,19 +27,6 @@
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
-      --tw-blur: initial;
-      --tw-brightness: initial;
-      --tw-contrast: initial;
-      --tw-grayscale: initial;
-      --tw-hue-rotate: initial;
-      --tw-invert: initial;
-      --tw-opacity: initial;
-      --tw-saturate: initial;
-      --tw-sepia: initial;
-      --tw-drop-shadow: initial;
-      --tw-drop-shadow-color: initial;
-      --tw-drop-shadow-alpha: 100%;
-      --tw-drop-shadow-size: initial;
       --tw-outline-style: solid;
     }
   }
@@ -83,11 +70,9 @@
     --color-on-primary: #fff;
     --color-canvas: #fff;
     --color-canvas-soft: #f6f9fc;
-    --color-canvas-cream: #f5e9d4;
     --color-hairline: #e3e8ee;
     --color-hairline-input: #a8c3de;
     --color-ruby: #ea2261;
-    --color-magenta: #f96bee;
     --color-lemon: #9b6829;
     --color-foreground: var(--color-ink);
     --color-card: var(--color-canvas);
@@ -672,11 +657,6 @@
     height: calc(var(--spacing) * 40);
   }
 
-  .size-full {
-    width: 100%;
-    height: 100%;
-  }
-
   .h-0\.5 {
     height: calc(var(--spacing) * .5);
   }
@@ -1178,6 +1158,14 @@
     background-color: var(--color-sidebar-active);
   }
 
+  .object-cover {
+    object-fit: cover;
+  }
+
+  .object-center {
+    object-position: center;
+  }
+
   .p-1 {
     padding: var(--spacing);
   }
@@ -1234,12 +1222,12 @@
     padding-block: calc(var(--spacing) * 4);
   }
 
-  .py-10 {
-    padding-block: calc(var(--spacing) * 10);
+  .py-8 {
+    padding-block: calc(var(--spacing) * 8);
   }
 
-  .py-12 {
-    padding-block: calc(var(--spacing) * 12);
+  .py-10 {
+    padding-block: calc(var(--spacing) * 10);
   }
 
   .pt-2 {
@@ -1526,10 +1514,6 @@
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
-  .filter {
-    filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
-  }
-
   .transition-colors {
     transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
@@ -1650,6 +1634,10 @@
       display: grid;
     }
 
+    .md\:h-72 {
+      height: calc(var(--spacing) * 72);
+    }
+
     .md\:h-screen {
       height: 100vh;
     }
@@ -1682,8 +1670,8 @@
       padding-inline: calc(var(--spacing) * 12);
     }
 
-    .md\:py-16 {
-      padding-block: calc(var(--spacing) * 16);
+    .md\:py-10 {
+      padding-block: calc(var(--spacing) * 10);
     }
   }
 
@@ -1897,72 +1885,6 @@
   syntax: "*";
   inherits: false;
   initial-value: 0 0 #0000;
-}
-
-@property --tw-blur {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-brightness {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-contrast {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-grayscale {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-hue-rotate {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-invert {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-opacity {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-saturate {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-sepia {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-drop-shadow {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-drop-shadow-color {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-drop-shadow-alpha {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 100%;
-}
-
-@property --tw-drop-shadow-size {
-  syntax: "*";
-  inherits: false
 }
 
 @property --tw-outline-style {

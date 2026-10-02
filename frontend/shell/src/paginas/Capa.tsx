@@ -1,9 +1,10 @@
 import { Botao, Cartao } from '@carteira/ui';
 import type { Sessao } from '@carteira/sdk';
+import bannerPortoBank from '../ativos/PortoBank_Banner.jpg';
 
 /**
- * Capa de apresentação para o gestor de negócio (NC-DS-2: é o ÚNICO lugar com a malha em gradiente — nunca atrás de dados).
- * A malha usa só os tons documentados no DESIGN: creme, limão, lavanda, índigo, rubi e magenta.
+ * Capa de apresentação para o gestor de negócio. O herói usa o banner oficial do Porto Seguro Bank
+ * (imagem centralizada; o Vite a embute como data URI no build do Apps Script, sem URL externa).
  */
 const JORNADAS = [
   {
@@ -41,19 +42,13 @@ const JORNADAS = [
 export function Capa({ definirSessao, navegar }: { definirSessao: (s: Sessao) => void; navegar: (d: 'cockpit' | 'carteira' | 'posicoes') => void }) {
   return (
     <div className="flex flex-col gap-10">
-      <section aria-labelledby="titulo-capa" className="relative overflow-hidden rounded-xl border border-border bg-card">
-        <svg aria-hidden className="absolute inset-0 size-full" preserveAspectRatio="none" viewBox="0 0 1200 360">
-          <defs><filter id="desfoque" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="55" /></filter></defs>
-          <g filter="url(#desfoque)" opacity="0.9">
-            <ellipse cx="120" cy="90" rx="260" ry="150" fill="var(--color-canvas-cream)" />
-            <ellipse cx="380" cy="230" rx="230" ry="120" fill="var(--color-lemon)" opacity="0.35" />
-            <ellipse cx="620" cy="80" rx="250" ry="130" fill="var(--color-primary-bg-subdued-hover)" />
-            <ellipse cx="860" cy="210" rx="240" ry="130" fill="var(--color-primary)" opacity="0.55" />
-            <ellipse cx="1060" cy="90" rx="220" ry="120" fill="var(--color-ruby)" opacity="0.5" />
-            <ellipse cx="1130" cy="270" rx="160" ry="90" fill="var(--color-magenta)" opacity="0.45" />
-          </g>
-        </svg>
-        <div className="relative px-6 py-12 md:px-12 md:py-16">
+      <section aria-labelledby="titulo-capa" className="overflow-hidden rounded-xl border border-border bg-card">
+        <img
+          src={bannerPortoBank}
+          alt="Porto Seguro Bank — cartões"
+          className="h-52 w-full object-cover object-center md:h-72"
+        />
+        <div className="px-6 py-8 md:px-12 md:py-10">
           <p className="text-micro-cap uppercase text-secondary-foreground">Porto Bank · Prova de conceito · dados sintéticos</p>
           <h1 id="titulo-capa" className="mt-3 max-w-3xl text-display-xl text-foreground">Gestão de carteira por Posição, não por pessoa</h1>
           <p className="mt-4 max-w-2xl text-body-lg text-secondary-foreground">
