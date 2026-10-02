@@ -120,7 +120,7 @@ const comoScript = (js: string): string => `<script>\n${js.replace(/<\/script/gi
 
 async function jsFront(entrada: string, externalizar: boolean): Promise<string> {
   const r = await esbuild({
-    entryPoints: [src(entrada)], bundle: true, write: false, format: 'iife', platform: 'browser', target: 'es2019', minify: !externalizar /* só o runtime (bibliotecas) é minificado; MFEs e shell ficam legíveis */, charset: 'ascii', legalComments: 'none',
+    entryPoints: [src(entrada)], bundle: true, write: false, format: 'iife', platform: 'browser', target: 'es2019', minify: false /* legível e indentado no editor do Apps Script */, charset: 'ascii', legalComments: 'none',
     jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"' }, logLevel: 'error',
     plugins: externalizar ? [globais((esp) => EXTERNOS_FRONT[esp] ?? null)] : [],
   });
@@ -130,7 +130,7 @@ async function jsFront(entrada: string, externalizar: boolean): Promise<string> 
 async function front(): Promise<void> {
   // CSS (Tailwind + tokens + fontes embutidas) gerado pelo Vite a partir de TODOS os pacotes
   const dist = src('frontend/shell/dist-gas');
-  await vite({ root: src('frontend/shell'), configFile: src('frontend/shell/vite.gas.config.ts'), build: { outDir: dist, emptyOutDir: true }, logLevel: 'error' });
+  await vite({ root: src('frontend/shell'), configFile: src('frontend/shell/vite.gas.config.ts'), build: { outDir: dist, emptyOutDir: true, cssMinify: false }, logLevel: 'error' });
   const css = readdirSync(join(dist, 'assets')).find((n) => n.endsWith('.css'));
   if (!css) throw new Error('CSS do front não encontrado');
   writeFileSync(join(saidaGas, 'estilos.html'), `<style>\n${readFileSync(join(dist, 'assets', css), 'utf8')}\n</style>\n`, 'utf8');
