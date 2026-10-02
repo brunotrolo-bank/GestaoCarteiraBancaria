@@ -181,14 +181,21 @@ function instanteDe_(dataISO) {
 }
 
 /**
- * Aplicativo web: serve o front (React, arquivo único index.html gerado por `npm run gas:build`).
- * O front chama `apiChamar` por google.script.run; o backend (backend.js) é o mesmo núcleo de domínio da API REST.
+ * Aplicativo web: `index.html` é um template que compõe o runtime (React + design system), cada micro-frontend
+ * (mfe-*.html) e o shell. Gerado por `npm run gas:build`.
+ * O front chama `apiChamar` por google.script.run; o backend (nucleo.js, dominio-*.js, api.js…) é o mesmo núcleo de domínio da API REST.
  */
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile('index')
+  return HtmlService.createTemplateFromFile('index')
+    .evaluate()
     .setTitle('Gestão de Carteira Bancária — POC')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+/** Inclui um arquivo HTML (estilos, runtime, micro-frontends, shell) dentro do template `index`. */
+function incluir(nome) {
+  return HtmlService.createHtmlOutputFromFile(nome).getContent();
 }
 
 /** Única porta de entrada do backend para o front (google.script.run só enxerga funções de nível superior). */

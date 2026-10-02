@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
 import { criarDbVazio, NOMES_TABELAS, type Db, type NomeTabela } from '@carteira/core';
 import { matrizParaTabela, tabelaParaMatriz } from './matriz.ts';
 
@@ -6,7 +7,25 @@ export { matrizParaTabela, tabelaParaMatriz } from './matriz.ts';
 
 /** Adaptador Google Sheets (D-02): lê/escreve as tabelas do modelo em abas de mesmo nome, via Sheets API. */
 
-export const SERVICE_ACCOUNT = 'carteira-pipeline@gestao-carteira-poc.iam.gserviceaccount.com';
+/**
+ * Ambiente Google em uso (planilha, script, projeto GCP, service account). Vem de `config/ambiente.json` — gerado por
+ * `npm run setup:conta` ao instalar em OUTRA conta Google — e pode ser sobrescrito por SPREADSHEET_ID / SERVICE_ACCOUNT.
+ */
+export interface Ambiente { planilhaId: string; scriptId: string; projetoGcp: string; contaServico: string }
+
+export function lerAmbiente(): Ambiente {
+  const caminho = new URL('../../../config/ambiente.json', import.meta.url);
+  const base: Ambiente = existsSync(caminho)
+    ? (JSON.parse(readFileSync(caminho, 'utf8')) as Ambiente)
+    : { planilhaId: '', scriptId: '', projetoGcp: '', contaServico: '' };
+  return {
+    ...base,
+    planilhaId: process.env.SPREADSHEET_ID ?? base.planilhaId,
+    contaServico: process.env.SERVICE_ACCOUNT ?? base.contaServico,
+  };
+}
+
+export const SERVICE_ACCOUNT = lerAmbiente().contaServico;
 const ESCOPOS = 'https://www.googleapis.com/auth/spreadsheets,https://www.googleapis.com/auth/drive';
 
 let cacheToken: { valor: string; expira: number } | null = null;
@@ -98,4 +117,4 @@ export async function gravarMatriz(spreadsheetId: string, aba: string, matriz: (
   });
 }
 
-export const SPREADSHEET_ID_PADRAO = '1ftzp2MniTBOxbn8IX6dYPpeZEZKPSc5AX5Q5zVw4W8g';
+export const SPREADSHEET_ID_PADRAO = lerAmbiente().planilhaId;

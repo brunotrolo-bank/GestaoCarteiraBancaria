@@ -2,17 +2,18 @@ import * as React from 'react';
 import { Gauge, Landmark, LayoutDashboard, Presentation, RotateCcw, Users, CalendarClock } from 'lucide-react';
 import { Aviso, Botao, Campo, CampoSelecao, Esqueleto, ProvedorDica, Rotulo, cn, dataBR } from '@carteira/ui';
 import { EVENTO_MFE, ambienteGas, criarApi, criarFetchGas, useConsulta, type EventoMfe, type PropsMfe, type Sessao, type ComandoMfe } from '@carteira/sdk';
-import Cockpit from '@carteira/mfe-cockpit';
-import Posicoes from '@carteira/mfe-posicoes';
-import Carteira from '@carteira/mfe-carteira';
-import Delegacao from '@carteira/mfe-delegacao';
 import { Capa } from './paginas/Capa';
+
+/** Micro-frontends injetados pelo ponto de entrada: build-time (Vite) ou runtime (Apps Script, via `window.CARTEIRA_MFES`). */
+export type Mfe = React.ComponentType<PropsMfe>;
+export interface Mfes { cockpit: Mfe; posicoes: Mfe; carteira: Mfe; delegacao: Mfe }
 
 /**
  * Shell (domínio 08): navegação, seletor de papel simulado, data de demonstração e banner de modo simulação.
- * Compõe os micro-frontends por domínio (carregamento sob demanda). A comunicação com os MFEs é só por props
+ * Compõe os micro-frontends por domínio, recebidos por injeção (`mfes`). A comunicação com os MFEs é só por props
  * (contrato PropsMfe) e eventos tipados — nunca por estado global ad hoc (FR-UX-004).
- * Composição em build-time via workspaces; Module Federation em runtime fica como evolução (ADR no 03-decisoes).
+ * Vite: composição em build-time (main.tsx). Apps Script: cada MFE é um arquivo próprio que se registra em
+ * `window.CARTEIRA_MFES` e o shell os compõe em runtime (main.gas.tsx).
  */
 
 type Rota = 'capa' | 'cockpit' | 'posicoes' | 'carteira' | 'delegacoes';
@@ -37,7 +38,8 @@ function lerSessao(): Sessao {
   return { papel: 'GG', dataSimulada: null };
 }
 
-export function App() {
+export function App({ mfes }: { mfes: Mfes }) {
+  const { cockpit: Cockpit, posicoes: Posicoes, carteira: Carteira, delegacao: Delegacao } = mfes;
   const [rota, setRota] = React.useState<Rota>(rotaDoHash);
   const [sessao, setSessao] = React.useState<Sessao>(lerSessao);
   const [versao, setVersao] = React.useState(0);

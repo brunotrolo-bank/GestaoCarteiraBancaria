@@ -28,7 +28,9 @@
     "lint:openapi": "spectral lint contracts/openapi.yaml --fail-severity=error",
     "gates": "npm run lint:arq && npm run lint:openapi && tsc -p tsconfig.json --noEmit && vitest run --coverage",
     "dicionario": "tsx scripts/gerar-dicionario.ts",
-    "gas:build": "tsx scripts/build-gas.ts"
+    "gas:build": "tsx scripts/build-gas.ts",
+    "setup:conta": "tsx scripts/setup-conta.ts",
+    "gas:smoke": "tsx scripts/gas-smoke.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

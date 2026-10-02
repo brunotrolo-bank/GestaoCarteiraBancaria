@@ -37,7 +37,14 @@ export class GasStore {
       if (doCache) {
         this.db = doCache;
       } else {
-        this.db = this.lerPlanilha();
+        try {
+          this.db = this.lerPlanilha();
+        } catch (e) {
+          // Planilha vazia (criada à mão numa conta nova): popula com o cenário demo na primeira chamada.
+          if (!String((e as Error).message).startsWith('ABAS_AUSENTES')) throw e;
+          this.db = criarSeed({ cenario: 'demo' });
+          this.gravar(NOMES_TABELAS, true);
+        }
         this.salvarCache();
       }
     }
@@ -113,7 +120,7 @@ export class GasStore {
     const db = criarDbVazio();
     for (const t of NOMES_TABELAS) {
       const aba = ss.getSheetByName(t);
-      if (!aba) throw new Error(`Aba ausente na planilha: ${t}. Execute "instalar" no editor do Apps Script.`);
+      if (!aba) throw new Error(`ABAS_AUSENTES: ${t}`);
       const valores = (aba.getDataRange().getValues() as unknown[][]).map((linha) =>
         linha.map((v) => (v instanceof Date ? Utilities.formatDate(v, 'America/Sao_Paulo', 'yyyy-MM-dd') : v)),
       );

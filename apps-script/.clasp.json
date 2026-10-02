@@ -1,4 +1,20 @@
 {
   "scriptId": "1TwZ64-JQYJJqu8iw7OCp-fhnSIoxNEjZS1PS-TgvaQl1OX29TCuWC2iD",
-  "rootDir": "."
+  "rootDir": ".",
+  "filePushOrder": [
+    "nucleo.js",
+    "dominio-posicoes.js",
+    "dominio-delegacao.js",
+    "dominio-acesso.js",
+    "dominio-clientes.js",
+    "dominio-insights.js",
+    "dominios-index.js",
+    "plataforma-dados.js",
+    "api.js",
+    "armazenamento-sheets.js",
+    "entrada.js",
+    "schema.js",
+    "rules.js",
+    "Codigo.js"
+  ]
 }

@@ -48,7 +48,7 @@ export const GavetaConteudo = React.forwardRef<HTMLDivElement, React.ComponentPr
       >
         <DialogPrimitive.Title className="pr-12 text-heading-lg text-foreground">{titulo}</DialogPrimitive.Title>
         {descricao ? <DialogPrimitive.Description className="mt-1 text-body-md text-muted-foreground">{descricao}</DialogPrimitive.Description> : null}
-        <div className="mt-4 flex-1">{children}</div>
+        <div className="mt-4 flex flex-1 flex-col">{children}</div>
         <DialogPrimitive.Close aria-label="Fechar" className="absolute right-4 top-4 inline-flex size-10 items-center justify-center rounded-pill text-muted-foreground hover:bg-secondary">
           <X aria-hidden className="size-4" />
         </DialogPrimitive.Close>

@@ -1,4 +1,3 @@
-import { z, ZodError } from 'zod';
 import {
   acesso, auditar, clientes, delegacao, DomainError, FixedClock, insights, isISODate, meioDia, diaDe, posicoes,
   type Clock, type Db, type Ator, type CodigoErro,
@@ -72,23 +71,50 @@ const STATUS: Partial<Record<CodigoErro, number>> = {
   ESTADO_INVALIDO: 409, LOTE_JA_DESFEITO: 409, LOTE_NAO_DESFAZIVEL: 409, POSICAO_COM_CARTEIRA: 409, TRANSICAO_INVALIDA: 409,
 };
 
-const data = z.string().refine(isISODate, 'Data deve estar no formato AAAA-MM-DD');
-const tipoVinculo = z.enum(['Titular Efetivo', 'Trainee', 'Interino']);
+/** Validação de corpo mínima (sem dependências: o backend do Apps Script precisa ser leve — cada execução carrega todos os arquivos). */
+type Campo = { tipo: 'txt'; opcional?: boolean } | { tipo: 'data' } | { tipo: 'enum'; opcoes: string[] } | { tipo: 'lista' };
+const txt = (opcional = false): Campo => ({ tipo: 'txt', opcional });
+const dt = (): Campo => ({ tipo: 'data' });
+const opc = (opcoes: string[]): Campo => ({ tipo: 'enum', opcoes });
+const lista = (): Campo => ({ tipo: 'lista' });
+
+function esquema<T>(campos: Record<string, Campo>): (corpo: unknown) => T {
+  return (corpo) => {
+    const erros: string[] = [];
+    const o = corpo !== null && typeof corpo === 'object' && !Array.isArray(corpo) ? (corpo as Record<string, unknown>) : null;
+    if (!o) throw new DomainError('DADOS_INVALIDOS', 'corpo: esperado um objeto JSON');
+    for (const [nome, campo] of Object.entries(campos)) {
+      const v = o[nome];
+      const ausente = v === undefined || v === null;
+      if (campo.tipo === 'txt') {
+        if (ausente) { if (!campo.opcional) erros.push(`${nome}: obrigatório`); } else if (typeof v !== 'string') erros.push(`${nome}: esperado texto`); else if (!campo.opcional && v.length < 1) erros.push(`${nome}: não pode ser vazio`);
+      } else if (campo.tipo === 'data') {
+        if (typeof v !== 'string' || !isISODate(v)) erros.push(`${nome}: Data deve estar no formato AAAA-MM-DD`);
+      } else if (campo.tipo === 'enum') {
+        if (typeof v !== 'string' || !campo.opcoes.includes(v)) erros.push(`${nome}: valor inválido (use ${campo.opcoes.join(', ')})`);
+      } else if (!Array.isArray(v) || v.length < 1 || v.some((x) => typeof x !== 'string')) erros.push(`${nome}: esperada lista não vazia de textos`);
+    }
+    if (erros.length > 0) throw new DomainError('DADOS_INVALIDOS', erros.join('; '));
+    return o as T;
+  };
+}
+
+type TipoVinculo = 'Titular Efetivo' | 'Trainee' | 'Interino';
+type Escopo = 'Total' | 'Apenas Consulta' | 'Apenas Emergencial';
+const VINCULOS = ['Titular Efetivo', 'Trainee', 'Interino'];
+const ESCOPOS = ['Total', 'Apenas Consulta', 'Apenas Emergencial'];
 const corpos = {
-  titular: z.object({ id_gerente: z.string().min(1), data_inicio: data, tipo_vinculo: tipoVinculo, motivo: z.string().optional() }),
-  delegacao: z.object({
-    id_posicao_origem: z.string().min(1), id_gerente_delegado: z.string().min(1), data_inicio: data, data_fim: data,
-    motivo: z.string().min(1), escopo: z.enum(['Total', 'Apenas Consulta', 'Apenas Emergencial']),
+  titular: esquema<{ id_gerente: string; data_inicio: string; tipo_vinculo: TipoVinculo; motivo?: string }>({ id_gerente: txt(), data_inicio: dt(), tipo_vinculo: opc(VINCULOS), motivo: txt(true) }),
+  delegacao: esquema<{ id_posicao_origem: string; id_gerente_delegado: string; data_inicio: string; data_fim: string; motivo: string; escopo: Escopo }>({
+    id_posicao_origem: txt(), id_gerente_delegado: txt(), data_inicio: dt(), data_fim: dt(), motivo: txt(), escopo: opc(ESCOPOS),
   }),
-  transferencia: z.object({ id_posicao_destino: z.string().min(1), motivo: z.string().min(1), justificativa: z.string().optional() }),
-  simulacao: z.object({ ids_clientes: z.array(z.string()).min(1), id_posicao_destino: z.string().min(1) }),
-  redistribuicao: z.object({ ids_clientes: z.array(z.string()).min(1), id_posicao_destino: z.string().min(1), motivo: z.string().min(1), justificativa: z.string().optional() }),
+  transferencia: esquema<{ id_posicao_destino: string; motivo: string; justificativa?: string }>({ id_posicao_destino: txt(), motivo: txt(), justificativa: txt(true) }),
+  simulacao: esquema<{ ids_clientes: string[]; id_posicao_destino: string }>({ ids_clientes: lista(), id_posicao_destino: txt() }),
+  redistribuicao: esquema<{ ids_clientes: string[]; id_posicao_destino: string; motivo: string; justificativa?: string }>({ ids_clientes: lista(), id_posicao_destino: txt(), motivo: txt(), justificativa: txt(true) }),
 };
 
-function analisar<T>(esquema: z.ZodType<T>, corpo: unknown): T {
-  const r = esquema.safeParse(corpo);
-  if (!r.success) throw new DomainError('DADOS_INVALIDOS', r.error.issues.map((i) => `${i.path.join('.') || 'corpo'}: ${i.message}`).join('; '));
-  return r.data;
+function analisar<T>(validador: (corpo: unknown) => T, corpo: unknown): T {
+  return validador(corpo);
 }
 
 function instanteDe(c: Contexto, asof: string | null): Date {
@@ -319,7 +345,6 @@ export function criarManipulador(opcoes: OpcoesApp): (req: RequisicaoApi) => Res
         }
         return finalizar(problema(status, erro.codigo, erro.message, correlacao, erro.detalhe ? { detalhe: erro.detalhe } : {}));
       }
-      if (erro instanceof ZodError) { status = 400; return finalizar(problema(400, 'DADOS_INVALIDOS', erro.message, correlacao)); }
       status = 500;
       log({ nivel: 'erro', correlation_id: correlacao, mensagem: erro instanceof Error ? erro.message : String(erro) });
       return finalizar(problema(500, 'ERRO_INTERNO', 'Erro inesperado.', correlacao));

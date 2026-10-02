@@ -62,12 +62,16 @@ No editor do Apps Script, `homologar()` produz o mesmo resultado. O web app **n�
 
 ## Aplicativo no Google Apps Script (testar sem rodar nada local)
 O app completo (front React + backend com o mesmo núcleo de domínio) roda **dentro do Apps Script**, lendo e gravando a planilha:
-- `apps-script/index.html` — front em arquivo único (gerado); `apps-script/backend.js` — núcleo + API (gerado); `Codigo.js` — `doGet` e `apiChamar`.
+- `apps-script/` — arquivos gerados do backend (um por domínio) e do front (um HTML por micro-frontend); `Codigo.js` — `doGet`, `incluir`, `apiChamar`, autoinstalação.
+- O projeto no Apps Script mantém a separação por **domínio** (`dominio-*.js`) e por **micro-frontend** (`mfe-*.html`), mais `nucleo.js`, `api.js`, `armazenamento-sheets.js`, `runtime.html`, `shell.html`.
 - Gerar e publicar: `npm run gas:build && npm run apps-script:push` e, para uma versão estável, `clasp deploy` (dentro de `apps-script/`).
 - Teste do backend em sandbox sem Node/Intl/URL: `npx tsx scripts/gas-smoke.ts`.
 - Acesso: somente o dono da conta (`access: MYSELF`); a primeira abertura pede autorização dos escopos da planilha.
 - **Transferível**: o projeto é autocontido (a planilha é criada e populada por `instalar()` em qualquer conta). Veja [`docs/transferencia-para-outra-conta.md`](docs/transferencia-para-outra-conta.md).
 - Desempenho: leituras vêm de cache (CacheService, 15 min) e escritas gravam só o que mudou.
+
+## Instalar em outra conta Google / outro computador
+Guia passo a passo: [`docs/instalacao-em-nova-conta.md`](docs/instalacao-em-nova-conta.md) — você cria a planilha e o projeto Apps Script à mão, e o Claude Code popula a planilha (`npm run sheets:carga`) e atualiza o Apps Script (`npm run gas:build && npm run apps-script:push`) depois de `npm run setup:conta`. O arquivo [`CLAUDE.md`](CLAUDE.md) orienta o Claude Code nesse fluxo.
 
 ## Limitações conhecidas (honestas)
 - **Persistência em Sheets não é transacional**: a atomicidade de lotes é garantida na aplicação (validação antes de gravar + rollback em memória). O DDL Postgres alvo ([`data/ddl/postgres.sql`](data/ddl/postgres.sql)) é validado sintaticamente, mas **não foi executado** em um Postgres (sem Docker/servidor no ambiente) e o adaptador Postgres **ainda não foi implementado**.

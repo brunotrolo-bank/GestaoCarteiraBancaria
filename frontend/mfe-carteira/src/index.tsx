@@ -60,7 +60,7 @@ export default function Carteira({ api, sessao, versao, ehGerenteGeral, emitir, 
 
       <Gaveta open={cliente !== null} onOpenChange={(a) => { if (!a) setCliente(null); }}>
         {cliente ? (
-          <GavetaConteudo titulo="Visão 360° do cliente" descricao={cliente} className="max-w-6xl lg:w-[min(96vw,76rem)]">
+          <GavetaConteudo titulo="Visão 360° do cliente" descricao={cliente} className="max-w-none w-[min(98vw,84rem)]">
             <Visao360Painel api={api} idCliente={cliente} sessao={sessao} versao={versao} ehGerenteGeral={ehGerenteGeral} aoMudar={() => emitir({ tipo: 'dados-alterados', origem: 'carteira' })} />
           </GavetaConteudo>
         ) : null}
@@ -153,76 +153,80 @@ function Visao360Painel({ api, idCliente, sessao, versao, ehGerenteGeral, aoMuda
   }
 
   return (
-    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
-      <div className="flex flex-col gap-6">
+    <div className="flex flex-1 flex-col gap-6">
+      {/* Cabeçalho em largura total: identificação + indicadores em blocos que se redistribuem conforme a largura */}
       <Cartao>
         <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
+          <div className="min-w-0">
             <p className="text-heading-lg text-foreground">{c.nome_razao_social}</p>
             <p className="tnum mt-1 text-body-tabular text-secondary-foreground">{documento ?? c.cpf_cnpj_mascarado}</p>
           </div>
-          <div className="flex gap-2"><Selo variante="tag">{c.segmento_cliente}</Selo><Selo variante="neutro">{c.status}</Selo></div>
+          <div className="flex flex-wrap gap-2"><Selo variante="tag">{c.segmento_cliente}</Selo><Selo variante="neutro">{c.status}</Selo></div>
         </div>
-        {documento ? <p className="mt-2 text-caption text-muted-foreground">Documento revelado — esta ação foi registrada em auditoria.</p> : (
-          <Botao variante="secundario" tamanho="sm" className="mt-3" onClick={() => void revelar()}><Eye aria-hidden className="size-4" /> Revelar documento</Botao>
-        )}
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          {documento ? <p className="text-caption text-secondary-foreground">Documento revelado — esta ação foi registrada em auditoria.</p> : (
+            <Botao variante="secundario" tamanho="sm" onClick={() => void revelar()}><Eye aria-hidden className="size-4" /> Revelar documento</Botao>
+          )}
+        </div>
         {erroDoc ? <Aviso variante="critico" className="mt-3">{erroDoc}</Aviso> : null}
-        <dl className="mt-4 grid grid-cols-2 gap-4">
-          {[['AUM', moeda(c.volume_aum)], ['Renda / faturamento', moeda(c.faixa_renda_faturamento)], ['Score de risco', `${inteiro(c.score_risco)} / 1.000`], ['Posição atual', d.posicao_atual.nome_posicao]].map(([k, val]) => (
-            <div key={k}><dt className="text-caption text-muted-foreground">{k}</dt><dd className="tnum text-body-md text-foreground">{val}</dd></div>
+        <dl className="mt-5 grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-4">
+          {[['AUM', moeda(c.volume_aum)], ['Renda / faturamento', moeda(c.faixa_renda_faturamento)], ['Score de risco', `${inteiro(c.score_risco)} / 1.000`], ['Posição atual', d.posicao_atual.nome_posicao], ['Na carteira desde', dataBR(c.data_carteirizacao)]].map(([k, val]) => (
+            <div key={k} className="rounded-md bg-secondary px-4 py-3">
+              <dt className="text-caption text-secondary-foreground">{k}</dt>
+              <dd className="tnum mt-1 text-body-md text-foreground">{val}</dd>
+            </div>
           ))}
         </dl>
       </Cartao>
 
-      <section aria-label="Produtos">
-        <h2 className="text-heading-md text-foreground">Penetração de produtos</h2>
-        <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {d.produtos.map((p) => (
-            <li key={p.codigo} className="flex min-h-10 items-center gap-2 rounded-md border border-border px-3 text-body-md">
-              {p.contratado ? <Check aria-hidden className="size-4 text-foreground" /> : <Minus aria-hidden className="size-4 text-muted-foreground" />}
-              <span className={p.contratado ? 'text-foreground' : 'text-muted-foreground'}>{p.nome}</span>
-              <span className="ml-auto text-caption text-muted-foreground">{p.contratado ? `desde ${dataBR(p.data_contratacao)}` : 'não contratado'}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-      </div>
-
-      <div className="flex flex-col gap-6">
-      <section aria-label="Histórico de posições">
-        <h2 className="text-heading-md text-foreground">Histórico de posições</h2>
-        <ol className="mt-3 flex flex-col gap-3 border-l border-border pl-4">
-          {[...d.linha_do_tempo].reverse().map((t) => (
-            <li key={t.inicio_em} className="relative">
-              <span aria-hidden className="absolute -left-[21px] top-1.5 size-2.5 rounded-pill bg-primary" />
-              <p className="text-body-md text-foreground">{t.nome_posicao}</p>
-              <p className="tnum text-caption text-muted-foreground">{dataHoraBR(t.inicio_em)} → {t.fim_em ? dataHoraBR(t.fim_em) : 'atual'}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section aria-label="Interações de CRM">
-        <h2 className="text-heading-md text-foreground">Histórico de CRM</h2>
-        {d.interacoes.length === 0 ? <p className="mt-2 text-body-md text-muted-foreground">Nenhuma interação registrada.</p> : (
-          <ul className="mt-3 flex flex-col gap-3">
-            {d.interacoes.map((i) => (
-              <li key={i.id_interacao} className="rounded-md border border-border p-3">
-                <p className="text-caption text-muted-foreground">{dataBR(i.data)} · {i.canal}</p>
-                {/* Texto de terceiros: renderizado como texto (nunca HTML) — FR-API-007. */}
-                <p className="mt-1 text-body-md text-foreground">{i.nota}</p>
+      {/* Três blocos de mesma altura (items-stretch): nunca sobra "buraco" abaixo de uma coluna mais curta */}
+      <div className="grid flex-1 grid-cols-1 items-stretch gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <Cartao className="flex flex-col" aria-labelledby="t360-prod">
+          <h2 id="t360-prod" className="text-heading-md text-foreground">Penetração de produtos</h2>
+          <ul className="mt-3 flex flex-1 flex-col gap-2">
+            {d.produtos.map((p) => (
+              <li key={p.codigo} className="flex min-h-10 items-center gap-2 rounded-md border border-border px-3 text-body-md">
+                {p.contratado ? <Check aria-hidden className="size-4 shrink-0 text-foreground" /> : <Minus aria-hidden className="size-4 shrink-0 text-muted-foreground" />}
+                <span className={p.contratado ? 'text-foreground' : 'text-muted-foreground'}>{p.nome}</span>
+                <span className="ml-auto text-caption text-muted-foreground">{p.contratado ? `desde ${dataBR(p.data_contratacao)}` : 'não contratado'}</span>
               </li>
             ))}
           </ul>
-        )}
-      </section>
+        </Cartao>
 
+        <Cartao className="flex flex-col" aria-labelledby="t360-hist">
+          <h2 id="t360-hist" className="text-heading-md text-foreground">Histórico de posições</h2>
+          <ol className="mt-3 flex flex-1 flex-col gap-4 border-l border-border pl-4">
+            {[...d.linha_do_tempo].reverse().map((t) => (
+              <li key={t.inicio_em} className="relative">
+                <span aria-hidden className="absolute -left-[21px] top-1.5 size-2.5 rounded-pill bg-primary" />
+                <p className="text-body-md text-foreground">{t.nome_posicao}</p>
+                <p className="tnum text-caption text-muted-foreground">{dataHoraBR(t.inicio_em)} → {t.fim_em ? dataHoraBR(t.fim_em) : 'atual'}</p>
+              </li>
+            ))}
+          </ol>
+        </Cartao>
+
+        <Cartao className="flex flex-col md:col-span-2 xl:col-span-1" aria-labelledby="t360-crm">
+          <h2 id="t360-crm" className="text-heading-md text-foreground">Histórico de CRM</h2>
+          {d.interacoes.length === 0 ? <p className="mt-3 text-body-md text-muted-foreground">Nenhuma interação registrada.</p> : (
+            <ul className="mt-3 flex max-h-96 flex-1 flex-col gap-3 overflow-y-auto pr-1">
+              {d.interacoes.map((i) => (
+                <li key={i.id_interacao} className="rounded-md border border-border p-3">
+                  <p className="text-caption text-muted-foreground">{dataBR(i.data)} · {i.canal}</p>
+                  {/* Texto de terceiros: renderizado como texto (nunca HTML) — FR-API-007. */}
+                  <p className="mt-1 text-body-md text-foreground">{i.nota}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Cartao>
       </div>
 
-      <div className="lg:col-span-2">
-      {escrita ? <Botao onClick={() => setTransferindo(true)}><ArrowRightLeft aria-hidden className="size-4" /> Transferir de posição</Botao> : <Aviso variante="informativo">Seu acesso a este cliente é somente leitura.</Aviso>}
+      <div className="sticky bottom-0 -mx-6 -mb-6 flex flex-wrap items-center justify-end gap-3 border-t border-border bg-card px-6 py-4">
+        {escrita ? <Botao onClick={() => setTransferindo(true)}><ArrowRightLeft aria-hidden className="size-4" /> Transferir de posição</Botao> : <Aviso variante="informativo" className="w-full">Seu acesso a este cliente é somente leitura.</Aviso>}
+      </div>
       {transferindo ? <Transferir api={api} cliente={c} aoFechar={() => setTransferindo(false)} aoConcluir={() => { setTransferindo(false); aoMudar(); }} /> : null}
-      </div>
     </div>
   );
 }

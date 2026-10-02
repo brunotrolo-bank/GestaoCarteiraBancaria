@@ -51,7 +51,11 @@ const contexto: Record<string, unknown> = {
 const ctx = vm.createContext(contexto);
 // Remove do sandbox o que o Apps Script não oferece
 vm.runInContext('delete globalThis.structuredClone; delete globalThis.URL; delete globalThis.URLSearchParams; delete globalThis.Request; delete globalThis.Response; delete globalThis.TextEncoder; delete globalThis.TextDecoder; delete globalThis.Intl; delete globalThis.fetch; delete globalThis.process;', ctx);
-vm.runInContext(readFileSync(new URL('../apps-script/backend.js', import.meta.url), 'utf8'), ctx, { filename: 'backend.js' });
+// Carrega os arquivos de backend na MESMA ordem do projeto (.clasp.json), como o Apps Script faz
+const ordem = (JSON.parse(readFileSync(new URL('../apps-script/.clasp.json', import.meta.url), 'utf8')) as { filePushOrder: string[] }).filePushOrder;
+const arquivosBackend = ordem.filter((n) => n.endsWith('.js') && !['schema.js', 'rules.js', 'Codigo.js'].includes(n));
+for (const n of arquivosBackend) vm.runInContext(readFileSync(new URL(`../apps-script/${n}`, import.meta.url), 'utf8'), ctx, { filename: n });
+console.log(`Backend carregado em ${arquivosBackend.length} arquivos: ${arquivosBackend.join(', ')}`);
 const apiChamar = vm.runInContext('CARTEIRA.apiChamar', ctx) as (r: unknown) => { status: number; corpo: any; headers: Record<string, string> };
 
 const chamar = (metodo: string, caminho: string, extra: { papel?: string; data?: string; corpo?: unknown; consulta?: Record<string, string> } = {}) =>
