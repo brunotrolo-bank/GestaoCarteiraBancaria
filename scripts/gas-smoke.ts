@@ -91,5 +91,18 @@ const negado = chamar('GET', '/api/v1/clientes/CLI-0300/visao-360', { papel: 'PO
 ok('acesso negado → 403 problem+json', negado.status === 403 && negado.corpo.codigo_dominio === 'ACESSO_NEGADO');
 const reset = chamar('POST', '/api/v1/simulacao/reset');
 ok('reiniciar cenário', reset.status === 200 && chamar('GET', '/api/v1/posicoes/POS-AG01-003/historico', { papel: 'GG' }).corpo.itens.length === 1);
+// O retorno de google.script.run só aceita JSON puro: sem undefined, Date, NaN/Infinity ou funções (senão o front nunca recebe a resposta)
+const invalido = (v: unknown, caminho = '$'): string | null => {
+  if (v === undefined) return `${caminho} é undefined`;
+  if (typeof v === 'function' || v instanceof Date) return `${caminho} não serializável`;
+  if (typeof v === 'number' && !Number.isFinite(v)) return `${caminho} é ${v}`;
+  if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) { const r = invalido(x, `${caminho}.${k}`); if (r) return r; }
+  return null;
+};
+for (const [caminho, papel] of [['/api/v1/simulacao/atores', 'GG'], ['/api/v1/insights/agencia', 'GG'], ['/api/v1/insights/desbalanceamento', 'GG'], ['/api/v1/posicoes', 'GG'], ['/api/v1/delegacoes', 'GG'], ['/api/v1/carteira/minha', 'POS-AG01-001'], ['/api/v1/carteira/clientes', 'GG']] as const) {
+  const r = chamar('GET', caminho, { papel, consulta: caminho.endsWith('clientes') ? { limit: '50' } : {} });
+  const problema = invalido(r);
+  ok(`retorno serializável ${caminho}`, r.status === 200 && problema === null, `${r.status} ${problema ?? ''} ${(JSON.stringify(r).length / 1024).toFixed(0)} KB`);
+}
 console.log(falhas === 0 ? '\nBackend do Apps Script OK no sandbox restrito.' : `\n${falhas} falha(s).`);
 process.exit(falhas === 0 ? 0 : 1);

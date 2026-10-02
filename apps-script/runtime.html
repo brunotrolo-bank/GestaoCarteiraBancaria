@@ -28997,7 +28997,7 @@
   }
   function criarFetchGas() {
     return ((entrada, init) => new Promise((resolve, reject) => {
-      var _a2;
+      var _a2, _b;
       const url = new URL(String(entrada), "http://gas.local");
       const headers = {};
       new Headers(init == null ? void 0 : init.headers).forEach((v, k) => {
@@ -29017,14 +29017,22 @@
         }
       }
       const servidor = run();
+      const rastro = globalThis.CARTEIRA_RASTRO;
+      const t0 = Date.now();
+      const rotulo = "".concat((_a2 = init == null ? void 0 : init.method) != null ? _a2 : "GET", " ").concat(url.pathname);
+      rastro == null ? void 0 : rastro("\u2192 ".concat(rotulo));
       if (!servidor) {
         reject(new Error("google.script.run indispon\xEDvel"));
         return;
       }
-      servidor.withSuccessHandler((r2) => resolve(new Response(r2.status === 204 ? null : JSON.stringify(r2.corpo), { status: r2.status, headers: r2.headers }))).withFailureHandler((e) => {
+      servidor.withSuccessHandler((r2) => {
+        rastro == null ? void 0 : rastro("\u2713 ".concat(rotulo, " ").concat(r2 == null ? void 0 : r2.status, " ").concat(Date.now() - t0, "ms"));
+        resolve(new Response(r2.status === 204 ? null : JSON.stringify(r2.corpo), { status: r2.status, headers: r2.headers }));
+      }).withFailureHandler((e) => {
         var _a3;
-        return reject(new Error((_a3 = e == null ? void 0 : e.message) != null ? _a3 : "Falha ao chamar o servidor do Apps Script"));
-      }).apiChamar({ metodo: (_a2 = init == null ? void 0 : init.method) != null ? _a2 : "GET", caminho: url.pathname, consulta, headers, corpo, corpoInvalido });
+        rastro == null ? void 0 : rastro("\u2717 ".concat(rotulo, " ").concat(e == null ? void 0 : e.message, " ").concat(Date.now() - t0, "ms"));
+        reject(new Error((_a3 = e == null ? void 0 : e.message) != null ? _a3 : "Falha ao chamar o servidor do Apps Script"));
+      }).apiChamar({ metodo: (_b = init == null ? void 0 : init.method) != null ? _b : "GET", caminho: url.pathname, consulta, headers, corpo, corpoInvalido });
     }));
   }
 

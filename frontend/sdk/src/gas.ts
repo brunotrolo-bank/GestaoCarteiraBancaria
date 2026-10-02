@@ -28,10 +28,14 @@ export function criarFetchGas(): typeof fetch {
         try { corpo = JSON.parse(init.body); } catch { corpoInvalido = true; }
       }
       const servidor = run();
+      const rastro = (globalThis as { CARTEIRA_RASTRO?: (m: string) => void }).CARTEIRA_RASTRO;
+      const t0 = Date.now();
+      const rotulo = `${init?.method ?? 'GET'} ${url.pathname}`;
+      rastro?.(`→ ${rotulo}`);
       if (!servidor) { reject(new Error('google.script.run indisponível')); return; }
       servidor
-        .withSuccessHandler((r) => resolve(new Response(r.status === 204 ? null : JSON.stringify(r.corpo), { status: r.status, headers: r.headers })))
-        .withFailureHandler((e) => reject(new Error(e?.message ?? 'Falha ao chamar o servidor do Apps Script')))
+        .withSuccessHandler((r) => { rastro?.(`✓ ${rotulo} ${r?.status} ${Date.now() - t0}ms`); resolve(new Response(r.status === 204 ? null : JSON.stringify(r.corpo), { status: r.status, headers: r.headers })); })
+        .withFailureHandler((e) => { rastro?.(`✗ ${rotulo} ${e?.message} ${Date.now() - t0}ms`); reject(new Error(e?.message ?? 'Falha ao chamar o servidor do Apps Script')); })
         .apiChamar({ metodo: init?.method ?? 'GET', caminho: url.pathname, consulta, headers, corpo, corpoInvalido });
     })) as typeof fetch;
 }
