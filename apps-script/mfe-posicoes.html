@@ -140,8 +140,8 @@
     };
     const viewBoxWidth = (_c = (_b = icon.size) != null ? _b : icon.width) != null ? _c : defaultAttributes["width"];
     const viewBoxHeight = (_e = (_d = icon.size) != null ? _d : icon.height) != null ? _e : defaultAttributes["height"];
-    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => `lucide-${alias}`)) != null ? _g : [];
-    const iconClassNames = [...icon.name ? [`lucide-${icon.name}`] : [], ...aliasClassNames];
+    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => "lucide-".concat(alias))) != null ? _g : [];
+    const iconClassNames = [...icon.name ? ["lucide-".concat(icon.name)] : [], ...aliasClassNames];
     const classNamesFromClassName = (_i = (_h = params.className) == null ? void 0 : _h.split(" ").filter(Boolean)) != null ? _i : [];
     const className = params.includeDefaultClasses === false ? mergeClasses(...classNamesFromClassName) : mergeClasses("lucide", ...iconClassNames, ...classNamesFromClassName);
     const calculatedStrokeWidth = params.absoluteStrokeWidth ? Number((_j = params.strokeWidth) != null ? _j : defaultAttributes["stroke-width"]) * Number((_l = (_k = icon.size) != null ? _k : icon.width) != null ? _l : defaultAttributes["width"]) / Number((_n = (_m = params.size) != null ? _m : params.width) != null ? _n : defaultAttributes["width"]) : (_o = params.strokeWidth) != null ? _o : defaultAttributes["stroke-width"];
@@ -167,7 +167,7 @@
       ...className && {
         [getAttributeName("class")]: className
       },
-      [getAttributeName("viewBox")]: `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+      [getAttributeName("viewBox")]: "0 0 ".concat(viewBoxWidth, " ").concat(viewBoxHeight),
       ...params.hasA11yProp === false ? {
         [getAttributeName("aria-hidden")]: "true"
       } : {},
@@ -333,7 +333,7 @@
       }, meta: { rotulo: "Titular atual" } },
       { accessorKey: "segmento_especialidade", header: "Especialidade", meta: { rotulo: "Especialidade" } },
       { accessorKey: "clientes_ativos", header: "Clientes ativos", cell: ({ getValue }) => (0, import_ui.inteiro)(getValue()), meta: { numerica: true, rotulo: "Clientes ativos" } },
-      { accessorKey: "utilizacao", header: "Capacidade", cell: ({ row }) => `${(0, import_ui.percentual)(row.original.utilizacao)} de ${(0, import_ui.inteiro)(row.original.capacidade)}`, meta: { numerica: true, rotulo: "Capacidade" } },
+      { accessorKey: "utilizacao", header: "Capacidade", cell: ({ row }) => "".concat((0, import_ui.percentual)(row.original.utilizacao), " de ").concat((0, import_ui.inteiro)(row.original.capacidade)), meta: { numerica: true, rotulo: "Capacidade" } },
       { accessorKey: "status", header: "Status", cell: ({ getValue }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "neutro", children: getValue() }), meta: { rotulo: "Status" } }
     ];
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-6", children: [
@@ -406,7 +406,7 @@
       try {
         await api.trocarTitular(posicao.id_posicao, { id_gerente: gerente, data_inicio: inicio, tipo_vinculo: tipo, motivo: motivo || void 0 });
         const nome = (_b2 = (_a2 = disponiveis.find((g) => g.id_gerente === gerente)) == null ? void 0 : _a2.nome_completo) != null ? _b2 : gerente;
-        aoConcluir(`${nome} assume a posi\xE7\xE3o em ${(0, import_ui.dataBR)(inicio)}. Os ${(0, import_ui.inteiro)(posicao.clientes_ativos)} clientes ativos continuam intactos na posi\xE7\xE3o.`);
+        aoConcluir("".concat(nome, " assume a posi\xE7\xE3o em ").concat((0, import_ui.dataBR)(inicio), ". Os ").concat((0, import_ui.inteiro)(posicao.clientes_ativos), " clientes ativos continuam intactos na posi\xE7\xE3o."));
       } catch (x) {
         setErro(x instanceof Error ? x.message : "Falha ao trocar o titular.");
       } finally {
@@ -415,7 +415,7 @@
     }
     return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Dialogo, { open: true, onOpenChange: (a) => {
       if (!a) aoFechar();
-    }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.DialogoConteudo, { titulo: "Trocar titular", descricao: `${posicao.nome_posicao}. Nenhum cliente ser\xE1 alterado.`, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", { onSubmit: confirmar, className: "flex flex-col gap-4", children: [
+    }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.DialogoConteudo, { titulo: "Trocar titular", descricao: "".concat(posicao.nome_posicao, ". Nenhum cliente ser\xE1 alterado."), children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", { onSubmit: confirmar, className: "flex flex-col gap-4", children: [
       gerentes.carregando ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-10" }) : disponiveis.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "atencao", children: "N\xE3o h\xE1 gerente ativo dispon\xEDvel (sem posi\xE7\xE3o). Cadastre ou desligue o titular de outra posi\xE7\xE3o antes." }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "novo-titular", rotulo: "Novo titular (gerente sem posi\xE7\xE3o)", valor: gerente, aoMudar: setGerente, opcoes: disponiveis.map((g) => ({ valor: g.id_gerente, rotulo: g.nome_completo })) }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "inicio-titular", children: "In\xEDcio da titularidade" }),

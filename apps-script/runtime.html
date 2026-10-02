@@ -17937,12 +17937,12 @@
     return INTEIRO.format(valor);
   }
   function percentual(razao, casas = 1) {
-    return `${(razao * 100).toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas })}%`;
+    return "".concat((razao * 100).toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas }), "%");
   }
   function dataBR(iso) {
     if (!iso) return "\u2014";
     const [a, m, d] = iso.slice(0, 10).split("-");
-    return `${d}/${m}/${a}`;
+    return "".concat(d, "/").concat(m, "/").concat(a);
   }
   function dataHoraBR(iso) {
     if (!iso) return "\u2014";
@@ -18053,7 +18053,7 @@
       }
       return React2.cloneElement(slottableElement, mergedProps);
     });
-    Slot22.displayName = `${ownerName}.Slot`;
+    Slot22.displayName = "".concat(ownerName, ".Slot");
     return Slot22;
   }
   __name2(createSlot, "createSlot");
@@ -18062,7 +18062,7 @@
   // @__NO_SIDE_EFFECTS__
   function createSlottable(ownerName) {
     const Slottable2 = /* @__PURE__ */ __name2((props) => "child" in props ? props.children(props.child) : props.children, "Slottable");
-    Slottable2.displayName = `${ownerName}.Slottable`;
+    Slottable2.displayName = "".concat(ownerName, ".Slottable");
     Slottable2.__radixId = SLOTTABLE_IDENTIFIER;
     return Slottable2;
   }
@@ -18129,15 +18129,15 @@
   }
   __name2(isPromiseLike, "isPromiseLike");
   var createSlotError = /* @__PURE__ */ __name2((ownerName) => {
-    return `${ownerName} failed to slot onto its children. Expected a single React element child or \`Slottable\`.`;
+    return "".concat(ownerName, " failed to slot onto its children. Expected a single React element child or `Slottable`.");
   }, "createSlotError");
   var createSlottableError = /* @__PURE__ */ __name2((ownerName) => {
-    return `${ownerName} failed to slot onto its \`Slottable\`. Expected \`Slottable\` to receive a single React element child.`;
+    return "".concat(ownerName, " failed to slot onto its `Slottable`. Expected `Slottable` to receive a single React element child.");
   }, "createSlottableError");
   var use = React2[" use ".trim().toString()];
 
   // node_modules/class-variance-authority/dist/index.mjs
-  var falsyToString = (value) => typeof value === "boolean" ? `${value}` : value === 0 ? "0" : value;
+  var falsyToString = (value) => typeof value === "boolean" ? "".concat(value) : value === 0 ? "0" : value;
   var cx = clsx;
   var cva = (base, config) => (props) => {
     var _config_compoundVariants;
@@ -18256,8 +18256,8 @@
     };
     const viewBoxWidth = (_c = (_b = icon.size) != null ? _b : icon.width) != null ? _c : defaultAttributes["width"];
     const viewBoxHeight = (_e = (_d = icon.size) != null ? _d : icon.height) != null ? _e : defaultAttributes["height"];
-    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => `lucide-${alias}`)) != null ? _g : [];
-    const iconClassNames = [...icon.name ? [`lucide-${icon.name}`] : [], ...aliasClassNames];
+    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => "lucide-".concat(alias))) != null ? _g : [];
+    const iconClassNames = [...icon.name ? ["lucide-".concat(icon.name)] : [], ...aliasClassNames];
     const classNamesFromClassName = (_i = (_h = params.className) == null ? void 0 : _h.split(" ").filter(Boolean)) != null ? _i : [];
     const className = params.includeDefaultClasses === false ? mergeClasses(...classNamesFromClassName) : mergeClasses("lucide", ...iconClassNames, ...classNamesFromClassName);
     const calculatedStrokeWidth = params.absoluteStrokeWidth ? Number((_j = params.strokeWidth) != null ? _j : defaultAttributes["stroke-width"]) * Number((_l = (_k = icon.size) != null ? _k : icon.width) != null ? _l : defaultAttributes["width"]) / Number((_n = (_m = params.size) != null ? _m : params.width) != null ? _n : defaultAttributes["width"]) : (_o = params.strokeWidth) != null ? _o : defaultAttributes["stroke-width"];
@@ -18283,7 +18283,7 @@
       ...className && {
         [getAttributeName("class")]: className
       },
-      [getAttributeName("viewBox")]: `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+      [getAttributeName("viewBox")]: "0 0 ".concat(viewBoxWidth, " ").concat(viewBoxHeight),
       ...params.hasA11yProp === false ? {
         [getAttributeName("aria-hidden")]: "true"
       } : {},
@@ -18734,7 +18734,7 @@
       if (context) return context;
       if (defaultContext !== void 0) return defaultContext;
       if (optional) return void 0;
-      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+      throw new Error("`".concat(consumerName, "` must be used within `").concat(rootComponentName, "`"));
     }
     __name4(useContext22, "useContext");
     return [Provider2, useContext22];
@@ -18764,7 +18764,7 @@
         if (context) return context;
         if (defaultContext !== void 0) return defaultContext;
         if (optional) return void 0;
-        throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+        throw new Error("`".concat(consumerName, "` must be used within `").concat(rootComponentName, "`"));
       }
       __name4(useContext22, "useContext");
       return [Provider2, useContext22];
@@ -18777,7 +18777,7 @@
       return /* @__PURE__ */ __name4(function useScope(scope) {
         const contexts = (scope == null ? void 0 : scope[scopeName]) || scopeContexts;
         return React4.useMemo(
-          () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
+          () => ({ ["__scope".concat(scopeName)]: { ...scope, [scopeName]: contexts } }),
           [scope, contexts]
         );
       }, "useScope");
@@ -18797,10 +18797,10 @@
       return /* @__PURE__ */ __name4(function useComposedScopes(overrideScopes) {
         const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
           const scopeProps = useScope(overrideScopes);
-          const currentScope = scopeProps[`__scope${scopeName}`];
+          const currentScope = scopeProps["__scope".concat(scopeName)];
           return { ...nextScopes2, ...currentScope };
         }, {});
-        return React4.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
+        return React4.useMemo(() => ({ ["__scope".concat(baseScope.scopeName)]: nextScopes }), [nextScopes]);
       }, "useComposedScopes");
     }, "createScope");
     createScope.scopeName = baseScope.scopeName;
@@ -18826,7 +18826,7 @@
     useLayoutEffect2(() => {
       if (!deterministicId) setId((reactId) => reactId != null ? reactId : String(count++));
     }, [deterministicId]);
-    return deterministicId || (id ? `radix-${id}` : "");
+    return deterministicId || (id ? "radix-".concat(id) : "");
   }
   __name5(useId, "useId");
 
@@ -18893,7 +18893,7 @@
           const from = wasControlled ? "controlled" : "uncontrolled";
           const to = isControlled ? "controlled" : "uncontrolled";
           console.warn(
-            `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
+            "".concat(caller, " is changing from ").concat(from, " to ").concat(to, ". Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.")
           );
         }
         isControlledRef.current = isControlled;
@@ -18953,7 +18953,7 @@
           const from = wasControlled ? "controlled" : "uncontrolled";
           const to = isControlled ? "controlled" : "uncontrolled";
           console.warn(
-            `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
+            "".concat(caller, " is changing from ").concat(from, " to ").concat(to, ". Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.")
           );
         }
         isControlledRef.current = isControlled;
@@ -19031,7 +19031,7 @@
     "ul"
   ];
   var Primitive = NODES.reduce((primitive, node) => {
-    const Slot4 = createSlot(`Primitive.${node}`);
+    const Slot4 = createSlot("Primitive.".concat(node));
     const Node2 = React9.forwardRef((props, forwardedRef) => {
       const { asChild, ...primitiveProps } = props;
       const Comp = asChild ? Slot4 : node;
@@ -19040,7 +19040,7 @@
       }
       return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Comp, { ...primitiveProps, ref: forwardedRef });
     });
-    Node2.displayName = `Primitive.${node}`;
+    Node2.displayName = "Primitive.".concat(node);
     return { ...primitive, [node]: Node2 };
   }, {});
   function dispatchDiscreteCustomEvent(target, event) {
@@ -21053,7 +21053,7 @@
       const getItems = React26.useCallback(() => {
         const collectionNode = context.collectionRef.current;
         if (!collectionNode) return [];
-        const orderedNodes = Array.from(collectionNode.querySelectorAll(`[${ITEM_DATA_ATTR}]`));
+        const orderedNodes = Array.from(collectionNode.querySelectorAll("[".concat(ITEM_DATA_ATTR, "]")));
         const items = Array.from(context.itemMap.values());
         const orderedItems = items.sort(
           (a, b) => orderedNodes.indexOf(a.ref.current) - orderedNodes.indexOf(b.ref.current)
@@ -23630,10 +23630,10 @@
             apply: /* @__PURE__ */ __name20(({ elements, rects, availableWidth, availableHeight }) => {
               const { width: anchorWidth, height: anchorHeight } = rects.reference;
               const contentStyle = elements.floating.style;
-              contentStyle.setProperty("--radix-popper-available-width", `${availableWidth}px`);
-              contentStyle.setProperty("--radix-popper-available-height", `${availableHeight}px`);
-              contentStyle.setProperty("--radix-popper-anchor-width", `${anchorWidth}px`);
-              contentStyle.setProperty("--radix-popper-anchor-height", `${anchorHeight}px`);
+              contentStyle.setProperty("--radix-popper-available-width", "".concat(availableWidth, "px"));
+              contentStyle.setProperty("--radix-popper-available-height", "".concat(availableHeight, "px"));
+              contentStyle.setProperty("--radix-popper-anchor-width", "".concat(anchorWidth, "px"));
+              contentStyle.setProperty("--radix-popper-anchor-height", "".concat(anchorHeight, "px"));
             }, "apply")
           }),
           arrow4 && arrow3({ element: arrow4, padding: arrowPadding }),
@@ -23750,17 +23750,17 @@
       let x = "";
       let y = "";
       if (placedSide === "bottom") {
-        x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
-        y = `${-arrowHeight}px`;
+        x = isArrowHidden ? noArrowAlign : "".concat(arrowXCenter, "px");
+        y = "".concat(-arrowHeight, "px");
       } else if (placedSide === "top") {
-        x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
-        y = `${rects.floating.height + arrowHeight}px`;
+        x = isArrowHidden ? noArrowAlign : "".concat(arrowXCenter, "px");
+        y = "".concat(rects.floating.height + arrowHeight, "px");
       } else if (placedSide === "right") {
-        x = `${-arrowHeight}px`;
-        y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
+        x = "".concat(-arrowHeight, "px");
+        y = isArrowHidden ? noArrowAlign : "".concat(arrowYCenter, "px");
       } else if (placedSide === "left") {
-        x = `${rects.floating.width + arrowHeight}px`;
-        y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
+        x = "".concat(rects.floating.width + arrowHeight, "px");
+        y = isArrowHidden ? noArrowAlign : "".concat(arrowYCenter, "px");
       }
       return { data: { x, y } };
     }
@@ -24419,7 +24419,7 @@
           contentWrapper.style.height = height + "px";
           viewport.scrollTop = contentTopToItemMiddle - topEdgeToTriggerMiddle + viewport.offsetTop;
         }
-        contentWrapper.style.margin = `${CONTENT_MARGIN}px 0`;
+        contentWrapper.style.margin = "".concat(CONTENT_MARGIN, "px 0");
         contentWrapper.style.minHeight = minContentHeight + "px";
         contentWrapper.style.maxHeight = availableHeight + "px";
         onPlaced == null ? void 0 : onPlaced();
@@ -24535,7 +24535,7 @@
           "style",
           {
             dangerouslySetInnerHTML: {
-              __html: `[data-radix-select-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-radix-select-viewport]::-webkit-scrollbar{display:none}`
+              __html: "[data-radix-select-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-radix-select-viewport]::-webkit-scrollbar{display:none}"
             },
             nonce
           }
@@ -25298,11 +25298,11 @@
     }, "TabsContent")
   );
   function makeTriggerId(baseId, value) {
-    return `${baseId}-trigger-${value}`;
+    return "".concat(baseId, "-trigger-").concat(value);
   }
   __name26(makeTriggerId, "makeTriggerId");
   function makeContentId(baseId, value) {
-    return `${baseId}-content-${value}`;
+    return "".concat(baseId, "-content-").concat(value);
   }
   __name26(makeContentId, "makeContentId");
   var Root22 = Tabs;
@@ -25979,10 +25979,7 @@
             }
             return str;
           };
-          console.info(`%c\u23F1 ${pad(resultEndTime, 5)} /${pad(depEndTime, 5)} ms`, `
-            font-size: .6rem;
-            font-weight: bold;
-            color: hsl(${Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120))}deg 100% 31%);`, opts == null ? void 0 : opts.key);
+          console.info("%c\u23F1 ".concat(pad(resultEndTime, 5), " /").concat(pad(depEndTime, 5), " ms"), "\n            font-size: .6rem;\n            font-weight: bold;\n            color: hsl(".concat(Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120)), "deg 100% 31%);"), opts == null ? void 0 : opts.key);
         }
       }
       return result;
@@ -26004,7 +26001,7 @@
       return (_cell$getValue = cell.getValue()) != null ? _cell$getValue : table.options.renderFallbackValue;
     };
     const cell = {
-      id: `${row.id}_${column.id}`,
+      id: "".concat(row.id, "_").concat(column.id),
       row,
       column,
       getValue: () => row.getValue(columnId),
@@ -26043,7 +26040,7 @@
             var _result;
             result = (_result = result) == null ? void 0 : _result[key];
             if (false) {
-              console.warn(`"${key}" in deeply nested key "${accessorKey}" returned undefined.`);
+              console.warn('"'.concat(key, '" in deeply nested key "').concat(accessorKey, '" returned undefined.'));
             }
           }
           return result;
@@ -26054,12 +26051,12 @@
     }
     if (!id) {
       if (false) {
-        throw new Error(resolvedColumnDef.accessorFn ? `Columns require an id when using an accessorFn` : `Columns require an id when using a non-string header`);
+        throw new Error(resolvedColumnDef.accessorFn ? "Columns require an id when using an accessorFn" : "Columns require an id when using a non-string header");
       }
       throw new Error();
     }
     let column = {
-      id: `${String(id)}`,
+      id: "".concat(String(id)),
       accessorFn,
       parent,
       depth,
@@ -26222,7 +26219,7 @@
     const createHeaderGroup = (headersToGroup, depth) => {
       const headerGroup = {
         depth,
-        id: [headerFamily, `${depth}`].filter(Boolean).join("_"),
+        id: [headerFamily, "".concat(depth)].filter(Boolean).join("_"),
         headers: []
       };
       const pendingParentHeaders = [];
@@ -26243,7 +26240,7 @@
           const header = createHeader(table, column, {
             id: [headerFamily, depth, column.id, headerToGroup == null ? void 0 : headerToGroup.id].filter(Boolean).join("_"),
             isPlaceholder,
-            placeholderId: isPlaceholder ? `${pendingParentHeaders.filter((d) => d.column === column).length}` : void 0,
+            placeholderId: isPlaceholder ? "".concat(pendingParentHeaders.filter((d) => d.column === column).length) : void 0,
             depth,
             index: pendingParentHeaders.length
           });
@@ -28409,7 +28406,7 @@
       },
       _getRowId: (row, index2, parent) => {
         var _table$options$getRow;
-        return (_table$options$getRow = table.options.getRowId == null ? void 0 : table.options.getRowId(row, index2, parent)) != null ? _table$options$getRow : `${parent ? [parent.id, index2].join(".") : index2}`;
+        return (_table$options$getRow = table.options.getRowId == null ? void 0 : table.options.getRowId(row, index2, parent)) != null ? _table$options$getRow : "".concat(parent ? [parent.id, index2].join(".") : index2);
       },
       getCoreRowModel: () => {
         if (!table._getCoreRowModel) {
@@ -28429,7 +28426,7 @@
           row = table.getCoreRowModel().rowsById[id];
           if (!row) {
             if (false) {
-              throw new Error(`getRow could not find row with ID: ${id}`);
+              throw new Error("getRow could not find row with ID: ".concat(id));
             }
             throw new Error();
           }
@@ -28494,7 +28491,7 @@
       getColumn: (columnId) => {
         const column = table._getAllFlatColumnsById()[columnId];
         if (false) {
-          console.error(`[Table] Column with id '${columnId}' does not exist.`);
+          console.error("[Table] Column with id '".concat(columnId, "' does not exist."));
         }
         return column;
       }
@@ -28659,7 +28656,7 @@
         const filterFn = column.getFilterFn();
         if (!filterFn) {
           if (false) {
-            console.warn(`Could not find a valid 'column.filterFn' for column with the ID: ${column.id}.`);
+            console.warn("Could not find a valid 'column.filterFn' for column with the ID: ".concat(column.id, "."));
           }
           return;
         }
@@ -28922,7 +28919,7 @@
       /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex flex-wrap items-center gap-3", children: [
         /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "relative w-full max-w-xs", children: [
           /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Search, { "aria-hidden": true, className: "pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" }),
-          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Campo, { "aria-label": `Buscar em ${rotulo}`, value: filtroGlobal, onChange: (e) => setFiltroGlobal(e.target.value), placeholder: buscaPlaceholder, className: "pl-9" })
+          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Campo, { "aria-label": "Buscar em ".concat(rotulo), value: filtroGlobal, onChange: (e) => setFiltroGlobal(e.target.value), placeholder: buscaPlaceholder, className: "pl-9" })
         ] }),
         filtros,
         /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "relative ml-auto", children: [
@@ -28969,7 +28966,7 @@
         )) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex items-center justify-between gap-3 text-caption text-secondary-foreground", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "tnum", "aria-live": "polite", children: total === 0 ? "0 registros" : `${pageIndex * pageSize + 1}\u2013${Math.min((pageIndex + 1) * pageSize, total)} de ${total.toLocaleString("pt-BR")}` }),
+        /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "tnum", "aria-live": "polite", children: total === 0 ? "0 registros" : "".concat(pageIndex * pageSize + 1, "\u2013").concat(Math.min((pageIndex + 1) * pageSize, total), " de ").concat(total.toLocaleString("pt-BR")) }),
         /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex items-center gap-2", children: [
           /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Botao, { variante: "secundario", tamanho: "sm", "aria-label": "P\xE1gina anterior", disabled: !tabela.getCanPreviousPage(), onClick: () => tabela.previousPage(), children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(ChevronLeft, { "aria-hidden": true, className: "size-4" }) }),
           /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Botao, { variante: "secundario", tamanho: "sm", "aria-label": "Pr\xF3xima p\xE1gina", disabled: !tabela.getCanNextPage(), onClick: () => tabela.nextPage(), children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(ChevronRight, { "aria-hidden": true, className: "size-4" }) })
@@ -29049,7 +29046,7 @@
       var _a3;
       if (metodo === "GET") {
         const s = cfg.obterSessao();
-        const chaveCache = `${opcoes.semSessao ? "" : s.papel}|${(_a3 = s.dataSimulada) != null ? _a3 : ""}|${caminho}`;
+        const chaveCache = "".concat(opcoes.semSessao ? "" : s.papel, "|").concat((_a3 = s.dataSimulada) != null ? _a3 : "", "|").concat(caminho);
         const existente = leituras.get(chaveCache);
         if (existente) return existente;
         const promessa = executar(metodo, caminho, opcoes);
@@ -29071,12 +29068,12 @@
       }
       if (!opcoes.semSessao && sessao.papel) headers["X-Papel-Simulado"] = sessao.papel;
       if (opcoes.chave) headers["Idempotency-Key"] = opcoes.chave;
-      const resp = await f(`${cfg.baseUrl}${caminho}`, { method: metodo, headers, body: opcoes.corpo === void 0 ? void 0 : JSON.stringify(opcoes.corpo) });
+      const resp = await f("".concat(cfg.baseUrl).concat(caminho), { method: metodo, headers, body: opcoes.corpo === void 0 ? void 0 : JSON.stringify(opcoes.corpo) });
       const texto = await resp.text();
       const corpo = texto ? JSON.parse(texto) : null;
       if (!resp.ok) {
         const p = corpo != null ? corpo : {};
-        throw new ApiErro(resp.status, (_a3 = p.codigo_dominio) != null ? _a3 : "ERRO", (_b = p.detail) != null ? _b : `Falha ${resp.status}`, p.correlation_id);
+        throw new ApiErro(resp.status, (_a3 = p.codigo_dominio) != null ? _a3 : "ERRO", (_b = p.detail) != null ? _b : "Falha ".concat(resp.status), p.correlation_id);
       }
       return corpo;
     }
@@ -29084,29 +29081,29 @@
       const s = new URLSearchParams();
       for (const [k, v] of Object.entries(params)) if (v !== void 0 && v !== null && v !== "") s.set(k, String(v));
       const r2 = s.toString();
-      return r2 ? `?${r2}` : "";
+      return r2 ? "?".concat(r2) : "";
     };
     return {
       atores: () => chamar("GET", "/simulacao/atores", { semSessao: true }),
       recarregarDados: () => chamar("POST", "/simulacao/recarregar", { semSessao: true }),
       reiniciarCenario: () => chamar("POST", "/simulacao/reset", { semSessao: true }),
       posicoes: () => chamar("GET", "/posicoes"),
-      historico: (id) => chamar("GET", `/posicoes/${id}/historico`),
-      trocarTitular: (id, corpo) => chamar("POST", `/posicoes/${id}/titular`, { corpo }),
+      historico: (id) => chamar("GET", "/posicoes/".concat(id, "/historico")),
+      trocarTitular: (id, corpo) => chamar("POST", "/posicoes/".concat(id, "/titular"), { corpo }),
       gerentes: () => chamar("GET", "/gerentes"),
       delegacoes: () => chamar("GET", "/delegacoes"),
       submeterDelegacao: (corpo) => chamar("POST", "/delegacoes", { corpo }),
-      aprovarDelegacao: (id) => chamar("POST", `/delegacoes/${id}/aprovacao`),
-      rejeitarDelegacao: (id) => chamar("POST", `/delegacoes/${id}/rejeicao`),
-      revogarDelegacao: (id) => chamar("POST", `/delegacoes/${id}/revogacao`),
+      aprovarDelegacao: (id) => chamar("POST", "/delegacoes/".concat(id, "/aprovacao")),
+      rejeitarDelegacao: (id) => chamar("POST", "/delegacoes/".concat(id, "/rejeicao")),
+      revogarDelegacao: (id) => chamar("POST", "/delegacoes/".concat(id, "/revogacao")),
       minhaCarteira: () => chamar("GET", "/carteira/minha"),
-      clientes: (p = {}) => chamar("GET", `/carteira/clientes${q(p)}`),
-      visao360: (id) => chamar("GET", `/clientes/${id}/visao-360`),
-      transferir: (id, corpo, chave) => chamar("POST", `/clientes/${id}/transferencia`, { corpo, chave }),
-      revelarDocumento: (id) => chamar("POST", `/clientes/${id}/documento:revelar`),
+      clientes: (p = {}) => chamar("GET", "/carteira/clientes".concat(q(p))),
+      visao360: (id) => chamar("GET", "/clientes/".concat(id, "/visao-360")),
+      transferir: (id, corpo, chave) => chamar("POST", "/clientes/".concat(id, "/transferencia"), { corpo, chave }),
+      revelarDocumento: (id) => chamar("POST", "/clientes/".concat(id, "/documento:revelar")),
       simularRedistribuicao: (corpo) => chamar("POST", "/carteira/redistribuicoes:simular", { corpo }),
       redistribuir: (corpo, chave) => chamar("POST", "/carteira/redistribuicoes", { corpo, chave }),
-      desfazerLote: (id) => chamar("POST", `/carteira/redistribuicoes/${id}:desfazer`),
+      desfazerLote: (id) => chamar("POST", "/carteira/redistribuicoes/".concat(id, ":desfazer")),
       agencia: () => chamar("GET", "/insights/agencia"),
       desbalanceamento: () => chamar("GET", "/insights/desbalanceamento")
     };

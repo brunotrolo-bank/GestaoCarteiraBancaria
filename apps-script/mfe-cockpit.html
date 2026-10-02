@@ -2,6 +2,7 @@
 "use strict";
 (() => {
   var __create = Object.create;
+  var __freeze = Object.freeze;
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
   var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -36,6 +37,7 @@
     mod
   ));
   var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", { value: __freeze(raw || cooked.slice()) }));
 
   // global:react
   var require_react = __commonJS({
@@ -2067,9 +2069,9 @@
 
   // node_modules/es-toolkit/dist/compat/_internal/toKey.mjs
   function toKey(value) {
-    var _a;
+    var _a2;
     if (typeof value === "string" || typeof value === "symbol") return value;
-    if (Object.is((_a = value == null ? void 0 : value.valueOf) == null ? void 0 : _a.call(value), -0)) return "-0";
+    if (Object.is((_a2 = value == null ? void 0 : value.valueOf) == null ? void 0 : _a2.call(value), -0)) return "-0";
     return String(value);
   }
 
@@ -2542,7 +2544,7 @@
   }
   function appendRound(digits) {
     let d = Math.floor(digits);
-    if (!(d >= 0)) throw new Error(`invalid digits: ${digits}`);
+    if (!(d >= 0)) throw new Error("invalid digits: ".concat(digits));
     if (d > 15) return append;
     const k = 10 ** d;
     return function(strings) {
@@ -2552,6 +2554,7 @@
       }
     };
   }
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n;
   var Path = class {
     constructor(digits) {
       this._x0 = this._y0 = // start of current subpath
@@ -2560,59 +2563,59 @@
       this._append = digits == null ? append : appendRound(digits);
     }
     moveTo(x2, y2) {
-      this._append`M${this._x0 = this._x1 = +x2},${this._y0 = this._y1 = +y2}`;
+      this._append(_a || (_a = __template(["M", ",", ""])), this._x0 = this._x1 = +x2, this._y0 = this._y1 = +y2);
     }
     closePath() {
       if (this._x1 !== null) {
         this._x1 = this._x0, this._y1 = this._y0;
-        this._append`Z`;
+        this._append(_b || (_b = __template(["Z"])));
       }
     }
     lineTo(x2, y2) {
-      this._append`L${this._x1 = +x2},${this._y1 = +y2}`;
+      this._append(_c || (_c = __template(["L", ",", ""])), this._x1 = +x2, this._y1 = +y2);
     }
     quadraticCurveTo(x1, y1, x2, y2) {
-      this._append`Q${+x1},${+y1},${this._x1 = +x2},${this._y1 = +y2}`;
+      this._append(_d || (_d = __template(["Q", ",", ",", ",", ""])), +x1, +y1, this._x1 = +x2, this._y1 = +y2);
     }
     bezierCurveTo(x1, y1, x2, y2, x3, y3) {
-      this._append`C${+x1},${+y1},${+x2},${+y2},${this._x1 = +x3},${this._y1 = +y3}`;
+      this._append(_e || (_e = __template(["C", ",", ",", ",", ",", ",", ""])), +x1, +y1, +x2, +y2, this._x1 = +x3, this._y1 = +y3);
     }
     arcTo(x1, y1, x2, y2, r2) {
       x1 = +x1, y1 = +y1, x2 = +x2, y2 = +y2, r2 = +r2;
-      if (r2 < 0) throw new Error(`negative radius: ${r2}`);
+      if (r2 < 0) throw new Error("negative radius: ".concat(r2));
       let x0 = this._x1, y0 = this._y1, x21 = x2 - x1, y21 = y2 - y1, x01 = x0 - x1, y01 = y0 - y1, l01_2 = x01 * x01 + y01 * y01;
       if (this._x1 === null) {
-        this._append`M${this._x1 = x1},${this._y1 = y1}`;
+        this._append(_f || (_f = __template(["M", ",", ""])), this._x1 = x1, this._y1 = y1);
       } else if (!(l01_2 > epsilon)) ;
       else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon) || !r2) {
-        this._append`L${this._x1 = x1},${this._y1 = y1}`;
+        this._append(_g || (_g = __template(["L", ",", ""])), this._x1 = x1, this._y1 = y1);
       } else {
         let x20 = x2 - x0, y20 = y2 - y0, l21_2 = x21 * x21 + y21 * y21, l20_2 = x20 * x20 + y20 * y20, l21 = Math.sqrt(l21_2), l01 = Math.sqrt(l01_2), l = r2 * Math.tan((pi - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2), t01 = l / l01, t21 = l / l21;
         if (Math.abs(t01 - 1) > epsilon) {
-          this._append`L${x1 + t01 * x01},${y1 + t01 * y01}`;
+          this._append(_h || (_h = __template(["L", ",", ""])), x1 + t01 * x01, y1 + t01 * y01);
         }
-        this._append`A${r2},${r2},0,0,${+(y01 * x20 > x01 * y20)},${this._x1 = x1 + t21 * x21},${this._y1 = y1 + t21 * y21}`;
+        this._append(_i || (_i = __template(["A", ",", ",0,0,", ",", ",", ""])), r2, r2, +(y01 * x20 > x01 * y20), this._x1 = x1 + t21 * x21, this._y1 = y1 + t21 * y21);
       }
     }
     arc(x2, y2, r2, a0, a1, ccw) {
       x2 = +x2, y2 = +y2, r2 = +r2, ccw = !!ccw;
-      if (r2 < 0) throw new Error(`negative radius: ${r2}`);
+      if (r2 < 0) throw new Error("negative radius: ".concat(r2));
       let dx = r2 * Math.cos(a0), dy = r2 * Math.sin(a0), x0 = x2 + dx, y0 = y2 + dy, cw = 1 ^ ccw, da = ccw ? a0 - a1 : a1 - a0;
       if (this._x1 === null) {
-        this._append`M${x0},${y0}`;
+        this._append(_j || (_j = __template(["M", ",", ""])), x0, y0);
       } else if (Math.abs(this._x1 - x0) > epsilon || Math.abs(this._y1 - y0) > epsilon) {
-        this._append`L${x0},${y0}`;
+        this._append(_k || (_k = __template(["L", ",", ""])), x0, y0);
       }
       if (!r2) return;
       if (da < 0) da = da % tau + tau;
       if (da > tauEpsilon) {
-        this._append`A${r2},${r2},0,1,${cw},${x2 - dx},${y2 - dy}A${r2},${r2},0,1,${cw},${this._x1 = x0},${this._y1 = y0}`;
+        this._append(_l || (_l = __template(["A", ",", ",0,1,", ",", ",", "A", ",", ",0,1,", ",", ",", ""])), r2, r2, cw, x2 - dx, y2 - dy, r2, r2, cw, this._x1 = x0, this._y1 = y0);
       } else if (da > epsilon) {
-        this._append`A${r2},${r2},0,${+(da >= pi)},${cw},${this._x1 = x2 + r2 * Math.cos(a1)},${this._y1 = y2 + r2 * Math.sin(a1)}`;
+        this._append(_m || (_m = __template(["A", ",", ",0,", ",", ",", ",", ""])), r2, r2, +(da >= pi), cw, this._x1 = x2 + r2 * Math.cos(a1), this._y1 = y2 + r2 * Math.sin(a1));
       }
     }
     rect(x2, y2, w2, h) {
-      this._append`M${this._x0 = this._x1 = +x2},${this._y0 = this._y1 = +y2}h${w2 = +w2}v${+h}h${-w2}Z`;
+      this._append(_n || (_n = __template(["M", ",", "h", "v", "h", "Z"])), this._x0 = this._x1 = +x2, this._y0 = this._y1 = +y2, w2 = +w2, +h, -w2);
     }
     toString() {
       return this._;
@@ -2632,7 +2635,7 @@
         digits = null;
       } else {
         const d = Math.floor(_);
-        if (!(d >= 0)) throw new RangeError(`invalid digits: ${_}`);
+        if (!(d >= 0)) throw new RangeError("invalid digits: ".concat(_));
         digits = d;
       }
       return shape;
@@ -3962,17 +3965,17 @@
   }
 
   // node_modules/reselect/dist/reselect.mjs
-  function assertIsFunction(func, errorMessage = `expected a function, instead received ${typeof func}`) {
+  function assertIsFunction(func, errorMessage = "expected a function, instead received ".concat(typeof func)) {
     if (typeof func !== "function") {
       throw new TypeError(errorMessage);
     }
   }
-  function assertIsArrayOfFunctions(array, errorMessage = `expected all items to be functions, instead received the following types: `) {
+  function assertIsArrayOfFunctions(array, errorMessage = "expected all items to be functions, instead received the following types: ") {
     if (!array.every((item) => typeof item === "function")) {
       const itemTypes = array.map(
-        (item) => typeof item === "function" ? `function ${item.name || "unnamed"}()` : typeof item
+        (item) => typeof item === "function" ? "function ".concat(item.name || "unnamed", "()") : typeof item
       ).join(", ");
-      throw new TypeError(`${errorMessage}[${itemTypes}]`);
+      throw new TypeError("".concat(errorMessage, "[").concat(itemTypes, "]"));
     }
   }
   var ensureIsArray = (item) => {
@@ -3982,7 +3985,7 @@
     const dependencies = Array.isArray(createSelectorArgs[0]) ? createSelectorArgs[0] : createSelectorArgs;
     assertIsArrayOfFunctions(
       dependencies,
-      `createSelector expects all input-selectors to be functions, but received the following types: `
+      "createSelector expects all input-selectors to be functions, but received the following types: "
     );
     return dependencies;
   }
@@ -4104,7 +4107,7 @@
       }
       assertIsFunction(
         resultFunc,
-        `createSelector expects an output function after the inputs, but received: [${typeof resultFunc}]`
+        "createSelector expects an output function after the inputs, but received: [".concat(typeof resultFunc, "]")
       );
       const combinedOptions = {
         ...createSelectorCreatorOptions,
@@ -4407,15 +4410,15 @@
 
   // node_modules/redux/dist/redux.mjs
   function formatProdErrorMessage(code) {
-    return `Minified Redux error #${code}; visit https://redux.js.org/Errors?code=${code} for the full message or use the non-minified dev environment for full errors. `;
+    return "Minified Redux error #".concat(code, "; visit https://redux.js.org/Errors?code=").concat(code, " for the full message or use the non-minified dev environment for full errors. ");
   }
   var $$observable = /* @__PURE__ */ (() => typeof Symbol === "function" && Symbol.observable || "@@observable")();
   var symbol_observable_default = $$observable;
   var randomString = () => Math.random().toString(36).substring(7).split("").join(".");
   var ActionTypes = {
-    INIT: `@@redux/INIT${/* @__PURE__ */ randomString()}`,
-    REPLACE: `@@redux/REPLACE${/* @__PURE__ */ randomString()}`,
-    PROBE_UNKNOWN_ACTION: () => `@@redux/PROBE_UNKNOWN_ACTION${randomString()}`
+    INIT: "@@redux/INIT".concat(/* @__PURE__ */ randomString()),
+    REPLACE: "@@redux/REPLACE".concat(/* @__PURE__ */ randomString()),
+    PROBE_UNKNOWN_ACTION: () => "@@redux/PROBE_UNKNOWN_ACTION".concat(randomString())
   };
   var actionTypes_default = ActionTypes;
   function isPlainObject(obj) {
@@ -4429,7 +4432,7 @@
   }
   function createStore(reducer, preloadedState, enhancer) {
     if (typeof reducer !== "function") {
-      throw new Error(true ? formatProdErrorMessage(2) : `Expected the root reducer to be a function. Instead, received: '${kindOf(reducer)}'`);
+      throw new Error(true ? formatProdErrorMessage(2) : "Expected the root reducer to be a function. Instead, received: '".concat(kindOf(reducer), "'"));
     }
     if (typeof preloadedState === "function" && typeof enhancer === "function" || typeof enhancer === "function" && typeof arguments[3] === "function") {
       throw new Error(true ? formatProdErrorMessage(0) : "It looks like you are passing several store enhancers to createStore(). This is not supported. Instead, compose them together to a single function. See https://redux.js.org/tutorials/fundamentals/part-4-store#creating-a-store-with-enhancers for an example.");
@@ -4440,7 +4443,7 @@
     }
     if (typeof enhancer !== "undefined") {
       if (typeof enhancer !== "function") {
-        throw new Error(true ? formatProdErrorMessage(1) : `Expected the enhancer to be a function. Instead, received: '${kindOf(enhancer)}'`);
+        throw new Error(true ? formatProdErrorMessage(1) : "Expected the enhancer to be a function. Instead, received: '".concat(kindOf(enhancer), "'"));
       }
       return enhancer(createStore)(reducer, preloadedState);
     }
@@ -4466,7 +4469,7 @@
     }
     function subscribe(listener2) {
       if (typeof listener2 !== "function") {
-        throw new Error(true ? formatProdErrorMessage(4) : `Expected the listener to be a function. Instead, received: '${kindOf(listener2)}'`);
+        throw new Error(true ? formatProdErrorMessage(4) : "Expected the listener to be a function. Instead, received: '".concat(kindOf(listener2), "'"));
       }
       if (isDispatching) {
         throw new Error(true ? formatProdErrorMessage(5) : "You may not call store.subscribe() while the reducer is executing. If you would like to be notified after the store has been updated, subscribe from a component and invoke store.getState() in the callback to access the latest state. See https://redux.js.org/api/store#subscribelistener for more details.");
@@ -4490,13 +4493,13 @@
     }
     function dispatch(action) {
       if (!isPlainObject(action)) {
-        throw new Error(true ? formatProdErrorMessage(7) : `Actions must be plain objects. Instead, the actual type was: '${kindOf(action)}'. You may need to add middleware to your store setup to handle dispatching other values, such as 'redux-thunk' to handle dispatching functions. See https://redux.js.org/tutorials/fundamentals/part-4-store#middleware and https://redux.js.org/tutorials/fundamentals/part-6-async-logic#using-the-redux-thunk-middleware for examples.`);
+        throw new Error(true ? formatProdErrorMessage(7) : "Actions must be plain objects. Instead, the actual type was: '".concat(kindOf(action), "'. You may need to add middleware to your store setup to handle dispatching other values, such as 'redux-thunk' to handle dispatching functions. See https://redux.js.org/tutorials/fundamentals/part-4-store#middleware and https://redux.js.org/tutorials/fundamentals/part-6-async-logic#using-the-redux-thunk-middleware for examples."));
       }
       if (typeof action.type === "undefined") {
         throw new Error(true ? formatProdErrorMessage(8) : 'Actions may not have an undefined "type" property. You may have misspelled an action type string constant.');
       }
       if (typeof action.type !== "string") {
-        throw new Error(true ? formatProdErrorMessage(17) : `Action "type" property must be a string. Instead, the actual type was: '${kindOf(action.type)}'. Value was: '${action.type}' (stringified)`);
+        throw new Error(true ? formatProdErrorMessage(17) : 'Action "type" property must be a string. Instead, the actual type was: \''.concat(kindOf(action.type), "'. Value was: '").concat(action.type, "' (stringified)"));
       }
       if (isDispatching) {
         throw new Error(true ? formatProdErrorMessage(9) : "Reducers may not dispatch actions.");
@@ -4515,7 +4518,7 @@
     }
     function replaceReducer(nextReducer) {
       if (typeof nextReducer !== "function") {
-        throw new Error(true ? formatProdErrorMessage(10) : `Expected the nextReducer to be a function. Instead, received: '${kindOf(nextReducer)}`);
+        throw new Error(true ? formatProdErrorMessage(10) : "Expected the nextReducer to be a function. Instead, received: '".concat(kindOf(nextReducer)));
       }
       currentReducer = nextReducer;
       dispatch({
@@ -4535,7 +4538,7 @@
          */
         subscribe(observer) {
           if (typeof observer !== "object" || observer === null) {
-            throw new Error(true ? formatProdErrorMessage(11) : `Expected the observer to be an object. Instead, received: '${kindOf(observer)}'`);
+            throw new Error(true ? formatProdErrorMessage(11) : "Expected the observer to be an object. Instead, received: '".concat(kindOf(observer), "'"));
           }
           function observeState() {
             const observerAsObserver = observer;
@@ -4573,12 +4576,12 @@
         type: actionTypes_default.INIT
       });
       if (typeof initialState15 === "undefined") {
-        throw new Error(true ? formatProdErrorMessage(12) : `The slice reducer for key "${key}" returned undefined during initialization. If the state passed to the reducer is undefined, you must explicitly return the initial state. The initial state may not be undefined. If you don't want to set a value for this reducer, you can use null instead of undefined.`);
+        throw new Error(true ? formatProdErrorMessage(12) : 'The slice reducer for key "'.concat(key, "\" returned undefined during initialization. If the state passed to the reducer is undefined, you must explicitly return the initial state. The initial state may not be undefined. If you don't want to set a value for this reducer, you can use null instead of undefined."));
       }
       if (typeof reducer(void 0, {
         type: actionTypes_default.PROBE_UNKNOWN_ACTION()
       }) === "undefined") {
-        throw new Error(true ? formatProdErrorMessage(13) : `The slice reducer for key "${key}" returned undefined when probed with a random type. Don't try to handle '${actionTypes_default.INIT}' or other actions in "redux/*" namespace. They are considered private. Instead, you must return the current state for any unknown actions, unless it is undefined, in which case you must return the initial state, regardless of the action type. The initial state may not be undefined, but can be null.`);
+        throw new Error(true ? formatProdErrorMessage(13) : 'The slice reducer for key "'.concat(key, "\" returned undefined when probed with a random type. Don't try to handle '").concat(actionTypes_default.INIT, '\' or other actions in "redux/*" namespace. They are considered private. Instead, you must return the current state for any unknown actions, unless it is undefined, in which case you must return the initial state, regardless of the action type. The initial state may not be undefined, but can be null.'));
       }
     });
   }
@@ -4589,7 +4592,7 @@
       const key = reducerKeys[i];
       if (false) {
         if (typeof reducers2[key] === "undefined") {
-          warning(`No reducer provided for key "${key}"`);
+          warning('No reducer provided for key "'.concat(key, '"'));
         }
       }
       if (typeof reducers2[key] === "function") {
@@ -4626,7 +4629,7 @@
         const nextStateForKey = reducer(previousStateForKey, action);
         if (typeof nextStateForKey === "undefined") {
           const actionType = action && action.type;
-          throw new Error(true ? formatProdErrorMessage(14) : `When called with an action of type ${actionType ? `"${String(actionType)}"` : "(unknown type)"}, the slice reducer for key "${key}" returned undefined. To ignore an action, you must explicitly return the previous state. If you want this reducer to hold no value, you can return null instead of undefined.`);
+          throw new Error(true ? formatProdErrorMessage(14) : "When called with an action of type ".concat(actionType ? '"'.concat(String(actionType), '"') : "(unknown type)", ', the slice reducer for key "').concat(key, '" returned undefined. To ignore an action, you must explicitly return the previous state. If you want this reducer to hold no value, you can return null instead of undefined.'));
         }
         nextState[key] = nextStateForKey;
         hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
@@ -4674,10 +4677,10 @@
     if (false) {
       const e = errors[error];
       const msg = isFunction(e) ? e.apply(null, args) : e;
-      throw new Error(`[Immer] ${msg}`);
+      throw new Error("[Immer] ".concat(msg));
     }
     throw new Error(
-      `[Immer] minified error nr: ${error}. Full error at: https://bit.ly/3cXEKWf`
+      "[Immer] minified error nr: ".concat(error, ". Full error at: https://bit.ly/3cXEKWf")
     );
   }
   var O = Object;
@@ -4690,10 +4693,10 @@
   var VALUE = "value";
   var isDraft = (value) => !!value && !!value[DRAFT_STATE];
   function isDraftable(value) {
-    var _a;
+    var _a2;
     if (!value)
       return false;
-    return isPlainObject2(value) || isArray(value) || !!value[DRAFTABLE] || !!((_a = value[CONSTRUCTOR]) == null ? void 0 : _a[DRAFTABLE]) || isMap(value) || isSet(value);
+    return isPlainObject2(value) || isArray(value) || !!value[DRAFTABLE] || !!((_a2 = value[CONSTRUCTOR]) == null ? void 0 : _a2[DRAFTABLE]) || isMap(value) || isSet(value);
   }
   var objectCtorString = O[PROTOTYPE][CONSTRUCTOR].toString();
   var cachedCtorStrings = /* @__PURE__ */ new WeakMap();
@@ -4955,7 +4958,7 @@
   var isSameScope = (state, rootScope) => state.scope_ === rootScope;
   var EMPTY_LOCATIONS_RESULT = [];
   function updateDraftInParent(parent, draftValue, finalizedValue, originalKey) {
-    var _a;
+    var _a2;
     const parentCopy = latest(parent);
     const parentType = parent.type_;
     if (originalKey !== void 0) {
@@ -4975,27 +4978,27 @@
         }
       });
     }
-    const locations = (_a = parent.draftLocations_.get(draftValue)) != null ? _a : EMPTY_LOCATIONS_RESULT;
+    const locations = (_a2 = parent.draftLocations_.get(draftValue)) != null ? _a2 : EMPTY_LOCATIONS_RESULT;
     for (const location of locations) {
       set(parentCopy, location, finalizedValue, parentType);
     }
   }
   function registerChildFinalizationCallback(parent, child, key) {
     parent.callbacks_.push(function childCleanup(rootScope) {
-      var _a, _b;
+      var _a2, _b2;
       const state = child;
       if (!state || !isSameScope(state, rootScope)) {
         return;
       }
-      (_a = rootScope.mapSetPlugin_) == null ? void 0 : _a.fixSetContents(state);
+      (_a2 = rootScope.mapSetPlugin_) == null ? void 0 : _a2.fixSetContents(state);
       const finalizedValue = getFinalValue(state);
-      updateDraftInParent(parent, (_b = state.draft_) != null ? _b : state, finalizedValue, key);
+      updateDraftInParent(parent, (_b2 = state.draft_) != null ? _b2 : state, finalizedValue, key);
       generatePatchesAndFinalize(state, rootScope);
     });
   }
   function generatePatchesAndFinalize(state, rootScope) {
-    var _a, _b;
-    const shouldFinalize = state.modified_ && !state.finalized_ && (state.type_ === 3 || state.type_ === 1 && state.allIndicesReassigned_ || ((_b = (_a = state.assigned_) == null ? void 0 : _a.size) != null ? _b : 0) > 0);
+    var _a2, _b2;
+    const shouldFinalize = state.modified_ && !state.finalized_ && (state.type_ === 3 || state.type_ === 1 && state.allIndicesReassigned_ || ((_b2 = (_a2 = state.assigned_) == null ? void 0 : _a2.size) != null ? _b2 : 0) > 0);
     if (shouldFinalize) {
       const { patchPlugin_ } = rootScope;
       if (patchPlugin_) {
@@ -5020,7 +5023,7 @@
       }
     } else if (isDraftable(value)) {
       target.callbacks_.push(function nestedDraftCleanup() {
-        var _a;
+        var _a2;
         const targetCopy = latest(target);
         if (target.type_ === 3) {
           if (targetCopy.has(value)) {
@@ -5028,7 +5031,7 @@
           }
         } else {
           if (get2(targetCopy, key, target.type_) === value) {
-            if (scope_.drafts_.length > 1 && ((_a = target.assigned_.get(key)) != null ? _a : false) === true && target.copy_) {
+            if (scope_.drafts_.length > 1 && ((_a2 = target.assigned_.get(key)) != null ? _a2 : false) === true && target.copy_) {
               handleValue(
                 get2(target.copy_, key, target.type_),
                 scope_.handledSet_,
@@ -5229,19 +5232,19 @@
     return source[prop];
   }
   function isRelocatedBaseRef(state, prop, value) {
-    var _a;
-    if (state.type_ !== 1 || !state.allIndicesReassigned_ || ((_a = state.assigned_) == null ? void 0 : _a.get(prop)) || !isDraftable(value) || value[DRAFT_STATE]) {
+    var _a2;
+    if (state.type_ !== 1 || !state.allIndicesReassigned_ || ((_a2 = state.assigned_) == null ? void 0 : _a2.get(prop)) || !isDraftable(value) || value[DRAFT_STATE]) {
       return false;
     }
     return state.baseRefs_.has(value);
   }
   function readPropFromProto(state, source, prop) {
-    var _a;
+    var _a2;
     const desc = getDescriptorFromProto(source, prop);
     return desc ? VALUE in desc ? desc[VALUE] : (
       // This is a very special case, if the prop is a getter defined by the
       // prototype, we should invoke it with the draft as context!
-      (_a = desc.get) == null ? void 0 : _a.call(state.draft_)
+      (_a2 = desc.get) == null ? void 0 : _a2.call(state.draft_)
     ) : void 0;
   }
   function getDescriptorFromProto(source, prop) {
@@ -5416,18 +5419,18 @@
     }
   };
   function createProxy(rootScope, value, parent, key) {
-    var _a, _b;
+    var _a2, _b2;
     const [draft, state] = isMap(value) ? getPlugin(PluginMapSet).proxyMap_(value, parent) : isSet(value) ? getPlugin(PluginMapSet).proxySet_(value, parent) : createProxyProxy(value, parent);
-    const scope = (_a = parent == null ? void 0 : parent.scope_) != null ? _a : getCurrentScope();
+    const scope = (_a2 = parent == null ? void 0 : parent.scope_) != null ? _a2 : getCurrentScope();
     scope.drafts_.push(draft);
-    state.callbacks_ = (_b = parent == null ? void 0 : parent.callbacks_) != null ? _b : [];
+    state.callbacks_ = (_b2 = parent == null ? void 0 : parent.callbacks_) != null ? _b2 : [];
     state.key_ = key;
     if (parent && key !== void 0) {
       registerChildFinalizationCallback(parent, state, key);
     } else {
       state.callbacks_.push(function rootDraftCleanup(rootScope2) {
-        var _a2;
-        (_a2 = rootScope2.mapSetPlugin_) == null ? void 0 : _a2.fixSetContents(state);
+        var _a3;
+        (_a3 = rootScope2.mapSetPlugin_) == null ? void 0 : _a3.fixSetContents(state);
         const { patchPlugin_ } = rootScope2;
         if (state.modified_ && patchPlugin_) {
           patchPlugin_.generatePatches_(state, [], rootScope2);
@@ -5513,7 +5516,7 @@
         payload: args[0]
       };
     }
-    actionCreator.toString = () => `${type}`;
+    actionCreator.toString = () => "".concat(type);
     actionCreator.type = type;
     actionCreator.match = (action) => isAction(action) && action.type === type;
     return actionCreator;
@@ -5622,9 +5625,9 @@
         };
       },
       dispatch(action) {
-        var _a;
+        var _a2;
         try {
-          notifying = !((_a = action == null ? void 0 : action.meta) == null ? void 0 : _a[SHOULD_AUTOBATCH]);
+          notifying = !((_a2 = action == null ? void 0 : action.meta) == null ? void 0 : _a2[SHOULD_AUTOBATCH]);
           shouldNotifyAtEndOfTick = !notifying;
           if (shouldNotifyAtEndOfTick) {
             if (!notificationQueued) {
@@ -5693,7 +5696,7 @@
         }
         const type = typeof typeOrActionCreator === "string" ? typeOrActionCreator : typeOrActionCreator.type;
         if (!type) throw new Error(true ? formatProdErrorMessage2(28) : "`builder.addCase` cannot be called with an empty action type");
-        if (type in actionsMap) throw new Error(true ? formatProdErrorMessage2(29) : `\`builder.addCase\` cannot be called with two reducers for the same action type '${type}'`);
+        if (type in actionsMap) throw new Error(true ? formatProdErrorMessage2(29) : "`builder.addCase` cannot be called with two reducers for the same action type '".concat(type, "'"));
         actionsMap[type] = reducer;
         return builder;
       },
@@ -5872,10 +5875,10 @@
             else signal.addEventListener("abort", () => abort(externalAbortMessage), { once: true });
           }
           const promise = (async function() {
-            var _a, _b;
+            var _a2, _b2;
             let finalAction;
             try {
-              let conditionResult = (_a = options == null ? void 0 : options.condition) == null ? void 0 : _a.call(options, arg, {
+              let conditionResult = (_a2 = options == null ? void 0 : options.condition) == null ? void 0 : _a2.call(options, arg, {
                 getState,
                 extra
               });
@@ -5897,7 +5900,7 @@
                 };
                 abortController.signal.addEventListener("abort", abortHandler, { once: true });
               });
-              dispatch(pending(requestId, arg, (_b = options == null ? void 0 : options.getPendingMeta) == null ? void 0 : _b.call(options, {
+              dispatch(pending(requestId, arg, (_b2 = options == null ? void 0 : options.getPendingMeta) == null ? void 0 : _b2.call(options, {
                 requestId,
                 arg
               }, {
@@ -5962,11 +5965,11 @@
   var asyncThunkSymbol = /* @__PURE__ */ Symbol.for("rtk-slice-createasyncthunk");
   var asyncThunkCreator = { [asyncThunkSymbol]: createAsyncThunk };
   function getType(slice2, actionKey) {
-    return `${slice2}/${actionKey}`;
+    return "".concat(slice2, "/").concat(actionKey);
   }
   function buildCreateSlice({ creators } = {}) {
-    var _a;
-    const cAT = (_a = creators == null ? void 0 : creators.asyncThunk) == null ? void 0 : _a[asyncThunkSymbol];
+    var _a2;
+    const cAT = (_a2 = creators == null ? void 0 : creators.asyncThunk) == null ? void 0 : _a2[asyncThunkSymbol];
     return function createSlice2(options) {
       const { name, reducerPath = name } = options;
       if (!name) throw new Error(true ? formatProdErrorMessage2(11) : "`name` is a required option for createSlice");
@@ -6054,9 +6057,9 @@
         }
         function getSelectors(selectState = selectSelf) {
           return getOrInsertComputed(getOrInsertComputed(injectedSelectorCache, injected, () => /* @__PURE__ */ new WeakMap()), selectState, () => {
-            var _a2;
+            var _a3;
             const map2 = {};
-            for (const [name2, selector] of Object.entries((_a2 = options.selectors) != null ? _a2 : {})) map2[name2] = wrapSelector(selector, selectState, () => getOrInsertComputed(injectedStateCache, selectState, getInitialState), injected);
+            for (const [name2, selector] of Object.entries((_a3 = options.selectors) != null ? _a3 : {})) map2[name2] = wrapSelector(selector, selectState, () => getOrInsertComputed(injectedStateCache, selectState, getInitialState), injected);
             return map2;
           });
         }
@@ -6167,21 +6170,21 @@
   var listener = "listener";
   var completed = "completed";
   var cancelled = "cancelled";
-  var taskCancelled = `task-${cancelled}`;
-  var taskCompleted = `task-${completed}`;
-  var listenerCancelled = `${listener}-${cancelled}`;
-  var listenerCompleted = `${listener}-${completed}`;
+  var taskCancelled = "task-".concat(cancelled);
+  var taskCompleted = "task-".concat(completed);
+  var listenerCancelled = "".concat(listener, "-").concat(cancelled);
+  var listenerCompleted = "".concat(listener, "-").concat(completed);
   var TaskAbortError = class {
     constructor(code) {
       __publicField(this, "code");
       __publicField(this, "name", "TaskAbortError");
       __publicField(this, "message");
       this.code = code;
-      this.message = `${task} ${cancelled} (reason: ${code})`;
+      this.message = "".concat(task, " ").concat(cancelled, " (reason: ").concat(code, ")");
     }
   };
   var assertFunction = (func, expected) => {
-    if (typeof func !== "function") throw new TypeError(true ? formatProdErrorMessage2(32) : `${expected} is not a function`);
+    if (typeof func !== "function") throw new TypeError(true ? formatProdErrorMessage2(32) : "".concat(expected, " is not a function"));
   };
   var noop3 = () => {
   };
@@ -6357,23 +6360,23 @@
       }, 0);
     }
   };
-  var addListener = /* @__PURE__ */ assign(/* @__PURE__ */ createAction(`${alm}/add`), { withTypes: () => addListener });
-  var clearAllListeners = /* @__PURE__ */ createAction(`${alm}/removeAll`);
-  var removeListener = /* @__PURE__ */ assign(/* @__PURE__ */ createAction(`${alm}/remove`), { withTypes: () => removeListener });
+  var addListener = /* @__PURE__ */ assign(/* @__PURE__ */ createAction("".concat(alm, "/add")), { withTypes: () => addListener });
+  var clearAllListeners = /* @__PURE__ */ createAction("".concat(alm, "/removeAll"));
+  var removeListener = /* @__PURE__ */ assign(/* @__PURE__ */ createAction("".concat(alm, "/remove")), { withTypes: () => removeListener });
   var defaultErrorHandler = (...args) => {
-    console.error(`${alm}/error`, ...args);
+    console.error("".concat(alm, "/error"), ...args);
   };
   var createListenerMiddleware = (middlewareOptions = {}) => {
     const listenerMap = /* @__PURE__ */ new Map();
     const executingListeners = /* @__PURE__ */ new Map();
     const trackExecutingListener = (entry) => {
-      var _a;
-      const count = (_a = executingListeners.get(entry)) != null ? _a : 0;
+      var _a2;
+      const count = (_a2 = executingListeners.get(entry)) != null ? _a2 : 0;
       executingListeners.set(entry, count + 1);
     };
     const untrackExecutingListener = (entry) => {
-      var _a;
-      const count = (_a = executingListeners.get(entry)) != null ? _a : 1;
+      var _a2;
+      const count = (_a2 = executingListeners.get(entry)) != null ? _a2 : 1;
       if (count === 1) executingListeners.delete(entry);
       else executingListeners.set(entry, count - 1);
     };
@@ -6388,8 +6391,8 @@
       };
     };
     const startListening = ((options) => {
-      var _a;
-      const entry = (_a = findListenerEntry(listenerMap, options)) != null ? _a : createListenerEntry(options);
+      var _a2;
+      const entry = (_a2 = findListenerEntry(listenerMap, options)) != null ? _a2 : createListenerEntry(options);
       return insertEntry(entry);
     });
     assign(startListening, { withTypes: () => startListening });
@@ -6458,7 +6461,7 @@
       if (removeListener.match(action)) return stopListening(action.payload);
       let originalState = api.getState();
       const getOriginalState = () => {
-        if (originalState === INTERNAL_NIL_TOKEN) throw new Error(true ? formatProdErrorMessage2(23) : `${alm}: getOriginalState can only be called synchronously`);
+        if (originalState === INTERNAL_NIL_TOKEN) throw new Error(true ? formatProdErrorMessage2(23) : "".concat(alm, ": getOriginalState can only be called synchronously"));
         return originalState;
       };
       let result;
@@ -6492,7 +6495,7 @@
     };
   };
   function formatProdErrorMessage2(code) {
-    return `Minified Redux Toolkit error #${code}; visit https://redux-toolkit.js.org/Errors?code=${code} for the full message or use the non-minified dev environment for full errors. `;
+    return "Minified Redux Toolkit error #".concat(code, "; visit https://redux-toolkit.js.org/Errors?code=").concat(code, " for the full message or use the non-minified dev environment for full errors. ");
   }
 
   // node_modules/recharts/es6/state/layoutSlice.js
@@ -7659,10 +7662,10 @@
     if (false) {
       const e = errors[error];
       const msg = isFunction2(e) ? e.apply(null, args) : e;
-      throw new Error(`[Immer] ${msg}`);
+      throw new Error("[Immer] ".concat(msg));
     }
     throw new Error(
-      `[Immer] minified error nr: ${error}. Full error at: https://bit.ly/3cXEKWf`
+      "[Immer] minified error nr: ".concat(error, ". Full error at: https://bit.ly/3cXEKWf")
     );
   }
   var O2 = Object;
@@ -7675,10 +7678,10 @@
   var VALUE2 = "value";
   var isDraft2 = (value) => !!value && !!value[DRAFT_STATE2];
   function isDraftable2(value) {
-    var _a;
+    var _a2;
     if (!value)
       return false;
-    return isPlainObject3(value) || isArray2(value) || !!value[DRAFTABLE2] || !!((_a = value[CONSTRUCTOR2]) == null ? void 0 : _a[DRAFTABLE2]) || isMap2(value) || isSet2(value);
+    return isPlainObject3(value) || isArray2(value) || !!value[DRAFTABLE2] || !!((_a2 = value[CONSTRUCTOR2]) == null ? void 0 : _a2[DRAFTABLE2]) || isMap2(value) || isSet2(value);
   }
   var objectCtorString2 = O2[PROTOTYPE2][CONSTRUCTOR2].toString();
   var cachedCtorStrings2 = /* @__PURE__ */ new WeakMap();
@@ -7940,7 +7943,7 @@
   var isSameScope2 = (state, rootScope) => state.scope_ === rootScope;
   var EMPTY_LOCATIONS_RESULT2 = [];
   function updateDraftInParent2(parent, draftValue, finalizedValue, originalKey) {
-    var _a;
+    var _a2;
     const parentCopy = latest2(parent);
     const parentType = parent.type_;
     if (originalKey !== void 0) {
@@ -7960,27 +7963,27 @@
         }
       });
     }
-    const locations = (_a = parent.draftLocations_.get(draftValue)) != null ? _a : EMPTY_LOCATIONS_RESULT2;
+    const locations = (_a2 = parent.draftLocations_.get(draftValue)) != null ? _a2 : EMPTY_LOCATIONS_RESULT2;
     for (const location of locations) {
       set2(parentCopy, location, finalizedValue, parentType);
     }
   }
   function registerChildFinalizationCallback2(parent, child, key) {
     parent.callbacks_.push(function childCleanup(rootScope) {
-      var _a, _b;
+      var _a2, _b2;
       const state = child;
       if (!state || !isSameScope2(state, rootScope)) {
         return;
       }
-      (_a = rootScope.mapSetPlugin_) == null ? void 0 : _a.fixSetContents(state);
+      (_a2 = rootScope.mapSetPlugin_) == null ? void 0 : _a2.fixSetContents(state);
       const finalizedValue = getFinalValue2(state);
-      updateDraftInParent2(parent, (_b = state.draft_) != null ? _b : state, finalizedValue, key);
+      updateDraftInParent2(parent, (_b2 = state.draft_) != null ? _b2 : state, finalizedValue, key);
       generatePatchesAndFinalize2(state, rootScope);
     });
   }
   function generatePatchesAndFinalize2(state, rootScope) {
-    var _a, _b;
-    const shouldFinalize = state.modified_ && !state.finalized_ && (state.type_ === 3 || state.type_ === 1 && state.allIndicesReassigned_ || ((_b = (_a = state.assigned_) == null ? void 0 : _a.size) != null ? _b : 0) > 0);
+    var _a2, _b2;
+    const shouldFinalize = state.modified_ && !state.finalized_ && (state.type_ === 3 || state.type_ === 1 && state.allIndicesReassigned_ || ((_b2 = (_a2 = state.assigned_) == null ? void 0 : _a2.size) != null ? _b2 : 0) > 0);
     if (shouldFinalize) {
       const { patchPlugin_ } = rootScope;
       if (patchPlugin_) {
@@ -8005,7 +8008,7 @@
       }
     } else if (isDraftable2(value)) {
       target.callbacks_.push(function nestedDraftCleanup() {
-        var _a;
+        var _a2;
         const targetCopy = latest2(target);
         if (target.type_ === 3) {
           if (targetCopy.has(value)) {
@@ -8013,7 +8016,7 @@
           }
         } else {
           if (get3(targetCopy, key, target.type_) === value) {
-            if (scope_.drafts_.length > 1 && ((_a = target.assigned_.get(key)) != null ? _a : false) === true && target.copy_) {
+            if (scope_.drafts_.length > 1 && ((_a2 = target.assigned_.get(key)) != null ? _a2 : false) === true && target.copy_) {
               handleValue2(
                 get3(target.copy_, key, target.type_),
                 scope_.handledSet_,
@@ -8214,19 +8217,19 @@
     return source[prop];
   }
   function isRelocatedBaseRef2(state, prop, value) {
-    var _a;
-    if (state.type_ !== 1 || !state.allIndicesReassigned_ || ((_a = state.assigned_) == null ? void 0 : _a.get(prop)) || !isDraftable2(value) || value[DRAFT_STATE2]) {
+    var _a2;
+    if (state.type_ !== 1 || !state.allIndicesReassigned_ || ((_a2 = state.assigned_) == null ? void 0 : _a2.get(prop)) || !isDraftable2(value) || value[DRAFT_STATE2]) {
       return false;
     }
     return state.baseRefs_.has(value);
   }
   function readPropFromProto2(state, source, prop) {
-    var _a;
+    var _a2;
     const desc = getDescriptorFromProto2(source, prop);
     return desc ? VALUE2 in desc ? desc[VALUE2] : (
       // This is a very special case, if the prop is a getter defined by the
       // prototype, we should invoke it with the draft as context!
-      (_a = desc.get) == null ? void 0 : _a.call(state.draft_)
+      (_a2 = desc.get) == null ? void 0 : _a2.call(state.draft_)
     ) : void 0;
   }
   function getDescriptorFromProto2(source, prop) {
@@ -8401,18 +8404,18 @@
     }
   };
   function createProxy2(rootScope, value, parent, key) {
-    var _a, _b;
+    var _a2, _b2;
     const [draft, state] = isMap2(value) ? getPlugin2(PluginMapSet2).proxyMap_(value, parent) : isSet2(value) ? getPlugin2(PluginMapSet2).proxySet_(value, parent) : createProxyProxy2(value, parent);
-    const scope = (_a = parent == null ? void 0 : parent.scope_) != null ? _a : getCurrentScope2();
+    const scope = (_a2 = parent == null ? void 0 : parent.scope_) != null ? _a2 : getCurrentScope2();
     scope.drafts_.push(draft);
-    state.callbacks_ = (_b = parent == null ? void 0 : parent.callbacks_) != null ? _b : [];
+    state.callbacks_ = (_b2 = parent == null ? void 0 : parent.callbacks_) != null ? _b2 : [];
     state.key_ = key;
     if (parent && key !== void 0) {
       registerChildFinalizationCallback2(parent, state, key);
     } else {
       state.callbacks_.push(function rootDraftCleanup(rootScope2) {
-        var _a2;
-        (_a2 = rootScope2.mapSetPlugin_) == null ? void 0 : _a2.fixSetContents(state);
+        var _a3;
+        (_a3 = rootScope2.mapSetPlugin_) == null ? void 0 : _a3.fixSetContents(state);
         const { patchPlugin_ } = rootScope2;
         if (state.modified_ && patchPlugin_) {
           patchPlugin_.generatePatches_(state, [], rootScope2);
@@ -8711,15 +8714,15 @@
     [Memo]: MEMO_STATICS
   };
   var objectPrototype = Object.prototype;
-  var ContextKey = /* @__PURE__ */ Symbol.for(`react-redux-context`);
+  var ContextKey = /* @__PURE__ */ Symbol.for("react-redux-context");
   var gT = typeof globalThis !== "undefined" ? globalThis : (
     /* fall back to a per-module scope (pre-8.1 behaviour) if `globalThis` is not available */
     {}
   );
   function getContext() {
-    var _a;
+    var _a2;
     if (!React5.createContext) return {};
-    const contextMap = (_a = gT[ContextKey]) != null ? _a : gT[ContextKey] = /* @__PURE__ */ new Map();
+    const contextMap = (_a2 = gT[ContextKey]) != null ? _a2 : gT[ContextKey] = /* @__PURE__ */ new Map();
     let realContext = contextMap.get(React5.createContext);
     if (!realContext) {
       realContext = React5.createContext(
@@ -12178,12 +12181,12 @@
   var reN = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*";
   var reP = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*";
   var reHex = /^#([0-9a-f]{3,8})$/;
-  var reRgbInteger = new RegExp(`^rgb\\(${reI},${reI},${reI}\\)$`);
-  var reRgbPercent = new RegExp(`^rgb\\(${reP},${reP},${reP}\\)$`);
-  var reRgbaInteger = new RegExp(`^rgba\\(${reI},${reI},${reI},${reN}\\)$`);
-  var reRgbaPercent = new RegExp(`^rgba\\(${reP},${reP},${reP},${reN}\\)$`);
-  var reHslPercent = new RegExp(`^hsl\\(${reN},${reP},${reP}\\)$`);
-  var reHslaPercent = new RegExp(`^hsla\\(${reN},${reP},${reP},${reN}\\)$`);
+  var reRgbInteger = new RegExp("^rgb\\(".concat(reI, ",").concat(reI, ",").concat(reI, "\\)$"));
+  var reRgbPercent = new RegExp("^rgb\\(".concat(reP, ",").concat(reP, ",").concat(reP, "\\)$"));
+  var reRgbaInteger = new RegExp("^rgba\\(".concat(reI, ",").concat(reI, ",").concat(reI, ",").concat(reN, "\\)$"));
+  var reRgbaPercent = new RegExp("^rgba\\(".concat(reP, ",").concat(reP, ",").concat(reP, ",").concat(reN, "\\)$"));
+  var reHslPercent = new RegExp("^hsl\\(".concat(reN, ",").concat(reP, ",").concat(reP, "\\)$"));
+  var reHslaPercent = new RegExp("^hsla\\(".concat(reN, ",").concat(reP, ",").concat(reP, ",").concat(reN, "\\)$"));
   var named = {
     aliceblue: 15792383,
     antiquewhite: 16444375,
@@ -12414,14 +12417,14 @@
     toString: rgb_formatRgb
   }));
   function rgb_formatHex() {
-    return `#${hex(this.r)}${hex(this.g)}${hex(this.b)}`;
+    return "#".concat(hex(this.r)).concat(hex(this.g)).concat(hex(this.b));
   }
   function rgb_formatHex8() {
-    return `#${hex(this.r)}${hex(this.g)}${hex(this.b)}${hex((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
+    return "#".concat(hex(this.r)).concat(hex(this.g)).concat(hex(this.b)).concat(hex((isNaN(this.opacity) ? 1 : this.opacity) * 255));
   }
   function rgb_formatRgb() {
     const a = clampa(this.opacity);
-    return `${a === 1 ? "rgb(" : "rgba("}${clampi(this.r)}, ${clampi(this.g)}, ${clampi(this.b)}${a === 1 ? ")" : `, ${a})`}`;
+    return "".concat(a === 1 ? "rgb(" : "rgba(").concat(clampi(this.r), ", ").concat(clampi(this.g), ", ").concat(clampi(this.b)).concat(a === 1 ? ")" : ", ".concat(a, ")"));
   }
   function clampa(opacity) {
     return isNaN(opacity) ? 1 : Math.max(0, Math.min(1, opacity));
@@ -12492,7 +12495,7 @@
     },
     formatHsl() {
       const a = clampa(this.opacity);
-      return `${a === 1 ? "hsl(" : "hsla("}${clamph(this.h)}, ${clampt(this.s) * 100}%, ${clampt(this.l) * 100}%${a === 1 ? ")" : `, ${a})`}`;
+      return "".concat(a === 1 ? "hsl(" : "hsla(").concat(clamph(this.h), ", ").concat(clampt(this.s) * 100, "%, ").concat(clampt(this.l) * 100, "%").concat(a === 1 ? ")" : ", ".concat(a, ")"));
     }
   }));
   function clamph(value) {
@@ -16840,20 +16843,20 @@
         }
       }
     } else if (ticks2) {
-      for (var _i = 0; _i < len; _i++) {
-        var curr = ticks2[_i];
+      for (var _i2 = 0; _i2 < len; _i2++) {
+        var curr = ticks2[_i2];
         if (curr == null) {
           continue;
         }
-        var next = ticks2[_i + 1];
-        var prev = ticks2[_i - 1];
-        if (_i === 0 && next != null && coordinate <= (curr.coordinate + next.coordinate) / 2) {
+        var next = ticks2[_i2 + 1];
+        var prev = ticks2[_i2 - 1];
+        if (_i2 === 0 && next != null && coordinate <= (curr.coordinate + next.coordinate) / 2) {
           return curr.index;
         }
-        if (_i === len - 1 && prev != null && coordinate > (curr.coordinate + prev.coordinate) / 2) {
+        if (_i2 === len - 1 && prev != null && coordinate > (curr.coordinate + prev.coordinate) / 2) {
           return curr.index;
         }
-        if (_i > 0 && _i < len - 1 && prev != null && next != null && coordinate > (curr.coordinate + prev.coordinate) / 2 && coordinate <= (curr.coordinate + next.coordinate) / 2) {
+        if (_i2 > 0 && _i2 < len - 1 && prev != null && next != null && coordinate > (curr.coordinate + prev.coordinate) / 2 && coordinate <= (curr.coordinate + next.coordinate) / 2) {
           return curr.index;
         }
       }
@@ -23765,9 +23768,9 @@
                 }
               }
             } else {
-              for (var _i = displayedData.length - 1; _i >= 0; _i--) {
-                if (combineActiveTooltipIndex(mkInteraction(_i), displayedData, axisDataKey, domain) != null) {
-                  nextIndex = _i;
+              for (var _i2 = displayedData.length - 1; _i2 >= 0; _i2--) {
+                if (combineActiveTooltipIndex(mkInteraction(_i2), displayedData, axisDataKey, domain) != null) {
+                  nextIndex = _i2;
                   break;
                 }
               }
@@ -25054,19 +25057,19 @@
     return value !== null && value !== void 0;
   }
   function buildLucideIconNode(icon, params = {}) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
-    const attributeNames = (_a = params.attributeNames) != null ? _a : {};
+    var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _i2, _j2, _k2, _l2, _m2, _n2, _o;
+    const attributeNames = (_a2 = params.attributeNames) != null ? _a2 : {};
     const getAttributeName = (attributeName) => {
-      var _a2;
-      return (_a2 = attributeNames[attributeName]) != null ? _a2 : attributeName;
+      var _a3;
+      return (_a3 = attributeNames[attributeName]) != null ? _a3 : attributeName;
     };
-    const viewBoxWidth = (_c = (_b = icon.size) != null ? _b : icon.width) != null ? _c : defaultAttributes["width"];
-    const viewBoxHeight = (_e = (_d = icon.size) != null ? _d : icon.height) != null ? _e : defaultAttributes["height"];
-    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => `lucide-${alias}`)) != null ? _g : [];
-    const iconClassNames = [...icon.name ? [`lucide-${icon.name}`] : [], ...aliasClassNames];
-    const classNamesFromClassName = (_i = (_h = params.className) == null ? void 0 : _h.split(" ").filter(Boolean)) != null ? _i : [];
+    const viewBoxWidth = (_c2 = (_b2 = icon.size) != null ? _b2 : icon.width) != null ? _c2 : defaultAttributes["width"];
+    const viewBoxHeight = (_e2 = (_d2 = icon.size) != null ? _d2 : icon.height) != null ? _e2 : defaultAttributes["height"];
+    const aliasClassNames = (_g2 = (_f2 = icon.aliases) == null ? void 0 : _f2.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => "lucide-".concat(alias))) != null ? _g2 : [];
+    const iconClassNames = [...icon.name ? ["lucide-".concat(icon.name)] : [], ...aliasClassNames];
+    const classNamesFromClassName = (_i2 = (_h2 = params.className) == null ? void 0 : _h2.split(" ").filter(Boolean)) != null ? _i2 : [];
     const className = params.includeDefaultClasses === false ? mergeClasses(...classNamesFromClassName) : mergeClasses("lucide", ...iconClassNames, ...classNamesFromClassName);
-    const calculatedStrokeWidth = params.absoluteStrokeWidth ? Number((_j = params.strokeWidth) != null ? _j : defaultAttributes["stroke-width"]) * Number((_l = (_k = icon.size) != null ? _k : icon.width) != null ? _l : defaultAttributes["width"]) / Number((_n = (_m = params.size) != null ? _m : params.width) != null ? _n : defaultAttributes["width"]) : (_o = params.strokeWidth) != null ? _o : defaultAttributes["stroke-width"];
+    const calculatedStrokeWidth = params.absoluteStrokeWidth ? Number((_j2 = params.strokeWidth) != null ? _j2 : defaultAttributes["stroke-width"]) * Number((_l2 = (_k2 = icon.size) != null ? _k2 : icon.width) != null ? _l2 : defaultAttributes["width"]) / Number((_n2 = (_m2 = params.size) != null ? _m2 : params.width) != null ? _n2 : defaultAttributes["width"]) : (_o = params.strokeWidth) != null ? _o : defaultAttributes["stroke-width"];
     const attributes = {
       ...Object.entries(defaultAttributes).reduce((attrs, [attrName, value]) => {
         attrs[getAttributeName(attrName)] = value;
@@ -25089,7 +25092,7 @@
       ...className && {
         [getAttributeName("class")]: className
       },
-      [getAttributeName("viewBox")]: `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+      [getAttributeName("viewBox")]: "0 0 ".concat(viewBoxWidth, " ").concat(viewBoxHeight),
       ...params.hasA11yProp === false ? {
         [getAttributeName("aria-hidden")]: "true"
       } : {},
@@ -25156,7 +25159,7 @@
       },
       ...rest
     }, ref) => {
-      var _a, _b, _c;
+      var _a2, _b2, _c2;
       const {
         size: contextSize = 24,
         strokeWidth: contextStrokeWidth = 2,
@@ -25164,12 +25167,12 @@
         nonScalingStroke: contextNonScalingStroke = false,
         color: contextColor = "currentColor",
         className: contextClass = ""
-      } = (_a = useLucideContext()) != null ? _a : {};
+      } = (_a2 = useLucideContext()) != null ? _a2 : {};
       const hasAccessibleProp = Boolean(children) || hasA11yProp(rest);
       const [name, svgAttributes, builtIconNode = []] = buildLucideIconForReact(icon, {
         color: color2 != null ? color2 : contextColor,
-        width: (_b = width != null ? width : size) != null ? _b : contextSize,
-        height: (_c = height != null ? height : size) != null ? _c : contextSize,
+        width: (_b2 = width != null ? width : size) != null ? _b2 : contextSize,
+        height: (_c2 = height != null ? height : size) != null ? _c2 : contextSize,
         strokeWidth: strokeWidth != null ? strokeWidth : contextStrokeWidth,
         absoluteStrokeWidth: absoluteStrokeWidth != null ? absoluteStrokeWidth : contextAbsoluteStrokeWidth,
         nonScalingStroke: nonScalingStroke != null ? nonScalingStroke : contextNonScalingStroke,
@@ -25240,8 +25243,8 @@
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-caption text-muted-foreground", children: row.original.id_posicao })
       ] }), meta: { rotulo: "Posi\xE7\xE3o" } },
       { id: "titular", header: "Titular", accessorFn: (p) => {
-        var _a, _b;
-        return (_b = (_a = p.titular) == null ? void 0 : _a.nome) != null ? _b : "Vaga";
+        var _a2, _b2;
+        return (_b2 = (_a2 = p.titular) == null ? void 0 : _a2.nome) != null ? _b2 : "Vaga";
       }, cell: ({ row }) => row.original.titular ? row.original.titular.nome : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "atencao", children: "Vaga" }), meta: { rotulo: "Titular" } },
       { accessorKey: "segmento_especialidade", header: "Segmento", meta: { rotulo: "Segmento" } },
       { accessorKey: "clientes_ativos", header: "Clientes", cell: ({ getValue }) => (0, import_ui.inteiro)(getValue()), meta: { numerica: true, rotulo: "Clientes" } },
@@ -25271,24 +25274,24 @@
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Indicadores", className: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { destaque: true, rotulo: "AUM total", valor: (0, import_ui.moedaCompacta)(dados.aum_total), dica: (0, import_ui.moeda)(dados.aum_total) }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Clientes ativos", valor: (0, import_ui.inteiro)(dados.total_clientes), dica: `AUM m\xE9dio ${(0, import_ui.moedaCompacta)(dados.aum_medio_por_cliente)}` }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Penetra\xE7\xE3o m\xE9dia de produtos", valor: (0, import_ui.percentual)(dados.penetracao_media, 0), dica: `${dados.penetracao_por_produto.length} produtos no cat\xE1logo` }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Clientes ativos", valor: (0, import_ui.inteiro)(dados.total_clientes), dica: "AUM m\xE9dio ".concat((0, import_ui.moedaCompacta)(dados.aum_medio_por_cliente)) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Penetra\xE7\xE3o m\xE9dia de produtos", valor: (0, import_ui.percentual)(dados.penetracao_media, 0), dica: "".concat(dados.penetracao_por_produto.length, " produtos no cat\xE1logo") }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Posi\xE7\xF5es em alerta", valor: (0, import_ui.inteiro)(dados.posicoes_em_alerta), dica: "Acima de 100% ou abaixo de 50% da capacidade" })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Gr\xE1ficos", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { className: "lg:col-span-2", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Capacidade por posi\xE7\xE3o" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Utiliza\xE7\xE3o = clientes ativos \xF7 capacidade. Linhas: m\xEDnimo de 50% e limite de 100%." }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4 h-72", role: "img", "aria-label": `Utiliza\xE7\xE3o de capacidade: ${grafico.map((g) => `${g.nome} ${g.pct}%`).join("; ")}`, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, { width: "100%", height: "100%", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(BarChart, { data: grafico, layout: "vertical", margin: { left: 8, right: 56, top: 28, bottom: 8 }, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4 h-72", role: "img", "aria-label": "Utiliza\xE7\xE3o de capacidade: ".concat(grafico.map((g) => "".concat(g.nome, " ").concat(g.pct, "%")).join("; ")), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, { width: "100%", height: "100%", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(BarChart, { data: grafico, layout: "vertical", margin: { left: 8, right: 56, top: 28, bottom: 8 }, children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, { horizontal: false, stroke: "var(--color-hairline)" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { type: "number", domain: [0, limite], ticks: [0, 25, 50, 75, 100, 125, 150].filter((t) => t <= limite), tickFormatter: (v) => `${v}%`, className: "tnum", tick: { fill: "var(--color-ink-mute)", fontSize: 12 } }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { type: "number", domain: [0, limite], ticks: [0, 25, 50, 75, 100, 125, 150].filter((t) => t <= limite), tickFormatter: (v) => "".concat(v, "%"), className: "tnum", tick: { fill: "var(--color-ink-mute)", fontSize: 12 } }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { type: "category", dataKey: "nome", width: 64, tick: { fill: "var(--color-ink-secondary)", fontSize: 12 } }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { formatter: (v) => [`${v}%`, "Utiliza\xE7\xE3o"], cursor: { fill: "var(--color-canvas-soft)" }, contentStyle: { borderRadius: 8, borderColor: "var(--color-hairline)" } }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { formatter: (v) => ["".concat(v, "%"), "Utiliza\xE7\xE3o"], cursor: { fill: "var(--color-canvas-soft)" }, contentStyle: { borderRadius: 8, borderColor: "var(--color-hairline)" } }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { x: 100, stroke: "var(--color-ink-mute)", strokeDasharray: "4 4", label: { value: "100%", position: "top", fill: "var(--color-ink-mute)", fontSize: 11 } }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { x: 50, stroke: "var(--color-ink-mute)", strokeDasharray: "4 4", label: { value: "50%", position: "top", fill: "var(--color-ink-mute)", fontSize: 11 } }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Bar, { dataKey: "pct", radius: [0, 4, 4, 0], barSize: 22, children: [
               grafico.map((g) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cell, { fill: g.alerta ? "var(--color-chart-4)" : "var(--color-chart-1)" }, g.nome)),
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LabelList, { dataKey: "pct", position: "right", formatter: (v) => `${v}%`, fill: "var(--color-ink)", fontSize: 12 })
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LabelList, { dataKey: "pct", position: "right", formatter: (v) => "".concat(v, "%"), fill: "var(--color-ink)", fontSize: 12 })
             ] })
           ] }) }) })
         ] }),
@@ -25306,7 +25309,7 @@
                   (0, import_ui.moedaCompacta)(s.aum)
                 ] })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-1 h-2 rounded-pill bg-secondary", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-2 rounded-pill bg-chart-2", style: { width: `${s.clientes / max2 * 100}%` } }) })
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-1 h-2 rounded-pill bg-secondary", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-2 rounded-pill bg-chart-2", style: { width: "".concat(s.clientes / max2 * 100, "%") } }) })
             ] }, s.segmento);
           }) })
         ] })

@@ -150,8 +150,8 @@
     };
     const viewBoxWidth = (_c = (_b = icon.size) != null ? _b : icon.width) != null ? _c : defaultAttributes["width"];
     const viewBoxHeight = (_e = (_d = icon.size) != null ? _d : icon.height) != null ? _e : defaultAttributes["height"];
-    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => `lucide-${alias}`)) != null ? _g : [];
-    const iconClassNames = [...icon.name ? [`lucide-${icon.name}`] : [], ...aliasClassNames];
+    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => "lucide-".concat(alias))) != null ? _g : [];
+    const iconClassNames = [...icon.name ? ["lucide-".concat(icon.name)] : [], ...aliasClassNames];
     const classNamesFromClassName = (_i = (_h = params.className) == null ? void 0 : _h.split(" ").filter(Boolean)) != null ? _i : [];
     const className = params.includeDefaultClasses === false ? mergeClasses(...classNamesFromClassName) : mergeClasses("lucide", ...iconClassNames, ...classNamesFromClassName);
     const calculatedStrokeWidth = params.absoluteStrokeWidth ? Number((_j = params.strokeWidth) != null ? _j : defaultAttributes["stroke-width"]) * Number((_l = (_k = icon.size) != null ? _k : icon.width) != null ? _l : defaultAttributes["width"]) / Number((_n = (_m = params.size) != null ? _m : params.width) != null ? _n : defaultAttributes["width"]) : (_o = params.strokeWidth) != null ? _o : defaultAttributes["stroke-width"];
@@ -177,7 +177,7 @@
       ...className && {
         [getAttributeName("class")]: className
       },
-      [getAttributeName("viewBox")]: `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+      [getAttributeName("viewBox")]: "0 0 ".concat(viewBoxWidth, " ").concat(viewBoxHeight),
       ...params.hasA11yProp === false ? {
         [getAttributeName("aria-hidden")]: "true"
       } : {},
@@ -545,7 +545,7 @@
       if (lista && !lista.some((a) => a.papel === sessao.papel && (a.papel === "GG" || a.id_gerente))) setSessao((s) => ({ ...s, papel: "GG" }));
     }, [atores.dados, sessao.papel]);
     const navegar = React.useCallback((destino) => {
-      window.location.hash = `/${destino}`;
+      window.location.hash = "/".concat(destino);
       setRota(destino);
     }, []);
     const emitir = React.useCallback((e) => {
@@ -575,7 +575,7 @@
         ROTAS.map((r) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
           "a",
           {
-            href: `#/${r.id}`,
+            href: "#/".concat(r.id),
             "aria-current": rota === r.id ? "page" : void 0,
             className: (0, import_ui2.cn)("flex min-h-10 items-center gap-2 whitespace-nowrap rounded-md px-3 text-button-sm hover:bg-sidebar-active", rota === r.id ? "bg-sidebar-active text-sidebar-foreground" : "text-sidebar-muted"),
             children: [
@@ -645,7 +645,7 @@
   var _a2;
   if (faltando.length > 0) {
     const erros = (_a2 = window.CARTEIRA_ERROS) != null ? _a2 : [];
-    raiz.textContent = `Micro-frontends ausentes: ${faltando.join(", ")}${erros.length ? ` | erros de carga: ${erros.join(" ; ")}` : ""}`;
+    raiz.textContent = "Micro-frontends ausentes: ".concat(faltando.join(", ")).concat(erros.length ? " | erros de carga: ".concat(erros.join(" ; ")) : "");
   } else {
     (0, import_client.createRoot)(raiz).render(/* @__PURE__ */ (0, import_jsx_runtime3.jsx)(App, { mfes }));
   }

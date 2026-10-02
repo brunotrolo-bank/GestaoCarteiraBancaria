@@ -140,8 +140,8 @@
     };
     const viewBoxWidth = (_c = (_b = icon.size) != null ? _b : icon.width) != null ? _c : defaultAttributes["width"];
     const viewBoxHeight = (_e = (_d = icon.size) != null ? _d : icon.height) != null ? _e : defaultAttributes["height"];
-    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => `lucide-${alias}`)) != null ? _g : [];
-    const iconClassNames = [...icon.name ? [`lucide-${icon.name}`] : [], ...aliasClassNames];
+    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => "lucide-".concat(alias))) != null ? _g : [];
+    const iconClassNames = [...icon.name ? ["lucide-".concat(icon.name)] : [], ...aliasClassNames];
     const classNamesFromClassName = (_i = (_h = params.className) == null ? void 0 : _h.split(" ").filter(Boolean)) != null ? _i : [];
     const className = params.includeDefaultClasses === false ? mergeClasses(...classNamesFromClassName) : mergeClasses("lucide", ...iconClassNames, ...classNamesFromClassName);
     const calculatedStrokeWidth = params.absoluteStrokeWidth ? Number((_j = params.strokeWidth) != null ? _j : defaultAttributes["stroke-width"]) * Number((_l = (_k = icon.size) != null ? _k : icon.width) != null ? _l : defaultAttributes["width"]) / Number((_n = (_m = params.size) != null ? _m : params.width) != null ? _n : defaultAttributes["width"]) : (_o = params.strokeWidth) != null ? _o : defaultAttributes["stroke-width"];
@@ -167,7 +167,7 @@
       ...className && {
         [getAttributeName("class")]: className
       },
-      [getAttributeName("viewBox")]: `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+      [getAttributeName("viewBox")]: "0 0 ".concat(viewBoxWidth, " ").concat(viewBoxHeight),
       ...params.hasA11yProp === false ? {
         [getAttributeName("aria-hidden")]: "true"
       } : {},
@@ -354,7 +354,7 @@
       }
     }, [comando]);
     const secoes = (_b = (_a = dados.dados) == null ? void 0 : _a.secoes) != null ? _b : [];
-    const chave = (s) => `${s.tipo}:${s.posicao.id_posicao}`;
+    const chave = (s) => "".concat(s.tipo, ":").concat(s.posicao.id_posicao);
     const ativa = (_c = secoes.find((s) => chave(s) === aba)) != null ? _c : secoes[0];
     if (dados.carregando && !dados.dados) return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { "aria-busy": "true", className: "flex flex-col gap-4", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-10 w-64" }),
@@ -449,12 +449,12 @@
         {
           colunas,
           dados: filtrados,
-          rotulo: `Clientes de ${p.nome_posicao}`,
+          rotulo: "Clientes de ".concat(p.nome_posicao),
           aoClicarLinha: (c) => aoAbrir(c.id_cliente),
           buscaPlaceholder: "Buscar cliente\u2026",
           filtros: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: `seg-${p.id_posicao}`, rotulo: "Segmento", className: "w-44", valor: segmento, aoMudar: setSegmento, opcoes: [{ valor: "todos", rotulo: "Todos" }, ...["UHNW", "Private", "Alta Renda", "Varejo"].map((s) => ({ valor: s, rotulo: s }))] }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: `st-${p.id_posicao}`, rotulo: "Status", className: "w-44", valor: status, aoMudar: setStatus, opcoes: [{ valor: "todos", rotulo: "Todos" }, ...["Ativo", "Em Prospec\xE7\xE3o", "Inativo"].map((s) => ({ valor: s, rotulo: s }))] })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "seg-".concat(p.id_posicao), rotulo: "Segmento", className: "w-44", valor: segmento, aoMudar: setSegmento, opcoes: [{ valor: "todos", rotulo: "Todos" }, ...["UHNW", "Private", "Alta Renda", "Varejo"].map((s) => ({ valor: s, rotulo: s }))] }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "st-".concat(p.id_posicao), rotulo: "Status", className: "w-44", valor: status, aoMudar: setStatus, opcoes: [{ valor: "todos", rotulo: "Todos" }, ...["Ativo", "Em Prospec\xE7\xE3o", "Inativo"].map((s) => ({ valor: s, rotulo: s }))] })
           ] })
         }
       )
@@ -498,7 +498,7 @@
           " Revelar documento"
         ] }) }),
         erroDoc ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", className: "mt-3", children: erroDoc }) : null,
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dl", { className: "mt-5 grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-4", children: [["AUM", (0, import_ui.moeda)(c.volume_aum)], ["Renda / faturamento", (0, import_ui.moeda)(c.faixa_renda_faturamento)], ["Score de risco", `${(0, import_ui.inteiro)(c.score_risco)} / 1.000`], ["Posi\xE7\xE3o atual", d.posicao_atual.nome_posicao], ["Na carteira desde", (0, import_ui.dataBR)(c.data_carteirizacao)]].map(([k, val]) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-md bg-secondary px-4 py-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dl", { className: "mt-5 grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-4", children: [["AUM", (0, import_ui.moeda)(c.volume_aum)], ["Renda / faturamento", (0, import_ui.moeda)(c.faixa_renda_faturamento)], ["Score de risco", "".concat((0, import_ui.inteiro)(c.score_risco), " / 1.000")], ["Posi\xE7\xE3o atual", d.posicao_atual.nome_posicao], ["Na carteira desde", (0, import_ui.dataBR)(c.data_carteirizacao)]].map(([k, val]) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-md bg-secondary px-4 py-3", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dt", { className: "text-caption text-secondary-foreground", children: k }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", { className: "tnum mt-1 text-body-md text-foreground", children: val })
         ] }, k)) })
@@ -509,7 +509,7 @@
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", { className: "mt-3 flex flex-1 flex-col gap-2", children: d.produtos.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { className: "flex min-h-10 items-center gap-2 rounded-md border border-border px-3 text-body-md", children: [
             p.contratado ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { "aria-hidden": true, className: "size-4 shrink-0 text-foreground" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Minus, { "aria-hidden": true, className: "size-4 shrink-0 text-muted-foreground" }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: p.contratado ? "text-foreground" : "text-muted-foreground", children: p.nome }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "ml-auto text-caption text-muted-foreground", children: p.contratado ? `desde ${(0, import_ui.dataBR)(p.data_contratacao)}` : "n\xE3o contratado" })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "ml-auto text-caption text-muted-foreground", children: p.contratado ? "desde ".concat((0, import_ui.dataBR)(p.data_contratacao)) : "n\xE3o contratado" })
           ] }, p.codigo)) })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { className: "flex flex-col", "aria-labelledby": "t360-hist", children: [
@@ -572,7 +572,7 @@
     }
     return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Dialogo, { open: true, onOpenChange: (a) => {
       if (!a) aoFechar();
-    }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.DialogoConteudo, { titulo: "Transferir de posi\xE7\xE3o", descricao: `${cliente.nome_razao_social} deixa a posi\xE7\xE3o atual; o hist\xF3rico \xE9 preservado.`, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", { onSubmit: enviar, className: "flex flex-col gap-4", children: [
+    }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.DialogoConteudo, { titulo: "Transferir de posi\xE7\xE3o", descricao: "".concat(cliente.nome_razao_social, " deixa a posi\xE7\xE3o atual; o hist\xF3rico \xE9 preservado."), children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", { onSubmit: enviar, className: "flex flex-col gap-4", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "transf-destino", rotulo: "Posi\xE7\xE3o de destino", valor: destino, aoMudar: setDestino, opcoes: destinos.map((a) => ({ valor: a.papel, rotulo: a.rotulo })) }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "transf-motivo", children: "Motivo" }),
@@ -604,7 +604,7 @@
     const [desfeito, setDesfeito] = React.useState(false);
     const [erro, setErro] = React.useState(null);
     const [ocupado, setOcupado] = React.useState(false);
-    const chave = React.useRef(`LOTE-UI-${Date.now()}`);
+    const chave = React.useRef("LOTE-UI-".concat(Date.now()));
     const excedida = (_c = simulacao == null ? void 0 : simulacao.avisos.some((a) => a.codigo === "CAPACIDADE_EXCEDIDA")) != null ? _c : false;
     const nome = (id) => {
       var _a2, _b2, _c2;
@@ -653,7 +653,7 @@
     }
     if (lote) {
       return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { titulo: desfeito ? "Lote desfeito" : "Redistribui\xE7\xE3o conclu\xEDda", children: desfeito ? `As movimenta\xE7\xF5es do lote ${lote.id_lote} foram compensadas; o hist\xF3rico foi preservado.` : `${(0, import_ui.inteiro)(lote.movimentacoes.length)} clientes movidos para ${nome(destino)} no lote ${lote.id_lote}. Auditoria registrada.` }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { titulo: desfeito ? "Lote desfeito" : "Redistribui\xE7\xE3o conclu\xEDda", children: desfeito ? "As movimenta\xE7\xF5es do lote ".concat(lote.id_lote, " foram compensadas; o hist\xF3rico foi preservado.") : "".concat((0, import_ui.inteiro)(lote.movimentacoes.length), " clientes movidos para ").concat(nome(destino), " no lote ").concat(lote.id_lote, ". Auditoria registrada.") }),
         !desfeito ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { variante: "secundario", onClick: () => void desfazer(), disabled: ocupado, children: "Desfazer lote" }) : null,
         erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", children: erro }) : null
       ] });
@@ -711,7 +711,7 @@
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "red-just", children: "Justificativa (capacidade excedida)" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.AreaTexto, { id: "red-just", value: justificativa, onChange: (e) => setJustificativa(e.target.value), required: true })
         ] }) : null,
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { onClick: () => void confirmar(), disabled: !motivo.trim() || excedida && !justificativa.trim() || ocupado, children: ocupado ? "Executando\u2026" : `Confirmar redistribui\xE7\xE3o de ${(0, import_ui.inteiro)(simulacao.clientes_a_mover.length)} clientes` })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { onClick: () => void confirmar(), disabled: !motivo.trim() || excedida && !justificativa.trim() || ocupado, children: ocupado ? "Executando\u2026" : "Confirmar redistribui\xE7\xE3o de ".concat((0, import_ui.inteiro)(simulacao.clientes_a_mover.length), " clientes") })
       ] }) : null,
       erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", children: erro }) : null
     ] });
