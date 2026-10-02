@@ -120,6 +120,7 @@ const comoScript = (js: string): string => `<script>\n${js.replace(/<\/script/gi
 async function jsFront(entrada: string, externalizar: boolean): Promise<string> {
   const r = await esbuild({
     entryPoints: [src(entrada)], bundle: true, write: false, format: 'iife', platform: 'browser', target: 'es2019', supported: { 'template-literal': false }, minify: false /* legível e indentado no editor do Apps Script */, charset: 'ascii', legalComments: 'none',
+    loader: { '.jpg': 'dataurl', '.jpeg': 'dataurl', '.png': 'dataurl', '.gif': 'dataurl', '.webp': 'dataurl', '.svg': 'dataurl' }, /* imagens embutidas como data URI (HtmlService não usa URL externa) */
     jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"' }, logLevel: 'error',
     plugins: externalizar ? [globais((esp) => EXTERNOS_FRONT[esp] ?? null)] : [],
   });
