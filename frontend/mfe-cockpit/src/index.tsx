@@ -1,12 +1,12 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import { Bar, BarChart, CartesianGrid, Cell, LabelList, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { ArrowRightLeft } from 'lucide-react';
-import { Botao, Cartao, CartaoDescricao, CartaoTitulo, EstadoErro, Esqueleto, Kpi, Selo, SemPermissao, TabelaDados, inteiro, moeda, moedaCompacta, percentual } from '@carteira/ui';
+import { BarrasCapacidade, BarrasHorizontais, Botao, Cartao, CartaoDescricao, CartaoTitulo, Colunas, CurvaConcentracao, EstadoErro, Esqueleto, Kpi, LinhasTempo, ListaInsights, ListaRanking, MapaCalor, Rosca, Selo, SemPermissao, TabelaDados, inteiro, moeda, moedaCompacta, percentual } from '@carteira/ui';
 import { ApiErro, useConsulta, type PropsMfe, type ResumoPosicao } from '@carteira/sdk';
 
 /** MFE do domínio 05 — Torre de Controle (GG) e resumo da própria carteira. Nada é calculado aqui: só exibe o que a API devolve. */
 export default function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }: PropsMfe) {
   const { dados, erro, carregando, recarregar } = useConsulta(() => api.agencia(), [sessao.papel, sessao.dataSimulada, versao]);
+  const analise = useConsulta(() => api.analise(), [sessao.papel, sessao.dataSimulada, versao]).dados;
 
   if (carregando && !dados) return <Carregando />;
   if (erro) return erro instanceof ApiErro && (erro.codigo === 'ACESSO_NEGADO' || erro.status === 403) ? <SemPermissao /> : <EstadoErro mensagem={erro.message} aoTentar={recarregar} />;
@@ -14,7 +14,9 @@ export default function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }:
 
   const agencia = dados.escopo === 'Agencia';
   const grafico = dados.posicoes.map((p) => ({ nome: p.id_posicao.replace('POS-AG01-', 'POS-'), pct: Math.round(p.utilizacao * 1000) / 10, alerta: p.desbalanceamento }));
-  const limite = Math.max(130, ...grafico.map((g) => g.pct + 15));
+  const pct1 = (v: number): string => `${v.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`;
+  const abrirCliente = (idCliente: string) => emitir({ tipo: 'cliente-selecionado', idCliente });
+  const ROTULO_DESTINO: Record<string, string> = { posicoes: 'Ver posições', carteira: 'Ver carteira', delegacoes: 'Ver delegações', cockpit: 'Ver Torre de Controle' };
 
   const colunas: ColumnDef<ResumoPosicao, any>[] = [
     { id: 'posicao', header: 'Posição', accessorFn: (p) => p.nome_posicao, cell: ({ row }) => (<div><p className="text-body-md text-foreground">{row.original.nome_posicao}</p><p className="text-caption text-muted-foreground">{row.original.id_posicao}</p></div>), meta: { rotulo: 'Posição' } },
@@ -58,48 +60,109 @@ export default function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }:
         <Kpi rotulo="Posições em alerta" valor={inteiro(dados.posicoes_em_alerta)} dica="Acima de 100% ou abaixo de 50% da capacidade" />
       </section>
 
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-3" aria-label="Gráficos">
+      {analise ? (
+        <section aria-label="O que merece atenção" className="flex flex-col gap-3">
+          <h2 className="text-heading-lg text-foreground">O que merece atenção</h2>
+          <ListaInsights itens={analise.insights} rotuloAcao={(d) => ROTULO_DESTINO[d] ?? 'Abrir'} aoAbrir={(d) => emitir({ tipo: 'navegar', destino: d as 'cockpit' | 'posicoes' | 'carteira' | 'delegacoes' })} />
+        </section>
+      ) : null}
+
+      {analise ? (
+        <section aria-label="Indicadores de relacionamento e concentração" className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Kpi rotulo="Concentração nos 10 maiores" valor={pct1(analise.concentracao.top10_pct)} dica={`Maior cliente: ${pct1(analise.concentracao.maior_cliente_pct)} do AUM`} />
+          <Kpi rotulo="Sem contato há mais de 90 dias" valor={inteiro(analise.engajamento.sem_contato_90d)} dica={`${pct1(analise.engajamento.pct_sem_contato)} dos clientes ativos`} />
+          <Kpi rotulo="Coberturas vigentes" valor={inteiro(analise.delegacoes.vigentes)} dica={`${inteiro(analise.delegacoes.expirando_7d)} terminam em até 7 dias`} />
+          <Kpi rotulo="Novos clientes em 12 meses" valor={inteiro(analise.serie_mensal.reduce((a, m) => a + m.novos_clientes, 0))} dica="Entradas na carteira (carteirização)" />
+        </section>
+      ) : null}
+
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-3" aria-label="Capacidade e segmentos">
         <Cartao className="lg:col-span-2">
           <CartaoTitulo>Capacidade por posição</CartaoTitulo>
           <CartaoDescricao>Utilização = clientes ativos ÷ capacidade. Linhas: mínimo de 50% e limite de 100%.</CartaoDescricao>
-          <div className="mt-4 h-72" role="img" aria-label={`Utilização de capacidade: ${grafico.map((g) => `${g.nome} ${g.pct}%`).join('; ')}`}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={grafico} layout="vertical" margin={{ left: 8, right: 56, top: 28, bottom: 8 }}>
-                <CartesianGrid horizontal={false} stroke="var(--color-hairline)" />
-                <XAxis type="number" domain={[0, limite]} ticks={[0, 25, 50, 75, 100, 125, 150].filter((t) => t <= limite)} tickFormatter={(v) => `${v}%`} className="tnum" tick={{ fill: 'var(--color-ink-mute)', fontSize: 12 }} />
-                <YAxis type="category" dataKey="nome" width={64} tick={{ fill: 'var(--color-ink-secondary)', fontSize: 12 }} />
-                <Tooltip formatter={(v) => [`${v}%`, 'Utilização']} cursor={{ fill: 'var(--color-canvas-soft)' }} contentStyle={{ borderRadius: 8, borderColor: 'var(--color-hairline)' }} />
-                <ReferenceLine x={100} stroke="var(--color-ink-mute)" strokeDasharray="4 4" label={{ value: '100%', position: 'top', fill: 'var(--color-ink-mute)', fontSize: 11 }} />
-                <ReferenceLine x={50} stroke="var(--color-ink-mute)" strokeDasharray="4 4" label={{ value: '50%', position: 'top', fill: 'var(--color-ink-mute)', fontSize: 11 }} />
-                <Bar dataKey="pct" radius={[0, 4, 4, 0]} barSize={22}>
-                  {grafico.map((g) => <Cell key={g.nome} fill={g.alerta ? 'var(--color-chart-4)' : 'var(--color-chart-1)'} />)}
-                  <LabelList dataKey="pct" position="right" formatter={(v) => `${v}%`} fill="var(--color-ink)" fontSize={12} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <div className="mt-4"><BarrasCapacidade dados={grafico} /></div>
         </Cartao>
         <Cartao>
-          <CartaoTitulo>Clientes por segmento</CartaoTitulo>
-          <CartaoDescricao>Clientes ativos e AUM de cada segmento.</CartaoDescricao>
-          <ul className="mt-4 flex flex-col gap-3">
-            {dados.por_segmento.map((s) => {
-              const max = Math.max(...dados.por_segmento.map((x) => x.clientes), 1);
-              return (
-                <li key={s.segmento}>
-                  <div className="flex items-baseline justify-between text-body-md">
-                    <span className="text-foreground">{s.segmento}</span>
-                    <span className="tnum text-body-tabular text-secondary-foreground">{inteiro(s.clientes)} · {moedaCompacta(s.aum)}</span>
-                  </div>
-                  <div className="mt-1 h-2 rounded-pill bg-secondary" aria-hidden>
-                    <div className="h-2 rounded-pill bg-chart-2" style={{ width: `${(s.clientes / max) * 100}%` }} />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          <CartaoTitulo>AUM por segmento</CartaoTitulo>
+          <CartaoDescricao>Participação de cada segmento no AUM dos clientes ativos.</CartaoDescricao>
+          <div className="mt-4">
+            <Rosca dados={dados.por_segmento.map((x) => ({ rotulo: x.segmento, valor: x.aum }))} formatar={moedaCompacta} total={moedaCompacta(dados.aum_total)} rotuloTotal="AUM total" />
+            <p className="mt-3 text-caption text-secondary-foreground">Clientes: {dados.por_segmento.map((x) => `${x.segmento} ${inteiro(x.clientes)}`).join(' · ')}</p>
+          </div>
         </Cartao>
       </section>
+
+      {analise ? (
+        <>
+          <section className="grid grid-cols-1 gap-4 lg:grid-cols-3" aria-label="Tendência e concentração">
+            <Cartao className="lg:col-span-2">
+              <CartaoTitulo>Tendência dos últimos 12 meses</CartaoTitulo>
+              <CartaoDescricao>Contratações de produtos, interações de relacionamento e novos clientes por mês.</CartaoDescricao>
+              <div className="mt-4"><LinhasTempo rotulo="Tendência mensal" dados={analise.serie_mensal} series={[{ chave: 'interacoes', rotulo: 'Interações' }, { chave: 'contratacoes', rotulo: 'Contratações de produtos' }, { chave: 'novos_clientes', rotulo: 'Novos clientes' }]} /></div>
+            </Cartao>
+            <Cartao>
+              <CartaoTitulo>Concentração do AUM</CartaoTitulo>
+              <CartaoDescricao>Quanto do AUM cabe nos maiores clientes. A linha tracejada seria a distribuição igualitária.</CartaoDescricao>
+              <div className="mt-4"><CurvaConcentracao curva={analise.concentracao.curva} /></div>
+              <p className="mt-2 text-caption text-secondary-foreground">20% dos clientes concentram <span className="tnum text-foreground">{pct1(analise.concentracao.top20pct_clientes_pct)}</span> do AUM.</p>
+            </Cartao>
+          </section>
+
+          <section className="grid grid-cols-1 gap-4 lg:grid-cols-3" aria-label="Perfil da base">
+            <Cartao className="lg:col-span-2">
+              <CartaoTitulo>Posição × segmento de cliente</CartaoTitulo>
+              <CartaoDescricao>Clientes ativos em cada combinação: mostra se as posições seguem sua especialidade.</CartaoDescricao>
+              <div className="mt-3">
+                <MapaCalor rotulo="Mapa de calor: posição por segmento" colunas={analise.mapa_posicao_segmento[0]?.celulas.map((c) => c.segmento) ?? []}
+                  linhas={analise.mapa_posicao_segmento.map((p) => ({ id: p.id_posicao, rotulo: p.id_posicao.replace('POS-AG01-', 'POS-'), sub: p.nome_posicao, valores: p.celulas.map((c) => c.clientes) }))} />
+              </div>
+            </Cartao>
+            <Cartao>
+              <CartaoTitulo>Clientes por faixa de AUM</CartaoTitulo>
+              <CartaoDescricao>Poucos clientes grandes e muitos pequenos.</CartaoDescricao>
+              <div className="mt-4"><BarrasHorizontais rotuloValor="Clientes" altura="h-56" dados={analise.faixas_aum.map((f) => ({ rotulo: f.faixa, valor: f.clientes }))} /></div>
+            </Cartao>
+          </section>
+
+          <section className="grid grid-cols-1 gap-4 lg:grid-cols-3" aria-label="Produtos e canais">
+            <Cartao>
+              <CartaoTitulo>Penetração por produto</CartaoTitulo>
+              <CartaoDescricao>% dos clientes ativos que têm o produto.</CartaoDescricao>
+              <div className="mt-4"><BarrasHorizontais rotuloValor="Penetração" formatar={(v) => `${v}%`} dados={[...dados.penetracao_por_produto].sort((a, b) => b.penetracao - a.penetracao).map((p) => ({ rotulo: p.nome, valor: Math.round(p.penetracao * 100) }))} /></div>
+            </Cartao>
+            <Cartao>
+              <CartaoTitulo>Produtos por cliente</CartaoTitulo>
+              <CartaoDescricao>Clientes com poucos produtos são oportunidade de venda cruzada.</CartaoDescricao>
+              <div className="mt-4"><Colunas chave="produtos" rotuloValor="Clientes" dados={analise.produtos_por_cliente.map((f) => ({ produtos: f.produtos.replace(' produtos', '').replace(' produto', '').replace('Nenhum', '0').replace(' ou mais', '+'), valor: f.clientes }))} /></div>
+            </Cartao>
+            <Cartao>
+              <CartaoTitulo>Canais de relacionamento</CartaoTitulo>
+              <CartaoDescricao>Interações registradas nos últimos 90 dias.</CartaoDescricao>
+              <div className="mt-4"><BarrasHorizontais rotuloValor="Interações" dados={analise.canais_90d.map((c) => ({ rotulo: c.canal, valor: c.interacoes }))} /></div>
+            </Cartao>
+          </section>
+
+          <section className="grid grid-cols-1 gap-4 lg:grid-cols-3" aria-label="Clientes em foco">
+            <Cartao>
+              <CartaoTitulo>Maiores clientes</CartaoTitulo>
+              <CartaoDescricao>Por AUM, com a participação no total.</CartaoDescricao>
+              <div className="mt-3"><ListaRanking vazio="Sem clientes ativos." itens={analise.top_clientes.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: `${c.segmento} · ${c.id_cliente}`, valor: moedaCompacta(c.aum), apoio: pct1(c.pct_do_total), aoClicar: () => abrirCliente(c.id_cliente) }))} /></div>
+            </Cartao>
+            <Cartao>
+              <CartaoTitulo>Prioridade de contato</CartaoTitulo>
+              <CartaoDescricao>Maiores clientes sem interação há mais de 90 dias.</CartaoDescricao>
+              <div className="mt-3"><ListaRanking vazio="Todos os clientes tiveram contato recente." itens={analise.engajamento.prioritarios.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: `${c.segmento} · ${c.id_cliente}`, valor: moedaCompacta(c.aum), apoio: c.dias_sem_contato === null ? 'nunca contatado' : `${c.dias_sem_contato} dias`, aoClicar: () => abrirCliente(c.id_cliente) }))} /></div>
+            </Cartao>
+            <Cartao>
+              <CartaoTitulo>Oportunidades de venda cruzada</CartaoTitulo>
+              <CartaoDescricao>Maiores clientes com até 2 produtos.</CartaoDescricao>
+              <div className="mt-3"><ListaRanking vazio="Nenhuma oportunidade identificada." itens={analise.oportunidades.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: `Falta: ${c.produtos_faltantes.slice(0, 3).join(', ')}${c.produtos_faltantes.length > 3 ? '…' : ''}`, valor: moedaCompacta(c.aum), apoio: `${c.produtos_ativos} de 5 produtos`, aoClicar: () => abrirCliente(c.id_cliente) }))} /></div>
+            </Cartao>
+          </section>
+        </>
+      ) : (
+        <Esqueleto className="h-80" />
+      )}
 
       <section aria-label="Posições" className="flex flex-col gap-3">
         <h2 className="text-heading-lg text-foreground">Posições</h2>

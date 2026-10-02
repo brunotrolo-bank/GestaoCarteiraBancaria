@@ -34,6 +34,27 @@ export interface ResumoAgencia {
   posicoes_em_alerta: number;
 }
 
+export type SeveridadeInsight = 'critico' | 'atencao' | 'info' | 'positivo';
+export interface InsightNegocio { severidade: SeveridadeInsight; titulo: string; detalhe: string; destino?: 'cockpit' | 'posicoes' | 'carteira' | 'delegacoes' }
+export interface ClienteResumo { id_cliente: string; nome: string; segmento: string; aum: number; id_posicao: string }
+export interface AnaliseCarteira {
+  calculado_em: string;
+  escopo: 'Agencia' | 'Carteira';
+  por_segmento: { segmento: string; clientes: number; aum: number }[];
+  concentracao: { maior_cliente_pct: number; top10_pct: number; top20pct_clientes_pct: number; curva: { pct_clientes: number; pct_aum: number }[] };
+  faixas_aum: { faixa: string; clientes: number; aum: number }[];
+  faixas_score: { faixa: string; clientes: number }[];
+  produtos_por_cliente: { produtos: string; clientes: number }[];
+  serie_mensal: { mes: string; contratacoes: number; interacoes: number; novos_clientes: number }[];
+  canais_90d: { canal: string; interacoes: number }[];
+  mapa_posicao_segmento: { id_posicao: string; nome_posicao: string; celulas: { segmento: string; clientes: number }[] }[];
+  engajamento: { sem_contato_90d: number; pct_sem_contato: number; prioritarios: (ClienteResumo & { dias_sem_contato: number | null })[] };
+  oportunidades: (ClienteResumo & { produtos_ativos: number; produtos_faltantes: string[] })[];
+  top_clientes: (ClienteResumo & { pct_do_total: number })[];
+  delegacoes: { vigentes: number; expirando_7d: number };
+  insights: InsightNegocio[];
+}
+
 export interface ClienteMascarado {
   id_cliente: string;
   nome_razao_social: string;

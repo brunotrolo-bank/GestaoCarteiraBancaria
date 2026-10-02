@@ -72,6 +72,7 @@ export function App({ mfes }: { mfes: Mfes }) {
     window.dispatchEvent(new CustomEvent(EVENTO_MFE, { detail: e }));
     if (e.tipo === 'navegar') navegar(e.destino === 'cockpit' ? 'cockpit' : e.destino);
     else if (e.tipo === 'abrir-redistribuicao') { setComando({ tipo: 'abrir-redistribuicao', idPosicaoOrigem: e.idPosicaoOrigem, nonce: Date.now() }); navegar('carteira'); }
+    else if (e.tipo === 'cliente-selecionado') { setComando({ tipo: 'abrir-cliente', idCliente: e.idCliente, nonce: Date.now() }); navegar('carteira'); }
     else if (e.tipo === 'dados-alterados') setVersao((v) => v + 1);
   }, [navegar]);
 

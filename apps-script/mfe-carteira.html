@@ -60,7 +60,7 @@
   });
 
   // frontend/mfe-carteira/src/index.tsx
-  var React = __toESM(require_react(), 1);
+  var React2 = __toESM(require_react(), 1);
 
   // node_modules/lucide-react/dist/esm/createLucideIcon.mjs
   var import_react3 = __toESM(require_react(), 1);
@@ -309,8 +309,26 @@
   __iconData2.node;
   var Check = createLucideIcon(__iconData2);
 
-  // node_modules/lucide-react/dist/esm/icons/eye.mjs
+  // node_modules/lucide-react/dist/esm/icons/chevron-down.mjs
   var __iconData3 = {
+    name: "chevron-down",
+    size: 24,
+    node: [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]]
+  };
+  __iconData3.node;
+  var ChevronDown = createLucideIcon(__iconData3);
+
+  // node_modules/lucide-react/dist/esm/icons/chevron-up.mjs
+  var __iconData4 = {
+    name: "chevron-up",
+    size: 24,
+    node: [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]]
+  };
+  __iconData4.node;
+  var ChevronUp = createLucideIcon(__iconData4);
+
+  // node_modules/lucide-react/dist/esm/icons/eye.mjs
+  var __iconData5 = {
     name: "eye",
     size: 24,
     node: [
@@ -324,152 +342,229 @@
       ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
     ]
   };
-  __iconData3.node;
-  var Eye = createLucideIcon(__iconData3);
+  __iconData5.node;
+  var Eye = createLucideIcon(__iconData5);
 
   // node_modules/lucide-react/dist/esm/icons/minus.mjs
-  var __iconData4 = {
+  var __iconData6 = {
     name: "minus",
     size: 24,
     node: [["path", { d: "M5 12h14", key: "1ays0h" }]]
   };
-  __iconData4.node;
-  var Minus = createLucideIcon(__iconData4);
+  __iconData6.node;
+  var Minus = createLucideIcon(__iconData6);
 
   // frontend/mfe-carteira/src/index.tsx
+  var import_ui2 = __toESM(require_ui(), 1);
+
+  // frontend/mfe-carteira/src/analises.tsx
+  var React = __toESM(require_react(), 1);
   var import_ui = __toESM(require_ui(), 1);
   var import_sdk = __toESM(require_sdk(), 1);
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
+  var pct1 = (v) => "".concat(v.toLocaleString("pt-BR", { maximumFractionDigits: 1 }), "%");
+  function PainelAnalises({ api, sessao, versao, aoAbrirCliente }) {
+    var _a;
+    const [aberto, setAberto] = React.useState(true);
+    const { dados: a } = (0, import_sdk.useConsulta)(() => api.analise(), [sessao.papel, sessao.dataSimulada, versao]);
+    const insights = ((_a = a == null ? void 0 : a.insights) != null ? _a : []).filter((i) => i.destino === void 0 || i.destino === "carteira");
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "An\xE1lises da carteira", className: "flex flex-col gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { className: "text-heading-lg text-foreground", children: "An\xE1lises da carteira" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Botao, { variante: "secundario", tamanho: "sm", "aria-expanded": aberto, onClick: () => setAberto((v) => !v), children: [
+          aberto ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronUp, { "aria-hidden": true, className: "size-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { "aria-hidden": true, className: "size-4" }),
+          aberto ? "Recolher" : "Expandir"
+        ] })
+      ] }),
+      !aberto ? null : !a ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { "aria-busy": "true", "aria-label": "Carregando an\xE1lises", className: "grid grid-cols-1 gap-4 lg:grid-cols-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-64" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-64" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-64" })
+      ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+        insights.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.ListaInsights, { itens: insights, rotuloAcao: () => "Ver clientes" }) : null,
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Concentra\xE7\xE3o nos 10 maiores", valor: pct1(a.concentracao.top10_pct), dica: "Maior cliente: ".concat(pct1(a.concentracao.maior_cliente_pct), " do AUM") }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Sem contato h\xE1 mais de 90 dias", valor: (0, import_ui.inteiro)(a.engajamento.sem_contato_90d), dica: "".concat(pct1(a.engajamento.pct_sem_contato), " dos clientes ativos") }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Oportunidades de venda cruzada", valor: (0, import_ui.inteiro)(a.oportunidades.length), dica: "Maiores clientes com at\xE9 2 produtos" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Contrata\xE7\xF5es em 12 meses", valor: (0, import_ui.inteiro)(a.serie_mensal.reduce((x, m) => x + m.contratacoes, 0)), dica: "".concat((0, import_ui.inteiro)(a.serie_mensal.reduce((x, m) => x + m.interacoes, 0)), " intera\xE7\xF5es no per\xEDodo") })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Perfil por segmento" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Participa\xE7\xE3o no AUM de cada segmento." }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rosca, { dados: a.por_segmento.map((x) => ({ rotulo: x.segmento, valor: x.aum })), formatar: import_ui.moedaCompacta, total: (0, import_ui.moedaCompacta)(a.por_segmento.reduce((t, x) => t + x.aum, 0)), rotuloTotal: "AUM total" }) })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Score de risco" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Clientes ativos por faixa de score (1 a 1000)." }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Colunas, { chave: "faixa", rotuloValor: "Clientes", dados: a.faixas_score.map((f) => ({ faixa: f.faixa, valor: f.clientes })), destaque: (l) => l.faixa === "At\xE9 499" }) })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Produtos por cliente" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Quantos produtos cada cliente ativo possui." }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Colunas, { chave: "produtos", rotuloValor: "Clientes", dados: a.produtos_por_cliente.map((f) => ({ produtos: f.produtos.replace(" produtos", "").replace(" produto", "").replace("Nenhum", "0").replace(" ou mais", "+"), valor: f.clientes })) }) })
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Maiores clientes" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Por AUM; clique para abrir a vis\xE3o 360\xB0." }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.ListaRanking, { vazio: "Sem clientes ativos.", itens: a.top_clientes.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: "".concat(c.segmento, " \xB7 ").concat(c.id_cliente), valor: (0, import_ui.moedaCompacta)(c.aum), apoio: pct1(c.pct_do_total), aoClicar: () => aoAbrirCliente(c.id_cliente) })) }) })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Prioridade de contato" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Maiores clientes sem intera\xE7\xE3o h\xE1 mais de 90 dias." }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.ListaRanking, { vazio: "Todos os clientes tiveram contato recente.", itens: a.engajamento.prioritarios.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: "".concat(c.segmento, " \xB7 ").concat(c.id_cliente), valor: (0, import_ui.moedaCompacta)(c.aum), apoio: c.dias_sem_contato === null ? "nunca contatado" : "".concat(c.dias_sem_contato, " dias"), aoClicar: () => aoAbrirCliente(c.id_cliente) })) }) })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Oportunidades de venda cruzada" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Maiores clientes com at\xE9 2 produtos." }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.ListaRanking, { vazio: "Nenhuma oportunidade identificada.", itens: a.oportunidades.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: "Falta: ".concat(c.produtos_faltantes.slice(0, 3).join(", ")).concat(c.produtos_faltantes.length > 3 ? "\u2026" : ""), valor: (0, import_ui.moedaCompacta)(c.aum), apoio: "".concat(c.produtos_ativos, " de 5 produtos"), aoClicar: () => aoAbrirCliente(c.id_cliente) })) }) })
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Canais de relacionamento" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Intera\xE7\xF5es registradas nos \xFAltimos 90 dias." }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.BarrasHorizontais, { rotuloValor: "Intera\xE7\xF5es", altura: "h-40", dados: a.canais_90d.map((c) => ({ rotulo: c.canal, valor: c.interacoes })) }) })
+        ] })
+      ] })
+    ] });
+  }
+
+  // frontend/mfe-carteira/src/index.tsx
+  var import_sdk2 = __toESM(require_sdk(), 1);
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   function Carteira({ api, sessao, versao, ehGerenteGeral, emitir, comando }) {
     var _a, _b, _c;
-    const dados = (0, import_sdk.useConsulta)(() => api.minhaCarteira(), [sessao.papel, sessao.dataSimulada, versao]);
-    const [aba, setAba] = React.useState(null);
-    const [cliente, setCliente] = React.useState(null);
-    const [assistente, setAssistente] = React.useState(null);
-    const ultimoComando = React.useRef(0);
-    React.useEffect(() => {
-      if (comando && comando.nonce !== ultimoComando.current && comando.tipo === "abrir-redistribuicao") {
-        ultimoComando.current = comando.nonce;
-        setAssistente({ origem: comando.idPosicaoOrigem });
-      }
+    const dados = (0, import_sdk2.useConsulta)(() => api.minhaCarteira(), [sessao.papel, sessao.dataSimulada, versao]);
+    const [aba, setAba] = React2.useState(null);
+    const [cliente, setCliente] = React2.useState(null);
+    const [assistente, setAssistente] = React2.useState(null);
+    const ultimoComando = React2.useRef(0);
+    React2.useEffect(() => {
+      if (!comando || comando.nonce === ultimoComando.current) return;
+      ultimoComando.current = comando.nonce;
+      if (comando.tipo === "abrir-redistribuicao") setAssistente({ origem: comando.idPosicaoOrigem });
+      else setCliente(comando.idCliente);
     }, [comando]);
     const secoes = (_b = (_a = dados.dados) == null ? void 0 : _a.secoes) != null ? _b : [];
     const chave = (s) => "".concat(s.tipo, ":").concat(s.posicao.id_posicao);
     const ativa = (_c = secoes.find((s) => chave(s) === aba)) != null ? _c : secoes[0];
-    if (dados.carregando && !dados.dados) return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { "aria-busy": "true", className: "flex flex-col gap-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-10 w-64" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-96" })
+    if (dados.carregando && !dados.dados) return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { "aria-busy": "true", className: "flex flex-col gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-10 w-64" }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-96" })
     ] });
-    if (dados.erro) return dados.erro instanceof import_sdk.ApiErro && dados.erro.status === 403 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.SemPermissao, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.EstadoErro, { mensagem: dados.erro.message, aoTentar: dados.recarregar });
-    if (secoes.length === 0) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.EstadoVazio, { titulo: "Nenhuma carteira vis\xEDvel", children: "Este papel n\xE3o \xE9 titular de posi\xE7\xE3o nem tem delega\xE7\xE3o vigente nesta data. Troque o papel ou a data no topo." });
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-6", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "flex flex-wrap items-end justify-between gap-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "text-display-lg text-foreground", children: "Carteira" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-1 text-body-md text-secondary-foreground", children: ehGerenteGeral ? "Todas as carteiras da ag\xEAncia, uma por posi\xE7\xE3o." : "Sua carteira e as coberturas tempor\xE1rias vigentes." })
+    if (dados.erro) return dados.erro instanceof import_sdk2.ApiErro && dados.erro.status === 403 ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.SemPermissao, {}) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.EstadoErro, { mensagem: dados.erro.message, aoTentar: dados.recarregar });
+    if (secoes.length === 0) return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.EstadoVazio, { titulo: "Nenhuma carteira vis\xEDvel", children: "Este papel n\xE3o \xE9 titular de posi\xE7\xE3o nem tem delega\xE7\xE3o vigente nesta data. Troque o papel ou a data no topo." });
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-col gap-6", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("header", { className: "flex flex-wrap items-end justify-between gap-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h1", { className: "text-display-lg text-foreground", children: "Carteira" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mt-1 text-body-md text-secondary-foreground", children: ehGerenteGeral ? "Todas as carteiras da ag\xEAncia, uma por posi\xE7\xE3o." : "Sua carteira e as coberturas tempor\xE1rias vigentes." })
         ] }),
-        ehGerenteGeral ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Botao, { onClick: () => setAssistente({}), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRightLeft, { "aria-hidden": true, className: "size-4" }),
+        ehGerenteGeral ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Botao, { onClick: () => setAssistente({}), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(ArrowRightLeft, { "aria-hidden": true, className: "size-4" }),
           " Redistribuir clientes"
         ] }) : null
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Abas, { value: chave(ativa), onValueChange: setAba, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.AbasLista, { "aria-label": "Carteiras", className: "overflow-x-auto", children: secoes.map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.AbasGatilho, { value: chave(s), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(PainelAnalises, { api, sessao, versao, aoAbrirCliente: setCliente }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Abas, { value: chave(ativa), onValueChange: setAba, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.AbasLista, { "aria-label": "Carteiras", className: "overflow-x-auto", children: secoes.map((s) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.AbasGatilho, { value: chave(s), children: [
           s.tipo === "Delegada" ? "Carteira Delegada" : ehGerenteGeral ? s.posicao.nome_posicao : "Minha Carteira",
-          s.tipo === "Delegada" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "tag", children: "Cobertura tempor\xE1ria" }) : null
+          s.tipo === "Delegada" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Selo, { variante: "tag", children: "Cobertura tempor\xE1ria" }) : null
         ] }, chave(s))) }),
-        secoes.map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.AbasConteudo, { value: chave(s), className: "mt-6", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SecaoLista, { secao: s, aoAbrir: setCliente }) }, chave(s)))
+        secoes.map((s) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.AbasConteudo, { value: chave(s), className: "mt-6", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(SecaoLista, { secao: s, aoAbrir: setCliente }) }, chave(s)))
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Gaveta, { open: cliente !== null, onOpenChange: (a) => {
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Gaveta, { open: cliente !== null, onOpenChange: (a) => {
         if (!a) setCliente(null);
-      }, children: cliente ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.GavetaConteudo, { titulo: "Vis\xE3o 360\xB0 do cliente", descricao: cliente, className: "max-w-none w-[min(98vw,84rem)]", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Visao360Painel, { api, idCliente: cliente, sessao, versao, ehGerenteGeral, aoMudar: () => emitir({ tipo: "dados-alterados", origem: "carteira" }) }) }) : null }),
-      assistente ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Gaveta, { open: true, onOpenChange: (a) => {
+      }, children: cliente ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.GavetaConteudo, { titulo: "Vis\xE3o 360\xB0 do cliente", descricao: cliente, className: "max-w-none w-[min(98vw,84rem)]", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Visao360Painel, { api, idCliente: cliente, sessao, versao, ehGerenteGeral, aoMudar: () => emitir({ tipo: "dados-alterados", origem: "carteira" }) }) }) : null }),
+      assistente ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Gaveta, { open: true, onOpenChange: (a) => {
         if (!a) setAssistente(null);
-      }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.GavetaConteudo, { className: "max-w-3xl", titulo: "Redistribuir clientes", descricao: "Simule primeiro; s\xF3 depois confirme. Cada movimenta\xE7\xE3o fica registrada em auditoria.", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AssistenteRedistribuicao, { api, origemInicial: assistente.origem, aoConcluir: () => emitir({ tipo: "dados-alterados", origem: "carteira" }) }) }) }) : null
+      }, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.GavetaConteudo, { className: "max-w-3xl", titulo: "Redistribuir clientes", descricao: "Simule primeiro; s\xF3 depois confirme. Cada movimenta\xE7\xE3o fica registrada em auditoria.", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(AssistenteRedistribuicao, { api, origemInicial: assistente.origem, aoConcluir: () => emitir({ tipo: "dados-alterados", origem: "carteira" }) }) }) }) : null
     ] });
   }
   function SecaoLista({ secao, aoAbrir }) {
     var _a, _b;
-    const [segmento, setSegmento] = React.useState("todos");
-    const [status, setStatus] = React.useState("todos");
+    const [segmento, setSegmento] = React2.useState("todos");
+    const [status, setStatus] = React2.useState("todos");
     const filtrados = secao.clientes.filter((c) => (segmento === "todos" || c.segmento_cliente === segmento) && (status === "todos" || c.status === status));
     const p = secao.posicao;
     const colunas = [
       { accessorKey: "id_cliente", header: "C\xF3digo", meta: { rotulo: "C\xF3digo" } },
-      { id: "nome", header: "Cliente", accessorFn: (c) => c.nome_razao_social, cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-body-md text-foreground", children: row.original.nome_razao_social }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "tnum text-caption text-muted-foreground", children: row.original.cpf_cnpj_mascarado })
+      { id: "nome", header: "Cliente", accessorFn: (c) => c.nome_razao_social, cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "text-body-md text-foreground", children: row.original.nome_razao_social }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "tnum text-caption text-muted-foreground", children: row.original.cpf_cnpj_mascarado })
       ] }), meta: { rotulo: "Cliente" } },
-      { accessorKey: "segmento_cliente", header: "Segmento", cell: ({ getValue }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "neutro", children: getValue() }), meta: { rotulo: "Segmento" } },
+      { accessorKey: "segmento_cliente", header: "Segmento", cell: ({ getValue }) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Selo, { variante: "neutro", children: getValue() }), meta: { rotulo: "Segmento" } },
       { accessorKey: "status", header: "Status", meta: { rotulo: "Status" } },
-      { accessorKey: "volume_aum", header: "AUM", cell: ({ getValue }) => (0, import_ui.moeda)(getValue()), meta: { numerica: true, rotulo: "AUM" } },
-      { accessorKey: "score_risco", header: "Score de risco", cell: ({ getValue }) => (0, import_ui.inteiro)(getValue()), meta: { numerica: true, rotulo: "Score de risco" } },
-      { accessorKey: "data_carteirizacao", header: "Na carteira desde", cell: ({ getValue }) => (0, import_ui.dataBR)(getValue()), meta: { rotulo: "Na carteira desde" } }
+      { accessorKey: "volume_aum", header: "AUM", cell: ({ getValue }) => (0, import_ui2.moeda)(getValue()), meta: { numerica: true, rotulo: "AUM" } },
+      { accessorKey: "score_risco", header: "Score de risco", cell: ({ getValue }) => (0, import_ui2.inteiro)(getValue()), meta: { numerica: true, rotulo: "Score de risco" } },
+      { accessorKey: "data_carteirizacao", header: "Na carteira desde", cell: ({ getValue }) => (0, import_ui2.dataBR)(getValue()), meta: { rotulo: "Na carteira desde" } }
     ];
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-1 gap-4 md:grid-cols-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Posi\xE7\xE3o" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-1 text-heading-md text-foreground", children: p.nome_posicao }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-caption text-muted-foreground", children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-col gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "grid grid-cols-1 gap-4 md:grid-cols-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Cartao, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CartaoDescricao, { children: "Posi\xE7\xE3o" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mt-1 text-heading-md text-foreground", children: p.nome_posicao }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("p", { className: "text-caption text-muted-foreground", children: [
             "Titular: ",
             (_b = (_a = p.titular) == null ? void 0 : _a.nome) != null ? _b : "vaga"
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Capacidade" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "tnum mt-1 text-display-md text-foreground", children: (0, import_ui.percentual)(p.utilizacao) }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "tnum text-caption text-muted-foreground", children: [
-            (0, import_ui.inteiro)(p.clientes_ativos),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Cartao, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CartaoDescricao, { children: "Capacidade" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "tnum mt-1 text-display-md text-foreground", children: (0, import_ui2.percentual)(p.utilizacao) }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("p", { className: "tnum text-caption text-muted-foreground", children: [
+            (0, import_ui2.inteiro)(p.clientes_ativos),
             " de ",
-            (0, import_ui.inteiro)(p.capacidade),
+            (0, import_ui2.inteiro)(p.capacidade),
             " clientes ativos",
-            p.desbalanceamento ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+            p.desbalanceamento ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
               " \xB7 ",
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: p.desbalanceamento === "Acima" ? "critico" : "atencao", children: p.desbalanceamento === "Acima" ? "Acima do limite" : "Abaixo do m\xEDnimo" })
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Selo, { variante: p.desbalanceamento === "Acima" ? "critico" : "atencao", children: p.desbalanceamento === "Acima" ? "Acima do limite" : "Abaixo do m\xEDnimo" })
             ] }) : null
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Acesso" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-1 text-heading-md text-foreground", children: p.modo === "Escrita" ? "Leitura e escrita" : "Somente leitura" }),
-          secao.cobertura ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "tnum text-caption text-muted-foreground", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Cartao, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CartaoDescricao, { children: "Acesso" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mt-1 text-heading-md text-foreground", children: p.modo === "Escrita" ? "Leitura e escrita" : "Somente leitura" }),
+          secao.cobertura ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("p", { className: "tnum text-caption text-muted-foreground", children: [
             "Cobertura (",
             secao.cobertura.escopo,
             ") at\xE9 ",
-            (0, import_ui.dataBR)(secao.cobertura.data_fim),
+            (0, import_ui2.dataBR)(secao.cobertura.data_fim),
             " \xB7 ",
             secao.cobertura.situacao
-          ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-caption text-muted-foreground", children: "Titularidade da posi\xE7\xE3o" })
+          ] }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "text-caption text-muted-foreground", children: "Titularidade da posi\xE7\xE3o" })
         ] })
       ] }),
-      p.modo === "Leitura" && secao.tipo === "Propria" && !p.origens.some((o) => o.origem === "GerenteGeral") ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "atencao", titulo: "Posi\xE7\xE3o em cobertura tempor\xE1ria", children: "Enquanto a delega\xE7\xE3o estiver vigente, esta carteira fica em somente leitura para o titular ausente." }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-        import_ui.TabelaDados,
+      p.modo === "Leitura" && secao.tipo === "Propria" && !p.origens.some((o) => o.origem === "GerenteGeral") ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: "atencao", titulo: "Posi\xE7\xE3o em cobertura tempor\xE1ria", children: "Enquanto a delega\xE7\xE3o estiver vigente, esta carteira fica em somente leitura para o titular ausente." }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+        import_ui2.TabelaDados,
         {
           colunas,
           dados: filtrados,
           rotulo: "Clientes de ".concat(p.nome_posicao),
           aoClicarLinha: (c) => aoAbrir(c.id_cliente),
           buscaPlaceholder: "Buscar cliente\u2026",
-          filtros: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "seg-".concat(p.id_posicao), rotulo: "Segmento", className: "w-44", valor: segmento, aoMudar: setSegmento, opcoes: [{ valor: "todos", rotulo: "Todos" }, ...["UHNW", "Private", "Alta Renda", "Varejo"].map((s) => ({ valor: s, rotulo: s }))] }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "st-".concat(p.id_posicao), rotulo: "Status", className: "w-44", valor: status, aoMudar: setStatus, opcoes: [{ valor: "todos", rotulo: "Todos" }, ...["Ativo", "Em Prospec\xE7\xE3o", "Inativo"].map((s) => ({ valor: s, rotulo: s }))] })
+          filtros: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CampoSelecao, { id: "seg-".concat(p.id_posicao), rotulo: "Segmento", className: "w-44", valor: segmento, aoMudar: setSegmento, opcoes: [{ valor: "todos", rotulo: "Todos" }, ...["UHNW", "Private", "Alta Renda", "Varejo"].map((s) => ({ valor: s, rotulo: s }))] }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CampoSelecao, { id: "st-".concat(p.id_posicao), rotulo: "Status", className: "w-44", valor: status, aoMudar: setStatus, opcoes: [{ valor: "todos", rotulo: "Todos" }, ...["Ativo", "Em Prospec\xE7\xE3o", "Inativo"].map((s) => ({ valor: s, rotulo: s }))] })
           ] })
         }
       )
     ] });
   }
   function Visao360Painel({ api, idCliente, sessao, versao, ehGerenteGeral, aoMudar }) {
-    const v = (0, import_sdk.useConsulta)(() => api.visao360(idCliente), [idCliente, sessao.papel, sessao.dataSimulada, versao]);
-    const [documento, setDocumento] = React.useState(null);
-    const [erroDoc, setErroDoc] = React.useState(null);
-    const [transferindo, setTransferindo] = React.useState(false);
-    if (v.carregando) return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { "aria-busy": "true", className: "flex flex-col gap-3", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-24" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-40" })
+    const v = (0, import_sdk2.useConsulta)(() => api.visao360(idCliente), [idCliente, sessao.papel, sessao.dataSimulada, versao]);
+    const [documento, setDocumento] = React2.useState(null);
+    const [erroDoc, setErroDoc] = React2.useState(null);
+    const [transferindo, setTransferindo] = React2.useState(false);
+    if (v.carregando) return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { "aria-busy": "true", className: "flex flex-col gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-24" }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-40" })
     ] });
-    if (v.erro) return v.erro instanceof import_sdk.ApiErro && v.erro.status === 403 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.SemPermissao, { children: "Voc\xEA n\xE3o tem titularidade nem delega\xE7\xE3o vigente sobre este cliente." }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.EstadoErro, { mensagem: v.erro.message, aoTentar: v.recarregar });
+    if (v.erro) return v.erro instanceof import_sdk2.ApiErro && v.erro.status === 403 ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.SemPermissao, { children: "Voc\xEA n\xE3o tem titularidade nem delega\xE7\xE3o vigente sobre este cliente." }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.EstadoErro, { mensagem: v.erro.message, aoTentar: v.recarregar });
     const d = v.dados;
     const c = d.cliente;
     const escrita = d.decisao.modo === "Escrita" || ehGerenteGeral;
@@ -481,66 +576,66 @@
         setErroDoc(e instanceof Error ? e.message : "Falha ao revelar.");
       }
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-1 flex-col gap-6", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "min-w-0", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-heading-lg text-foreground", children: c.nome_razao_social }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "tnum mt-1 text-body-tabular text-secondary-foreground", children: documento != null ? documento : c.cpf_cnpj_mascarado })
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-1 flex-col gap-6", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Cartao, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "min-w-0", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "text-heading-lg text-foreground", children: c.nome_razao_social }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "tnum mt-1 text-body-tabular text-secondary-foreground", children: documento != null ? documento : c.cpf_cnpj_mascarado })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-wrap gap-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "tag", children: c.segmento_cliente }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "neutro", children: c.status })
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-wrap gap-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Selo, { variante: "tag", children: c.segmento_cliente }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Selo, { variante: "neutro", children: c.status })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-3 flex flex-wrap items-center gap-3", children: documento ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-caption text-secondary-foreground", children: "Documento revelado \u2014 esta a\xE7\xE3o foi registrada em auditoria." }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Botao, { variante: "secundario", tamanho: "sm", onClick: () => void revelar(), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { "aria-hidden": true, className: "size-4" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "mt-3 flex flex-wrap items-center gap-3", children: documento ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "text-caption text-secondary-foreground", children: "Documento revelado \u2014 esta a\xE7\xE3o foi registrada em auditoria." }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Botao, { variante: "secundario", tamanho: "sm", onClick: () => void revelar(), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Eye, { "aria-hidden": true, className: "size-4" }),
           " Revelar documento"
         ] }) }),
-        erroDoc ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", className: "mt-3", children: erroDoc }) : null,
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dl", { className: "mt-5 grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-4", children: [["AUM", (0, import_ui.moeda)(c.volume_aum)], ["Renda / faturamento", (0, import_ui.moeda)(c.faixa_renda_faturamento)], ["Score de risco", "".concat((0, import_ui.inteiro)(c.score_risco), " / 1.000")], ["Posi\xE7\xE3o atual", d.posicao_atual.nome_posicao], ["Na carteira desde", (0, import_ui.dataBR)(c.data_carteirizacao)]].map(([k, val]) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-md bg-secondary px-4 py-3", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dt", { className: "text-caption text-secondary-foreground", children: k }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", { className: "tnum mt-1 text-body-md text-foreground", children: val })
+        erroDoc ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: "critico", className: "mt-3", children: erroDoc }) : null,
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("dl", { className: "mt-5 grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-4", children: [["AUM", (0, import_ui2.moeda)(c.volume_aum)], ["Renda / faturamento", (0, import_ui2.moeda)(c.faixa_renda_faturamento)], ["Score de risco", "".concat((0, import_ui2.inteiro)(c.score_risco), " / 1.000")], ["Posi\xE7\xE3o atual", d.posicao_atual.nome_posicao], ["Na carteira desde", (0, import_ui2.dataBR)(c.data_carteirizacao)]].map(([k, val]) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "rounded-md bg-secondary px-4 py-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("dt", { className: "text-caption text-secondary-foreground", children: k }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("dd", { className: "tnum mt-1 text-body-md text-foreground", children: val })
         ] }, k)) })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid flex-1 grid-cols-1 items-stretch gap-6 md:grid-cols-2 xl:grid-cols-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { className: "flex flex-col", "aria-labelledby": "t360-prod", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { id: "t360-prod", className: "text-heading-md text-foreground", children: "Penetra\xE7\xE3o de produtos" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", { className: "mt-3 flex flex-1 flex-col gap-2", children: d.produtos.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { className: "flex min-h-10 items-center gap-2 rounded-md border border-border px-3 text-body-md", children: [
-            p.contratado ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { "aria-hidden": true, className: "size-4 shrink-0 text-foreground" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Minus, { "aria-hidden": true, className: "size-4 shrink-0 text-muted-foreground" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: p.contratado ? "text-foreground" : "text-muted-foreground", children: p.nome }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "ml-auto text-caption text-muted-foreground", children: p.contratado ? "desde ".concat((0, import_ui.dataBR)(p.data_contratacao)) : "n\xE3o contratado" })
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "grid flex-1 grid-cols-1 items-stretch gap-6 md:grid-cols-2 xl:grid-cols-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Cartao, { className: "flex flex-col", "aria-labelledby": "t360-prod", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h2", { id: "t360-prod", className: "text-heading-md text-foreground", children: "Penetra\xE7\xE3o de produtos" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("ul", { className: "mt-3 flex flex-1 flex-col gap-2", children: d.produtos.map((p) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("li", { className: "flex min-h-10 items-center gap-2 rounded-md border border-border px-3 text-body-md", children: [
+            p.contratado ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Check, { "aria-hidden": true, className: "size-4 shrink-0 text-foreground" }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Minus, { "aria-hidden": true, className: "size-4 shrink-0 text-muted-foreground" }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: p.contratado ? "text-foreground" : "text-muted-foreground", children: p.nome }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "ml-auto text-caption text-muted-foreground", children: p.contratado ? "desde ".concat((0, import_ui2.dataBR)(p.data_contratacao)) : "n\xE3o contratado" })
           ] }, p.codigo)) })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { className: "flex flex-col", "aria-labelledby": "t360-hist", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { id: "t360-hist", className: "text-heading-md text-foreground", children: "Hist\xF3rico de posi\xE7\xF5es" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ol", { className: "mt-3 flex flex-1 flex-col gap-4 border-l border-border pl-4", children: [...d.linha_do_tempo].reverse().map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { className: "relative", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, className: "absolute -left-[21px] top-1.5 size-2.5 rounded-pill bg-primary" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-body-md text-foreground", children: t.nome_posicao }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "tnum text-caption text-muted-foreground", children: [
-              (0, import_ui.dataHoraBR)(t.inicio_em),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Cartao, { className: "flex flex-col", "aria-labelledby": "t360-hist", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h2", { id: "t360-hist", className: "text-heading-md text-foreground", children: "Hist\xF3rico de posi\xE7\xF5es" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("ol", { className: "mt-3 flex flex-1 flex-col gap-4 border-l border-border pl-4", children: [...d.linha_do_tempo].reverse().map((t) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("li", { className: "relative", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { "aria-hidden": true, className: "absolute -left-[21px] top-1.5 size-2.5 rounded-pill bg-primary" }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "text-body-md text-foreground", children: t.nome_posicao }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("p", { className: "tnum text-caption text-muted-foreground", children: [
+              (0, import_ui2.dataHoraBR)(t.inicio_em),
               " \u2192 ",
-              t.fim_em ? (0, import_ui.dataHoraBR)(t.fim_em) : "atual"
+              t.fim_em ? (0, import_ui2.dataHoraBR)(t.fim_em) : "atual"
             ] })
           ] }, t.inicio_em)) })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { className: "flex flex-col md:col-span-2 xl:col-span-1", "aria-labelledby": "t360-crm", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { id: "t360-crm", className: "text-heading-md text-foreground", children: "Hist\xF3rico de CRM" }),
-          d.interacoes.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-3 text-body-md text-muted-foreground", children: "Nenhuma intera\xE7\xE3o registrada." }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", { className: "mt-3 flex max-h-96 flex-1 flex-col gap-3 overflow-y-auto pr-1", children: d.interacoes.map((i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { className: "rounded-md border border-border p-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-caption text-muted-foreground", children: [
-              (0, import_ui.dataBR)(i.data),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Cartao, { className: "flex flex-col md:col-span-2 xl:col-span-1", "aria-labelledby": "t360-crm", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h2", { id: "t360-crm", className: "text-heading-md text-foreground", children: "Hist\xF3rico de CRM" }),
+          d.interacoes.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mt-3 text-body-md text-muted-foreground", children: "Nenhuma intera\xE7\xE3o registrada." }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("ul", { className: "mt-3 flex max-h-96 flex-1 flex-col gap-3 overflow-y-auto pr-1", children: d.interacoes.map((i) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("li", { className: "rounded-md border border-border p-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("p", { className: "text-caption text-muted-foreground", children: [
+              (0, import_ui2.dataBR)(i.data),
               " \xB7 ",
               i.canal
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-1 text-body-md text-foreground", children: i.nota })
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mt-1 text-body-md text-foreground", children: i.nota })
           ] }, i.id_interacao)) })
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "sticky bottom-0 -mx-6 -mb-6 flex flex-wrap items-center justify-end gap-3 border-t border-border bg-card px-6 py-4", children: escrita ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Botao, { onClick: () => setTransferindo(true), children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRightLeft, { "aria-hidden": true, className: "size-4" }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "sticky bottom-0 -mx-6 -mb-6 flex flex-wrap items-center justify-end gap-3 border-t border-border bg-card px-6 py-4", children: escrita ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Botao, { onClick: () => setTransferindo(true), children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(ArrowRightLeft, { "aria-hidden": true, className: "size-4" }),
         " Transferir de posi\xE7\xE3o"
-      ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "informativo", className: "w-full", children: "Seu acesso a este cliente \xE9 somente leitura." }) }),
-      transferindo ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Transferir, { api, cliente: c, aoFechar: () => setTransferindo(false), aoConcluir: () => {
+      ] }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: "informativo", className: "w-full", children: "Seu acesso a este cliente \xE9 somente leitura." }) }),
+      transferindo ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Transferir, { api, cliente: c, aoFechar: () => setTransferindo(false), aoConcluir: () => {
         setTransferindo(false);
         aoMudar();
       } }) : null
@@ -548,13 +643,13 @@
   }
   function Transferir({ api, cliente, aoFechar, aoConcluir }) {
     var _a, _b;
-    const atores = (0, import_sdk.useConsulta)(() => api.atores(), []);
-    const [destino, setDestino] = React.useState("");
-    const [motivo, setMotivo] = React.useState("");
-    const [justificativa, setJustificativa] = React.useState("");
-    const [precisaJustificar, setPrecisaJustificar] = React.useState(false);
-    const [erro, setErro] = React.useState(null);
-    const [enviando, setEnviando] = React.useState(false);
+    const atores = (0, import_sdk2.useConsulta)(() => api.atores(), []);
+    const [destino, setDestino] = React2.useState("");
+    const [motivo, setMotivo] = React2.useState("");
+    const [justificativa, setJustificativa] = React2.useState("");
+    const [precisaJustificar, setPrecisaJustificar] = React2.useState(false);
+    const [erro, setErro] = React2.useState(null);
+    const [enviando, setEnviando] = React2.useState(false);
     const destinos = ((_b = (_a = atores.dados) == null ? void 0 : _a.atores) != null ? _b : []).filter((a) => a.papel !== "GG" && a.papel !== cliente.id_posicao);
     async function enviar(e) {
       e.preventDefault();
@@ -564,47 +659,47 @@
         await api.transferir(cliente.id_cliente, { id_posicao_destino: destino, motivo, justificativa: justificativa || void 0 });
         aoConcluir();
       } catch (x) {
-        if (x instanceof import_sdk.ApiErro && x.codigo === "JUSTIFICATIVA_OBRIGATORIA") setPrecisaJustificar(true);
+        if (x instanceof import_sdk2.ApiErro && x.codigo === "JUSTIFICATIVA_OBRIGATORIA") setPrecisaJustificar(true);
         setErro(x instanceof Error ? x.message : "Falha na transfer\xEAncia.");
       } finally {
         setEnviando(false);
       }
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Dialogo, { open: true, onOpenChange: (a) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Dialogo, { open: true, onOpenChange: (a) => {
       if (!a) aoFechar();
-    }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.DialogoConteudo, { titulo: "Transferir de posi\xE7\xE3o", descricao: "".concat(cliente.nome_razao_social, " deixa a posi\xE7\xE3o atual; o hist\xF3rico \xE9 preservado."), children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", { onSubmit: enviar, className: "flex flex-col gap-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "transf-destino", rotulo: "Posi\xE7\xE3o de destino", valor: destino, aoMudar: setDestino, opcoes: destinos.map((a) => ({ valor: a.papel, rotulo: a.rotulo })) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "transf-motivo", children: "Motivo" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.AreaTexto, { id: "transf-motivo", value: motivo, onChange: (e) => setMotivo(e.target.value), required: true })
+    }, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.DialogoConteudo, { titulo: "Transferir de posi\xE7\xE3o", descricao: "".concat(cliente.nome_razao_social, " deixa a posi\xE7\xE3o atual; o hist\xF3rico \xE9 preservado."), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("form", { onSubmit: enviar, className: "flex flex-col gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CampoSelecao, { id: "transf-destino", rotulo: "Posi\xE7\xE3o de destino", valor: destino, aoMudar: setDestino, opcoes: destinos.map((a) => ({ valor: a.papel, rotulo: a.rotulo })) }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "transf-motivo", children: "Motivo" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.AreaTexto, { id: "transf-motivo", value: motivo, onChange: (e) => setMotivo(e.target.value), required: true })
       ] }),
-      precisaJustificar ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "transf-just", children: "Justificativa (capacidade excedida)" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.AreaTexto, { id: "transf-just", value: justificativa, onChange: (e) => setJustificativa(e.target.value), required: true })
+      precisaJustificar ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "transf-just", children: "Justificativa (capacidade excedida)" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.AreaTexto, { id: "transf-just", value: justificativa, onChange: (e) => setJustificativa(e.target.value), required: true })
       ] }) : null,
-      erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: precisaJustificar ? "atencao" : "critico", children: erro }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex justify-end gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { type: "button", variante: "secundario", onClick: aoFechar, children: "Cancelar" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { type: "submit", disabled: !destino || !motivo || enviando, children: enviando ? "Transferindo\u2026" : "Confirmar transfer\xEAncia" })
+      erro ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: precisaJustificar ? "atencao" : "critico", children: erro }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex justify-end gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { type: "button", variante: "secundario", onClick: aoFechar, children: "Cancelar" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { type: "submit", disabled: !destino || !motivo || enviando, children: enviando ? "Transferindo\u2026" : "Confirmar transfer\xEAncia" })
       ] })
     ] }) }) });
   }
   function AssistenteRedistribuicao({ api, origemInicial, aoConcluir }) {
     var _a, _b, _c;
-    const atores = (0, import_sdk.useConsulta)(() => api.atores(), []);
+    const atores = (0, import_sdk2.useConsulta)(() => api.atores(), []);
     const posicoes = ((_b = (_a = atores.dados) == null ? void 0 : _a.atores) != null ? _b : []).filter((a) => a.papel !== "GG");
-    const [origem, setOrigem] = React.useState(origemInicial != null ? origemInicial : "");
-    const [destino, setDestino] = React.useState("");
-    const [quantidade, setQuantidade] = React.useState(20);
-    const [ids, setIds] = React.useState([]);
-    const [simulacao, setSimulacao] = React.useState(null);
-    const [motivo, setMotivo] = React.useState("");
-    const [justificativa, setJustificativa] = React.useState("");
-    const [lote, setLote] = React.useState(null);
-    const [desfeito, setDesfeito] = React.useState(false);
-    const [erro, setErro] = React.useState(null);
-    const [ocupado, setOcupado] = React.useState(false);
-    const chave = React.useRef("LOTE-UI-".concat(Date.now()));
+    const [origem, setOrigem] = React2.useState(origemInicial != null ? origemInicial : "");
+    const [destino, setDestino] = React2.useState("");
+    const [quantidade, setQuantidade] = React2.useState(20);
+    const [ids, setIds] = React2.useState([]);
+    const [simulacao, setSimulacao] = React2.useState(null);
+    const [motivo, setMotivo] = React2.useState("");
+    const [justificativa, setJustificativa] = React2.useState("");
+    const [lote, setLote] = React2.useState(null);
+    const [desfeito, setDesfeito] = React2.useState(false);
+    const [erro, setErro] = React2.useState(null);
+    const [ocupado, setOcupado] = React2.useState(false);
+    const chave = React2.useRef("LOTE-UI-".concat(Date.now()));
     const excedida = (_c = simulacao == null ? void 0 : simulacao.avisos.some((a) => a.codigo === "CAPACIDADE_EXCEDIDA")) != null ? _c : false;
     const nome = (id) => {
       var _a2, _b2, _c2;
@@ -652,68 +747,68 @@
       }
     }
     if (lote) {
-      return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { titulo: desfeito ? "Lote desfeito" : "Redistribui\xE7\xE3o conclu\xEDda", children: desfeito ? "As movimenta\xE7\xF5es do lote ".concat(lote.id_lote, " foram compensadas; o hist\xF3rico foi preservado.") : "".concat((0, import_ui.inteiro)(lote.movimentacoes.length), " clientes movidos para ").concat(nome(destino), " no lote ").concat(lote.id_lote, ". Auditoria registrada.") }),
-        !desfeito ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { variante: "secundario", onClick: () => void desfazer(), disabled: ocupado, children: "Desfazer lote" }) : null,
-        erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", children: erro }) : null
+      return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-col gap-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { titulo: desfeito ? "Lote desfeito" : "Redistribui\xE7\xE3o conclu\xEDda", children: desfeito ? "As movimenta\xE7\xF5es do lote ".concat(lote.id_lote, " foram compensadas; o hist\xF3rico foi preservado.") : "".concat((0, import_ui2.inteiro)(lote.movimentacoes.length), " clientes movidos para ").concat(nome(destino), " no lote ").concat(lote.id_lote, ". Auditoria registrada.") }),
+        !desfeito ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { variante: "secundario", onClick: () => void desfazer(), disabled: ocupado, children: "Desfazer lote" }) : null,
+        erro ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: "critico", children: erro }) : null
       ] });
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-6", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", { onSubmit: simular, className: "flex flex-col gap-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "red-origem", rotulo: "Posi\xE7\xE3o de origem", valor: origem, aoMudar: (v) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-col gap-6", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("form", { onSubmit: simular, className: "flex flex-col gap-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CampoSelecao, { id: "red-origem", rotulo: "Posi\xE7\xE3o de origem", valor: origem, aoMudar: (v) => {
           setOrigem(v);
           setSimulacao(null);
         }, opcoes: posicoes.map((a) => ({ valor: a.papel, rotulo: a.rotulo })) }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "red-destino", rotulo: "Posi\xE7\xE3o de destino", valor: destino, aoMudar: (v) => {
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CampoSelecao, { id: "red-destino", rotulo: "Posi\xE7\xE3o de destino", valor: destino, aoMudar: (v) => {
           setDestino(v);
           setSimulacao(null);
         }, opcoes: posicoes.filter((a) => a.papel !== origem).map((a) => ({ valor: a.papel, rotulo: a.rotulo })) }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "red-qtd", children: "Quantidade de clientes ativos a mover" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "red-qtd", type: "number", min: 1, max: 200, value: quantidade, onChange: (e) => {
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "red-qtd", children: "Quantidade de clientes ativos a mover" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Campo, { id: "red-qtd", type: "number", min: 1, max: 200, value: quantidade, onChange: (e) => {
             setQuantidade(Number(e.target.value));
             setSimulacao(null);
           }, className: "tnum" })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { type: "submit", variante: simulacao ? "secundario" : "primario", disabled: !origem || !destino || ocupado, children: ocupado && !simulacao ? "Simulando\u2026" : "Simular" })
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { type: "submit", variante: simulacao ? "secundario" : "primario", disabled: !origem || !destino || ocupado, children: ocupado && !simulacao ? "Simulando\u2026" : "Simular" })
       ] }),
-      simulacao ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Resultado da simula\xE7\xE3o", className: "flex flex-col gap-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { className: "text-heading-md text-foreground", children: "Antes e depois" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full text-body-md", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "text-caption text-muted-foreground", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "py-2 text-left font-normal", children: "Posi\xE7\xE3o" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "py-2 text-right font-normal", children: "Antes" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "py-2 text-right font-normal", children: "Depois" })
+      simulacao ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("section", { "aria-label": "Resultado da simula\xE7\xE3o", className: "flex flex-col gap-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h2", { className: "text-heading-md text-foreground", children: "Antes e depois" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("table", { className: "w-full text-body-md", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("tr", { className: "text-caption text-muted-foreground", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("th", { className: "py-2 text-left font-normal", children: "Posi\xE7\xE3o" }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("th", { className: "py-2 text-right font-normal", children: "Antes" }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("th", { className: "py-2 text-right font-normal", children: "Depois" })
           ] }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: simulacao.depois.map((u) => {
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("tbody", { children: simulacao.depois.map((u) => {
             const a = simulacao.antes.find((x) => x.id_posicao === u.id_posicao);
-            return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-t border-border", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "py-2", children: nome(u.id_posicao) }),
-              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: "tnum py-2 text-right text-body-tabular", children: [
-                (0, import_ui.inteiro)(a.clientes_ativos),
+            return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("tr", { className: "border-t border-border", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("td", { className: "py-2", children: nome(u.id_posicao) }),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("td", { className: "tnum py-2 text-right text-body-tabular", children: [
+                (0, import_ui2.inteiro)(a.clientes_ativos),
                 " \xB7 ",
-                (0, import_ui.percentual)(a.utilizacao)
+                (0, import_ui2.percentual)(a.utilizacao)
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: "tnum py-2 text-right text-body-tabular", children: [
-                (0, import_ui.inteiro)(u.clientes_ativos),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("td", { className: "tnum py-2 text-right text-body-tabular", children: [
+                (0, import_ui2.inteiro)(u.clientes_ativos),
                 " \xB7 ",
-                (0, import_ui.percentual)(u.utilizacao)
+                (0, import_ui2.percentual)(u.utilizacao)
               ] })
             ] }, u.id_posicao);
           }) })
         ] }),
-        simulacao.avisos.map((a, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: a.codigo === "CAPACIDADE_EXCEDIDA" ? "atencao" : "informativo", children: a.mensagem }, i)),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "red-motivo", children: "Motivo" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.AreaTexto, { id: "red-motivo", value: motivo, onChange: (e) => setMotivo(e.target.value), required: true })
+        simulacao.avisos.map((a, i) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: a.codigo === "CAPACIDADE_EXCEDIDA" ? "atencao" : "informativo", children: a.mensagem }, i)),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "red-motivo", children: "Motivo" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.AreaTexto, { id: "red-motivo", value: motivo, onChange: (e) => setMotivo(e.target.value), required: true })
         ] }),
-        excedida ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "red-just", children: "Justificativa (capacidade excedida)" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.AreaTexto, { id: "red-just", value: justificativa, onChange: (e) => setJustificativa(e.target.value), required: true })
+        excedida ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "red-just", children: "Justificativa (capacidade excedida)" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.AreaTexto, { id: "red-just", value: justificativa, onChange: (e) => setJustificativa(e.target.value), required: true })
         ] }) : null,
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { onClick: () => void confirmar(), disabled: !motivo.trim() || excedida && !justificativa.trim() || ocupado, children: ocupado ? "Executando\u2026" : "Confirmar redistribui\xE7\xE3o de ".concat((0, import_ui.inteiro)(simulacao.clientes_a_mover.length), " clientes") })
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { onClick: () => void confirmar(), disabled: !motivo.trim() || excedida && !justificativa.trim() || ocupado, children: ocupado ? "Executando\u2026" : "Confirmar redistribui\xE7\xE3o de ".concat((0, import_ui2.inteiro)(simulacao.clientes_a_mover.length), " clientes") })
       ] }) : null,
-      erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", children: erro }) : null
+      erro ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: "critico", children: erro }) : null
     ] });
   }
 

@@ -239,6 +239,7 @@ const ROTAS: Rota[] = [
   },
   { metodo: 'POST', caminho: '/carteira/redistribuicoes/{id}:desfazer', escrita: true, tratador: (c) => clientes.desfazerLote(c.db, c.clock, c.params.id!, c.ator) },
 
+  { metodo: 'GET', caminho: '/insights/analise', tratador: (c) => insights.analiseCarteira(c.db, ctxInsights(c, c.consulta.get('asof'))) },
   { metodo: 'GET', caminho: '/insights/agencia', tratador: (c) => insights.resumoAgencia(c.db, ctxInsights(c, c.consulta.get('asof'))) },
   {
     metodo: 'GET', caminho: '/insights/posicoes/{id}',

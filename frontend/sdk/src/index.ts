@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type {
-  AtoresResposta, ClienteMascarado, Delegacao, GerenteInfo, Ocupacao, Pagina, ResultadoLote, ResumoAgencia, ResumoPosicao,
+  AnaliseCarteira, AtoresResposta, ClienteMascarado, Delegacao, GerenteInfo, Ocupacao, Pagina, ResultadoLote, ResumoAgencia, ResumoPosicao,
   SecaoCarteira, Sessao, SimulacaoRedistribuicao, Visao360,
 } from './tipos';
 
@@ -102,6 +102,7 @@ export function criarApi(cfg: ConfigApi) {
     desfazerLote: (id: string) => chamar<ResultadoLote>('POST', `/carteira/redistribuicoes/${id}:desfazer`),
 
     agencia: () => chamar<ResumoAgencia>('GET', '/insights/agencia'),
+    analise: () => chamar<AnaliseCarteira>('GET', '/insights/analise'),
     desbalanceamento: () => chamar<{ itens: ResumoPosicao[] }>('GET', '/insights/desbalanceamento'),
   };
 }
@@ -119,7 +120,9 @@ export type EventoMfe =
   | { tipo: 'dados-alterados'; origem: 'posicoes' | 'delegacao' | 'carteira' | 'cockpit' };
 
 /** Comando do shell para um MFE (ex.: abrir o assistente de redistribuição vindo da Torre de Controle). */
-export type ComandoMfe = { tipo: 'abrir-redistribuicao'; idPosicaoOrigem?: string; nonce: number };
+export type ComandoMfe =
+  | { tipo: 'abrir-redistribuicao'; idPosicaoOrigem?: string; nonce: number }
+  | { tipo: 'abrir-cliente'; idCliente: string; nonce: number };
 
 export interface PropsMfe {
   api: Api;

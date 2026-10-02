@@ -99,7 +99,7 @@ const invalido = (v: unknown, caminho = '$'): string | null => {
   if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) { const r = invalido(x, `${caminho}.${k}`); if (r) return r; }
   return null;
 };
-for (const [caminho, papel] of [['/api/v1/simulacao/atores', 'GG'], ['/api/v1/insights/agencia', 'GG'], ['/api/v1/insights/desbalanceamento', 'GG'], ['/api/v1/posicoes', 'GG'], ['/api/v1/delegacoes', 'GG'], ['/api/v1/carteira/minha', 'POS-AG01-001'], ['/api/v1/carteira/clientes', 'GG']] as const) {
+for (const [caminho, papel] of [['/api/v1/simulacao/atores', 'GG'], ['/api/v1/insights/agencia', 'GG'], ['/api/v1/insights/analise', 'GG'], ['/api/v1/insights/analise', 'POS-AG01-002'], ['/api/v1/insights/desbalanceamento', 'GG'], ['/api/v1/posicoes', 'GG'], ['/api/v1/delegacoes', 'GG'], ['/api/v1/carteira/minha', 'POS-AG01-001'], ['/api/v1/carteira/clientes', 'GG']] as const) {
   const r = chamar('GET', caminho, { papel, consulta: caminho.endsWith('clientes') ? { limit: '50' } : {} });
   const problema = invalido(r);
   ok(`retorno serializável ${caminho}`, r.status === 200 && problema === null, `${r.status} ${problema ?? ''} ${(JSON.stringify(r).length / 1024).toFixed(0)} KB`);

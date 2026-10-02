@@ -5,6 +5,7 @@ import {
   Abas, AbasConteudo, AbasGatilho, AbasLista, Aviso, AreaTexto, Botao, Campo, CampoSelecao, Cartao, CartaoDescricao, CartaoTitulo, Dialogo, DialogoConteudo, EstadoErro, EstadoVazio,
   Esqueleto, Gaveta, GavetaConteudo, Rotulo, Selo, SemPermissao, TabelaDados, dataBR, dataHoraBR, inteiro, moeda, percentual,
 } from '@carteira/ui';
+import { PainelAnalises } from './analises';
 import {
   ApiErro, useConsulta, type Api, type ClienteMascarado, type PropsMfe, type ResultadoLote, type SecaoCarteira, type SimulacaoRedistribuicao, type Visao360,
 } from '@carteira/sdk';
@@ -18,10 +19,10 @@ export default function Carteira({ api, sessao, versao, ehGerenteGeral, emitir, 
   const ultimoComando = React.useRef(0);
 
   React.useEffect(() => {
-    if (comando && comando.nonce !== ultimoComando.current && comando.tipo === 'abrir-redistribuicao') {
-      ultimoComando.current = comando.nonce;
-      setAssistente({ origem: comando.idPosicaoOrigem });
-    }
+    if (!comando || comando.nonce === ultimoComando.current) return;
+    ultimoComando.current = comando.nonce;
+    if (comando.tipo === 'abrir-redistribuicao') setAssistente({ origem: comando.idPosicaoOrigem });
+    else setCliente(comando.idCliente);
   }, [comando]);
 
   const secoes = dados.dados?.secoes ?? [];
@@ -41,6 +42,8 @@ export default function Carteira({ api, sessao, versao, ehGerenteGeral, emitir, 
         </div>
         {ehGerenteGeral ? <Botao onClick={() => setAssistente({})}><ArrowRightLeft aria-hidden className="size-4" /> Redistribuir clientes</Botao> : null}
       </header>
+
+      <PainelAnalises api={api} sessao={sessao} versao={versao} aoAbrirCliente={setCliente} />
 
       <Abas value={chave(ativa!)} onValueChange={setAba}>
         <AbasLista aria-label="Carteiras" className="overflow-x-auto">

@@ -557,6 +557,9 @@
       else if (e.tipo === "abrir-redistribuicao") {
         setComando({ tipo: "abrir-redistribuicao", idPosicaoOrigem: e.idPosicaoOrigem, nonce: Date.now() });
         navegar("carteira");
+      } else if (e.tipo === "cliente-selecionado") {
+        setComando({ tipo: "abrir-cliente", idCliente: e.idCliente, nonce: Date.now() });
+        navegar("carteira");
       } else if (e.tipo === "dados-alterados") setVersao((v) => v + 1);
     }, [navegar]);
     const ehGerenteGeral = sessao.papel === "GG";

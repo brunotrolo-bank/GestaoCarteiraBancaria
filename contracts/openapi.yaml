@@ -332,6 +332,13 @@ paths:
       tags: [Insights]
       parameters: [{ $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/DataSimulada' }, { $ref: '#/components/parameters/Asof' }]
       responses: { '200': { description: Métricas consolidadas } }
+  /insights/analise:
+    get:
+      operationId: get_insights_analise
+      summary: Análises da carteira visível (concentração, faixas, tendência, engajamento, oportunidades e insights)
+      tags: [Insights]
+      parameters: [{ $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/DataSimulada' }, { $ref: '#/components/parameters/Asof' }]
+      responses: { '200': { description: Análises calculadas só sobre os clientes que o ator pode ver } }
   /insights/posicoes/{id}:
     get:
       operationId: get_insights_posicoes_por_id

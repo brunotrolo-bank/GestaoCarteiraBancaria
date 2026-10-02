@@ -13,6 +13,8 @@ Foco do projeto: **modelo de dados, camada semântica e engenharia de dados** (p
 | J2 | **Cobertura de férias**: Posição 01 delegada à 02 de 01/11 a 15/11; expira sozinha em 16/11 | Carteira, papel "Mesa Alta Renda A", data 05/11 e 16/11 |
 | J3 | **Torre de Controle**: 120% / 40% de capacidade; simular → redistribuir → desfazer | Torre de Controle → *Simular redistribuição* |
 
+**Análises e insights** (Torre de Controle e Carteira, `GET /insights/analise`): insights automáticos em linguagem de negócio, concentração do AUM (Pareto), tendência de 12 meses, mapa de calor posição × segmento, faixas de AUM e de score, penetração e produtos por cliente, canais, e listas acionáveis (maiores clientes, prioridade de contato, venda cruzada) que abrem a visão 360°. Calculado em `packages/core/src/insights/analise.ts`, só sobre o que o papel pode ver.
+
 Capturas de tela das jornadas: [`docs/telas/`](docs/telas/).
 
 ## Arquitetura (monolito modular — D-01)

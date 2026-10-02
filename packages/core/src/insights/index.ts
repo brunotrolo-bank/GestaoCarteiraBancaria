@@ -198,3 +198,5 @@ export function exigirAtorAtivo(db: Db, idGerente: string): Gerente {
   exigir(g && g.status === 'Ativo', 'ATOR_DESCONHECIDO', 'Ator desconhecido ou inativo.');
   return g;
 }
+
+export * from './analise.ts';

@@ -260,6 +260,7 @@ var CARTEIRA_API = (() => {
       tratador: (c) => import_core.clientes.executarRedistribuicao(c.db, c.clock, { ...analisar(corpos.redistribuicao, c.corpo), chave_idempotencia: c.idempotencia }, c.ator)
     },
     { metodo: "POST", caminho: "/carteira/redistribuicoes/{id}:desfazer", escrita: true, tratador: (c) => import_core.clientes.desfazerLote(c.db, c.clock, c.params.id, c.ator) },
+    { metodo: "GET", caminho: "/insights/analise", tratador: (c) => import_core.insights.analiseCarteira(c.db, ctxInsights(c, c.consulta.get("asof"))) },
     { metodo: "GET", caminho: "/insights/agencia", tratador: (c) => import_core.insights.resumoAgencia(c.db, ctxInsights(c, c.consulta.get("asof"))) },
     {
       metodo: "GET",
