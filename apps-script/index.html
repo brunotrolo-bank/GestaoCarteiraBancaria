@@ -9,7 +9,14 @@
       // diagnóstico de carga: registra erros de cada script (arquivo em carga = window.__etapa) e o shell os mostra se algo faltar
       window.CARTEIRA_ERROS = [];
       window.__etapa = 'inicio';
-      window.addEventListener('error', function (e) { window.CARTEIRA_ERROS.push(window.__etapa + ': ' + e.message + ' (linha ' + e.lineno + ':' + e.colno + ')'); });
+      window.CARTEIRA_MOSTRAR = function (msg) {
+        window.CARTEIRA_ERROS.push(msg);
+        var d = document.getElementById('carteira-erros');
+        if (!d) { d = document.createElement('pre'); d.id = 'carteira-erros'; d.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;max-height:45vh;overflow:auto;margin:0;padding:12px;background:#fff1f1;color:#7a0000;border:1px solid #c00;font:12px/1.4 monospace;white-space:pre-wrap;z-index:99999'; document.body.appendChild(d); }
+        d.textContent = 'Erro no app (' + window.CARTEIRA_ERROS.length + '):' + String.fromCharCode(10) + window.CARTEIRA_ERROS.join(String.fromCharCode(10));
+      };
+      window.addEventListener('error', function (e) { window.CARTEIRA_MOSTRAR(window.__etapa + ': ' + e.message + ' (linha ' + e.lineno + ':' + e.colno + ')' + (e.error && e.error.stack ? String.fromCharCode(10) + e.error.stack : '')); });
+      window.addEventListener('unhandledrejection', function (e) { window.CARTEIRA_MOSTRAR('promessa rejeitada: ' + (e.reason && (e.reason.stack || e.reason.message) || e.reason)); });
     </script>
   </head>
   <body>

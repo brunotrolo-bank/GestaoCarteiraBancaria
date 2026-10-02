@@ -7,6 +7,7 @@
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
   var __commonJS = (cb, mod) => function __require() {
     try {
       return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -30,18 +31,19 @@
     isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
     mod
   ));
-
-  // global:react-dom/client
-  var require_client = __commonJS({
-    "global:react-dom/client"(exports, module) {
-      module.exports = CARTEIRA_RUNTIME.ReactDOM;
-    }
-  });
+  var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
   // global:react
   var require_react = __commonJS({
     "global:react"(exports, module) {
       module.exports = CARTEIRA_RUNTIME.React;
+    }
+  });
+
+  // global:react-dom/client
+  var require_client = __commonJS({
+    "global:react-dom/client"(exports, module) {
+      module.exports = CARTEIRA_RUNTIME.ReactDOM;
     }
   });
 
@@ -67,6 +69,7 @@
   });
 
   // frontend/shell/src/main.gas.tsx
+  var React2 = __toESM(require_react(), 1);
   var import_client = __toESM(require_client(), 1);
 
   // frontend/shell/src/App.tsx
@@ -282,7 +285,7 @@
   // node_modules/lucide-react/dist/esm/createLucideIcon.mjs
   function createLucideIcon(iconDataOrName, iconNode = [], aliases = []) {
     const iconData = typeof iconDataOrName === "string" ? toLucideIconData(iconDataOrName, iconNode, aliases) : iconDataOrName;
-    const Component = (0, import_react3.forwardRef)(
+    const Component2 = (0, import_react3.forwardRef)(
       ({ className, ...props }, ref) => (0, import_react3.createElement)(Icon, {
         ref,
         icon: iconData,
@@ -291,9 +294,9 @@
       })
     );
     if (iconData.name) {
-      Component.displayName = toPascalCase(iconData.name);
+      Component2.displayName = toPascalCase(iconData.name);
     }
-    return Component;
+    return Component2;
   }
 
   // node_modules/lucide-react/dist/esm/icons/calendar-clock.mjs
@@ -638,16 +641,36 @@
 
   // frontend/shell/src/main.gas.tsx
   var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+  var w = window;
   var _a;
-  var mfes = (_a = window.CARTEIRA_MFES) != null ? _a : {};
+  var mfes = (_a = w.CARTEIRA_MFES) != null ? _a : {};
   var faltando = ["cockpit", "posicoes", "carteira", "delegacao"].filter((k) => !mfes[k]);
   var raiz = document.getElementById("raiz");
+  var Contencao = class extends React2.Component {
+    constructor() {
+      super(...arguments);
+      __publicField(this, "state", { erro: null });
+    }
+    static getDerivedStateFromError(erro) {
+      return { erro };
+    }
+    componentDidCatch(erro, info) {
+      var _a3, _b, _c;
+      (_c = w.CARTEIRA_MOSTRAR) == null ? void 0 : _c.call(w, "render: ".concat(erro.message, "\n").concat((_a3 = erro.stack) != null ? _a3 : "", "\n").concat((_b = info.componentStack) != null ? _b : ""));
+    }
+    render() {
+      return this.state.erro ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("p", { style: { fontFamily: "sans-serif", padding: 24, color: "#7a0000" }, children: [
+        "Erro ao exibir a tela: ",
+        this.state.erro.message
+      ] }) : this.props.children;
+    }
+  };
   var _a2;
   if (faltando.length > 0) {
-    const erros = (_a2 = window.CARTEIRA_ERROS) != null ? _a2 : [];
+    const erros = (_a2 = w.CARTEIRA_ERROS) != null ? _a2 : [];
     raiz.textContent = "Micro-frontends ausentes: ".concat(faltando.join(", ")).concat(erros.length ? " | erros de carga: ".concat(erros.join(" ; ")) : "");
   } else {
-    (0, import_client.createRoot)(raiz).render(/* @__PURE__ */ (0, import_jsx_runtime3.jsx)(App, { mfes }));
+    (0, import_client.createRoot)(raiz).render(/* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Contencao, { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(App, { mfes }) }));
   }
 })();
 
