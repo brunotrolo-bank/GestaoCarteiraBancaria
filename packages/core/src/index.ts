@@ -1,0 +1,12 @@
+export * from './shared/dates.ts';
+export * from './shared/clock.ts';
+export * from './shared/errors.ts';
+export * from './shared/registro.ts';
+export * from './model/types.ts';
+export * from './model/db.ts';
+export * from './clientes/documento.ts';
+export * as posicoes from './posicoes/index.ts';
+export * as delegacao from './delegacao/index.ts';
+export * as clientes from './clientes/index.ts';
+export * as acesso from './acesso/index.ts';
+export * as insights from './insights/index.ts';

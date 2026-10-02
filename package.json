@@ -1,0 +1,31 @@
+{
+  "name": "gestao-carteira-bancaria",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "POC de gestão de carteira bancária por posição (monolito modular, SDD/TDD)",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "frontend/*"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "typecheck": "tsc -b --noEmit false || tsc -p tsconfig.json --noEmit",
+    "lint:arq": "tsx scripts/lint-arquitetura.ts",
+    "api": "tsx apps/api/src/server.ts",
+    "mcp": "tsx apps/mcp/src/server.ts",
+    "sheets:carga": "tsx scripts/sheets-carga.ts",
+    "sheets:homologar": "tsx scripts/sheets-homologar.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "@vitest/coverage-v8": "^5.0.3",
+    "fast-check": "^4.10.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3",
+    "zod": "^4.6.5"
+  }
+}
