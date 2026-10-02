@@ -2,8 +2,7 @@
  * Gera os arquivos do Apps Script (`apps-script/`) PRESERVANDO a separação por domínio e por micro-frontend:
  *
  *  Backend (um arquivo por camada/domínio; compartilham globais, na ordem de `.clasp.json`):
- *    nucleo.js · dominio-posicoes.js · dominio-delegacao.js · dominio-acesso.js · dominio-clientes.js · dominio-insights.js
- *    dominios-index.js · plataforma-dados.js · api.js · armazenamento-sheets.js · entrada.js
+ *    00-nucleo.js · 10..14-dominio-*.js · 15-dominios-index.js · 20-plataforma-dados.js · 21-api.js · 22-armazenamento-sheets.js · 23-entrada.js
  *  Front (HTML por micro-frontend, composto em runtime pelo shell):
  *    index.html (template) · estilos.html · runtime.html (React + design system + SDK) · mfe-cockpit.html · mfe-posicoes.html ·
  *    mfe-carteira.html · mfe-delegacao.html · shell.html
@@ -54,14 +53,14 @@ async function backend(): Promise<void> {
 
   // núcleo: shared + model (tipos, datas, relógio, erros, auditoria, esquema)
   await esbuild({
-    ...comum, entryPoints: [src('apps/gas/src/nucleo.ts')], outfile: join(saidaGas, 'nucleo.js'), globalName: 'CARTEIRA_NUCLEO',
+    ...comum, entryPoints: [src('apps/gas/src/nucleo.ts')], outfile: join(saidaGas, '00-nucleo.js'), globalName: 'CARTEIRA_NUCLEO',
     banner: { js: `${cab('Camada compartilhada (shared + model)')}\nvar CARTEIRA_DOMINIOS = {};` },
   });
 
   // um arquivo por domínio; dependências entre domínios e o núcleo viram globais
   for (const d of DOMINIOS) {
     await esbuild({
-      ...comum, entryPoints: [src(`packages/core/src/${d}/index.ts`)], outfile: join(saidaGas, `dominio-${d}.js`), globalName: `DOM_${d}`,
+      ...comum, entryPoints: [src(`packages/core/src/${d}/index.ts`)], outfile: join(saidaGas, `${{posicoes:'10',delegacao:'11',acesso:'12',clientes:'13',insights:'14'}[d]}-dominio-${d}.js`), globalName: `DOM_${d}`,
       banner: { js: cab(`Domínio: ${d}`) }, footer: { js: `CARTEIRA_DOMINIOS.${d} = DOM_${d};` },
       plugins: [globais((esp, imp) => {
         const m = moduloDestino(esp, imp);
@@ -74,7 +73,7 @@ async function backend(): Promise<void> {
   }
 
   // índice do núcleo no mesmo formato de `@carteira/core` (para as camadas acima)
-  writeFileSync(join(saidaGas, 'dominios-index.js'), `${cab('Índice do núcleo (equivale a @carteira/core)')}
+  writeFileSync(join(saidaGas, '15-dominios-index.js'), `${cab('Índice do núcleo (equivale a @carteira/core)')}
 var CARTEIRA_CORE = Object.assign({}, CARTEIRA_NUCLEO, CARTEIRA_DOMINIOS.clientes, {
   posicoes: CARTEIRA_DOMINIOS.posicoes,
   delegacao: CARTEIRA_DOMINIOS.delegacao,
@@ -97,10 +96,10 @@ var CARTEIRA_CORE = Object.assign({}, CARTEIRA_NUCLEO, CARTEIRA_DOMINIOS.cliente
       plugins: [globais((esp) => { const g = externosCamadas(esp); return g && !bloqueados.includes(g) ? g : null; })],
     });
 
-  await camada('apps/gas/src/dados.ts', 'plataforma-dados.js', 'CARTEIRA_DADOS', 'Plataforma de dados (dados sintéticos, conversão tabela⇄matriz)', ['CARTEIRA_DADOS', 'CARTEIRA_API', 'CARTEIRA_ARMAZENAMENTO']);
-  await camada('apps/gas/src/api.ts', 'api.js', 'CARTEIRA_API', 'API (rotas, validação, erros) sobre o núcleo', ['CARTEIRA_API', 'CARTEIRA_ARMAZENAMENTO']);
-  await camada('apps/gas/src/gas-store.ts', 'armazenamento-sheets.js', 'CARTEIRA_ARMAZENAMENTO', 'Persistência na planilha (cache + escrita incremental)', ['CARTEIRA_ARMAZENAMENTO']);
-  await camada('apps/gas/src/entrada.ts', 'entrada.js', 'CARTEIRA', 'Entrada do backend: apiChamar / instalarEm', []);
+  await camada('apps/gas/src/dados.ts', '20-plataforma-dados.js', 'CARTEIRA_DADOS', 'Plataforma de dados (dados sintéticos, conversão tabela⇄matriz)', ['CARTEIRA_DADOS', 'CARTEIRA_API', 'CARTEIRA_ARMAZENAMENTO']);
+  await camada('apps/gas/src/api.ts', '21-api.js', 'CARTEIRA_API', 'API (rotas, validação, erros) sobre o núcleo', ['CARTEIRA_API', 'CARTEIRA_ARMAZENAMENTO']);
+  await camada('apps/gas/src/gas-store.ts', '22-armazenamento-sheets.js', 'CARTEIRA_ARMAZENAMENTO', 'Persistência na planilha (cache + escrita incremental)', ['CARTEIRA_ARMAZENAMENTO']);
+  await camada('apps/gas/src/entrada.ts', '23-entrada.js', 'CARTEIRA', 'Entrada do backend: apiChamar / instalarEm', []);
   rmSync(join(saidaGas, 'backend.js'), { force: true });
 }
 
@@ -176,12 +175,14 @@ async function front(): Promise<void> {
 }
 
 // ======================= ordem dos arquivos =======================
+// Os números no nome garantem a ordem de carga também no servidor (o Apps Script carrega em ordem alfabética).
 const ORDEM = [
-  'nucleo.js', 'dominio-posicoes.js', 'dominio-delegacao.js', 'dominio-acesso.js', 'dominio-clientes.js', 'dominio-insights.js', 'dominios-index.js',
-  'plataforma-dados.js', 'api.js', 'armazenamento-sheets.js', 'entrada.js', 'schema.js', 'rules.js', 'Codigo.js',
+  '00-nucleo.js', '10-dominio-posicoes.js', '11-dominio-delegacao.js', '12-dominio-acesso.js', '13-dominio-clientes.js', '14-dominio-insights.js', '15-dominios-index.js',
+  '20-plataforma-dados.js', '21-api.js', '22-armazenamento-sheets.js', '23-entrada.js', 'schema.js', 'rules.js', 'Codigo.js',
 ];
 
 mkdirSync(saidaGas, { recursive: true });
+for (const velho of ['nucleo.js', 'dominio-posicoes.js', 'dominio-delegacao.js', 'dominio-acesso.js', 'dominio-clientes.js', 'dominio-insights.js', 'dominios-index.js', 'plataforma-dados.js', 'api.js', 'armazenamento-sheets.js', 'entrada.js']) rmSync(join(saidaGas, velho), { force: true });
 await backend();
 await front();
 const claspPath = join(saidaGas, '.clasp.json');
