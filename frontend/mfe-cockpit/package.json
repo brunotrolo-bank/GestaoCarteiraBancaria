@@ -1,0 +1,8 @@
+{
+  "name": "@carteira/mfe-cockpit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.tsx" },
+  "dependencies": { "@carteira/ui": "*", "@carteira/sdk": "*", "react": "*", "react-dom": "*" }
+}

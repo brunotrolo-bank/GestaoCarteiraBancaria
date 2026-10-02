@@ -1,0 +1,8 @@
+{
+  "name": "@carteira/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts", "./tokens.css": "./src/tokens.css", "./estilos.css": "./src/estilos.css" },
+  "dependencies": { "react": "*", "react-dom": "*", "@radix-ui/react-dialog": "*", "@radix-ui/react-select": "*", "@radix-ui/react-tabs": "*", "@radix-ui/react-tooltip": "*", "@radix-ui/react-slot": "*", "class-variance-authority": "*", "clsx": "*", "tailwind-merge": "*", "lucide-react": "*", "@tanstack/react-table": "*", "recharts": "*" }
+}

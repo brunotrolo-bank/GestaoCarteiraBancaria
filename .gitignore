@@ -21,3 +21,5 @@ coverage/
 # Sistema
 .DS_Store
 Thumbs.db
+test-results/
+playwright-report/

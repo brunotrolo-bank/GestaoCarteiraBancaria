@@ -1,0 +1,150 @@
+/* GERADO por scripts/gerar-tokens.ts a partir de planos/system-design/DESIGN-stripe.md — não editar à mão (npm run tokens). */
+@theme {
+  --color-primary: #533afd;
+  --color-primary-deep: #4434d4;
+  --color-primary-press: #2e2b8c;
+  --color-primary-soft: #665efd;
+  --color-primary-bg-subdued-hover: #b9b9f9;
+  --color-brand-dark-900: #1c1e54;
+  --color-ink: #0d253d;
+  --color-ink-secondary: #273951;
+  --color-ink-mute: #64748d;
+  --color-ink-mute-2: #61718a;
+  --color-on-primary: #ffffff;
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #f6f9fc;
+  --color-canvas-cream: #f5e9d4;
+  --color-hairline: #e3e8ee;
+  --color-hairline-input: #a8c3de;
+  --color-ruby: #ea2261;
+  --color-magenta: #f96bee;
+  --color-lemon: #9b6829;
+  --color-shadow-blue: #003770;
+  --color-background: var(--color-canvas);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-canvas);
+  --color-card-foreground: var(--color-ink);
+  --color-popover: var(--color-canvas);
+  --color-popover-foreground: var(--color-ink);
+  --color-primary-foreground: var(--color-on-primary);
+  --color-secondary: var(--color-canvas-soft);
+  --color-secondary-foreground: var(--color-ink-secondary);
+  --color-muted: var(--color-canvas-soft);
+  --color-muted-foreground: var(--color-ink-mute);
+  --color-accent: var(--color-canvas-soft);
+  --color-accent-foreground: var(--color-ink);
+  --color-border: var(--color-hairline);
+  --color-input: var(--color-hairline-input);
+  --color-ring: var(--color-primary);
+  --color-destructive: var(--color-ruby);
+  --color-chart-1: var(--color-primary);
+  --color-chart-2: var(--color-primary-soft);
+  --color-chart-3: var(--color-brand-dark-900);
+  --color-chart-4: var(--color-ruby);
+  --color-chart-5: var(--color-ink-mute);
+  --color-sidebar: var(--color-brand-dark-900);
+  --color-sidebar-foreground: var(--color-on-primary);
+  --color-sidebar-muted: var(--color-primary-bg-subdued-hover);
+  --color-sidebar-active: var(--color-primary-press);
+  --color-critico: var(--color-ruby);
+  --color-atencao: var(--color-lemon);
+  --color-informativo: var(--color-primary-deep);
+  --font-sans: 'Inter', 'SF Pro Display', system-ui, -apple-system, sans-serif;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 9999px;
+  --text-display-xxl: 56px;
+  --text-display-xxl--line-height: 1.03;
+  --text-display-xxl--letter-spacing: -1.4px;
+  --text-display-xxl--font-weight: 300;
+  --text-display-xl: 48px;
+  --text-display-xl--line-height: 1.15;
+  --text-display-xl--letter-spacing: -0.96px;
+  --text-display-xl--font-weight: 300;
+  --text-display-lg: 32px;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.64px;
+  --text-display-lg--font-weight: 300;
+  --text-display-md: 26px;
+  --text-display-md--line-height: 1.12;
+  --text-display-md--letter-spacing: -0.26px;
+  --text-display-md--font-weight: 300;
+  --text-heading-lg: 22px;
+  --text-heading-lg--line-height: 1.1;
+  --text-heading-lg--letter-spacing: -0.22px;
+  --text-heading-lg--font-weight: 300;
+  --text-heading-md: 20px;
+  --text-heading-md--line-height: 1.4;
+  --text-heading-md--letter-spacing: -0.2px;
+  --text-heading-md--font-weight: 300;
+  --text-heading-sm: 18px;
+  --text-heading-sm--line-height: 1.4;
+  --text-heading-sm--letter-spacing: 0;
+  --text-heading-sm--font-weight: 300;
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 1.4;
+  --text-body-lg--letter-spacing: 0;
+  --text-body-lg--font-weight: 300;
+  --text-body-md: 15px;
+  --text-body-md--line-height: 1.4;
+  --text-body-md--letter-spacing: 0;
+  --text-body-md--font-weight: 300;
+  --text-body-tabular: 14px;
+  --text-body-tabular--line-height: 1.4;
+  --text-body-tabular--letter-spacing: -0.42px;
+  --text-body-tabular--font-weight: 300;
+  --text-button-md: 16px;
+  --text-button-md--line-height: 1;
+  --text-button-md--letter-spacing: 0;
+  --text-button-md--font-weight: 400;
+  --text-button-sm: 14px;
+  --text-button-sm--line-height: 1;
+  --text-button-sm--letter-spacing: 0;
+  --text-button-sm--font-weight: 400;
+  --text-caption: 13px;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: -0.39px;
+  --text-caption--font-weight: 400;
+  --text-micro: 11px;
+  --text-micro--line-height: 1.4;
+  --text-micro--letter-spacing: 0;
+  --text-micro--font-weight: 300;
+  --text-micro-cap: 10px;
+  --text-micro-cap--line-height: 1.15;
+  --text-micro-cap--letter-spacing: 0.1px;
+  --text-micro-cap--font-weight: 400;
+  --shadow-nivel-1: rgba(0, 55, 112, 0.08) 0 1px 3px;
+  --shadow-nivel-2: rgba(0, 55, 112, 0.08) 0 8px 24px, rgba(0, 55, 112, 0.04) 0 2px 6px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-wide: 1440px;
+}
+
+:root {
+  --space-xxs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-xxl: 32px;
+  --space-huge: 64px;
+}
+
+@layer base {
+  html { font-family: var(--font-sans); }
+  body { font-feature-settings: "ss01"; font-weight: 300; font-size: 15px; line-height: 1.4; color: var(--color-ink); background: var(--color-canvas-soft); }
+  button, input, select, textarea { font-family: inherit; font-feature-settings: "ss01"; }
+  :focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+}
+
+@layer utilities {
+  /* Toda célula de dinheiro/contagem usa tnum (DESIGN: "Tabular-Figure Money Type"). */
+  .tnum { font-feature-settings: "ss01", "tnum"; font-variant-numeric: tabular-nums; }
+  .text-body-tabular { font-feature-settings: "tnum"; letter-spacing: -0.42px; }
+  .text-caption { font-feature-settings: "tnum"; }
+}
+/* escala de raios (px): 4, 6, 8, 12, 16, 9999 */

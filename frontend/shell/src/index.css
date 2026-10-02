@@ -1,0 +1,9 @@
+@import "../../ui/src/estilos.css";
+
+/* Tailwind precisa varrer também os pacotes de componentes e os MFEs (código-fonte em workspaces). */
+@source "../../ui/src";
+@source "../../mfe-cockpit/src";
+@source "../../mfe-posicoes/src";
+@source "../../mfe-carteira/src";
+@source "../../mfe-delegacao/src";
+@source "./";

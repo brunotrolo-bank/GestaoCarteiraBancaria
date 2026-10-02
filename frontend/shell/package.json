@@ -1,0 +1,8 @@
+{
+  "name": "@carteira/shell",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "vite", "build": "vite build", "preview": "vite preview" },
+  "dependencies": { "@carteira/ui": "*", "@carteira/sdk": "*", "@carteira/mfe-cockpit": "*", "@carteira/mfe-posicoes": "*", "@carteira/mfe-carteira": "*", "@carteira/mfe-delegacao": "*", "react": "*", "react-dom": "*" }
+}
