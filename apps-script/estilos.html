@@ -99,10 +99,6 @@
     --color-atencao: var(--color-lemon);
     --color-informativo: var(--color-primary-deep);
     --radius-pill: 9999px;
-    --text-display-xl: 48px;
-    --text-display-xl--line-height: 1.15;
-    --text-display-xl--letter-spacing: -.96px;
-    --text-display-xl--font-weight: 300;
     --text-display-lg: 32px;
     --text-display-lg--line-height: 1.1;
     --text-display-lg--letter-spacing: -.64px;
@@ -435,6 +431,18 @@
     pointer-events: none;
   }
 
+  .sr-only {
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    position: absolute;
+    overflow: hidden;
+  }
+
   .absolute {
     position: absolute;
   }
@@ -657,6 +665,11 @@
     height: calc(var(--spacing) * 40);
   }
 
+  .size-full {
+    width: 100%;
+    height: 100%;
+  }
+
   .h-0\.5 {
     height: calc(var(--spacing) * .5);
   }
@@ -739,6 +752,10 @@
 
   .min-h-20 {
     min-height: calc(var(--spacing) * 20);
+  }
+
+  .min-h-50 {
+    min-height: calc(var(--spacing) * 50);
   }
 
   .min-h-screen {
@@ -1222,8 +1239,8 @@
     padding-block: calc(var(--spacing) * 4);
   }
 
-  .py-8 {
-    padding-block: calc(var(--spacing) * 8);
+  .py-6 {
+    padding-block: calc(var(--spacing) * 6);
   }
 
   .py-10 {
@@ -1348,13 +1365,6 @@
     line-height: var(--tw-leading, var(--text-display-md--line-height));
     letter-spacing: var(--tw-tracking, var(--text-display-md--letter-spacing));
     font-weight: var(--tw-font-weight, var(--text-display-md--font-weight));
-  }
-
-  .text-display-xl {
-    font-size: var(--text-display-xl);
-    line-height: var(--tw-leading, var(--text-display-xl--line-height));
-    letter-spacing: var(--tw-tracking, var(--text-display-xl--letter-spacing));
-    font-weight: var(--tw-font-weight, var(--text-display-xl--font-weight));
   }
 
   .text-heading-lg {
@@ -1634,12 +1644,12 @@
       display: grid;
     }
 
-    .md\:h-72 {
-      height: calc(var(--spacing) * 72);
-    }
-
     .md\:h-screen {
       height: 100vh;
+    }
+
+    .md\:min-h-67 {
+      min-height: calc(var(--spacing) * 67);
     }
 
     .md\:grid-cols-2 {
@@ -1668,10 +1678,6 @@
 
     .md\:px-12 {
       padding-inline: calc(var(--spacing) * 12);
-    }
-
-    .md\:py-10 {
-      padding-block: calc(var(--spacing) * 10);
     }
   }
 
