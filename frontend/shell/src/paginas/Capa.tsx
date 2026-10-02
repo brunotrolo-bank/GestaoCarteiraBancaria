@@ -52,7 +52,7 @@ export function Capa({ definirSessao, navegar }: { definirSessao: (s: Sessao) =>
         <div aria-hidden className="absolute inset-0 bg-brand-dark-900/60" />
         <div className="relative px-6 py-12 md:px-12 md:py-16">
           <p className="text-micro-cap uppercase text-sidebar-muted">Porto Bank · Prova de conceito</p>
-          <h1 id="titulo-capa" className="mt-3 max-w-3xl text-display-xl text-on-primary">Gestão de carteira por Posição, não por pessoa</h1>
+          <h1 id="titulo-capa" className="sr-only">Gestão de carteira por Posição, não por pessoa</h1>
           <p className="mt-4 max-w-2xl text-body-lg text-sidebar-muted">
             Uma carteira por mesa: turnover, férias e rebalanceamento sem migrar um único cliente.
           </p>
