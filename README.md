@@ -63,7 +63,7 @@ No editor do Apps Script, `homologar()` produz o mesmo resultado. O web app **n�
 ## Aplicativo no Google Apps Script (testar sem rodar nada local)
 O app completo (front React + backend com o mesmo núcleo de domínio) roda **dentro do Apps Script**, lendo e gravando a planilha:
 - `apps-script/` — arquivos gerados do backend (um por domínio) e do front (um HTML por micro-frontend); `Codigo.js` — `doGet`, `incluir`, `apiChamar`, autoinstalação.
-- O projeto no Apps Script mantém a separação por **domínio** (`dominio-*.js`) e por **micro-frontend** (`mfe-*.html`), mais `nucleo.js`, `api.js`, `armazenamento-sheets.js`, `runtime.html`, `shell.html`.
+- O projeto no Apps Script mantém a separação por **domínio** (`1x-dominio-*.js`) e por **micro-frontend** (`mfe-*.html`), mais `00-nucleo.js`, `21-api.js`, `22-armazenamento-sheets.js`, `runtime.html`, `shell.html`. Os prefixos numéricos garantem a ordem de carga, pois o servidor do Apps Script carrega os arquivos em ordem alfabética.
 - Gerar e publicar: `npm run gas:build && npm run apps-script:push` e, para uma versão estável, `clasp deploy` (dentro de `apps-script/`).
 - Teste do backend em sandbox sem Node/Intl/URL: `npx tsx scripts/gas-smoke.ts`.
 - Acesso: somente o dono da conta (`access: MYSELF`); a primeira abertura pede autorização dos escopos da planilha.
