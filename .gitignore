@@ -27,3 +27,7 @@ reports/
 .stryker-tmp/
 .stryker-*.json
 frontend/shell/dist-gas/
+
+# Capturas geradas pelos testes E2E a cada execução (as 00-07 são as capturas de referência)
+docs/telas/360-*.png
+docs/telas/gas-composto.png
