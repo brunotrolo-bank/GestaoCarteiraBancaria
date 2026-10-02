@@ -50,7 +50,7 @@ export function Capa({ definirSessao, navegar }: { definirSessao: (s: Sessao) =>
           aria-hidden
           className="absolute inset-0 size-full object-cover object-center"
         />
-        <div className="relative flex min-h-72 flex-col justify-between gap-10 px-6 py-8 md:min-h-96 md:px-12">
+        <div className="relative flex min-h-50 flex-col justify-between gap-6 px-6 py-6 md:min-h-67 md:px-12">
           <p className="text-micro-cap uppercase text-on-primary">Porto Bank · Prova de conceito</p>
           <h1 id="titulo-capa" className="sr-only">Gestão de carteira por Posição, não por pessoa</h1>
           <p className="max-w-2xl text-body-lg text-on-primary">
