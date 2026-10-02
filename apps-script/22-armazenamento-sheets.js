@@ -67,7 +67,7 @@ var CARTEIRA_ARMAZENAMENTO = (() => {
   var import_core = __toESM(require_core(), 1);
   var import_matriz = __toESM(require_matriz(), 1);
   var import_seed = __toESM(require_seed(), 1);
-  var CHAVE_CACHE = "carteira:db:v3";
+  var CHAVE_CACHE = "carteira:db:v4";
   var TAMANHO_BLOCO = 9e4;
   var TTL_SEGUNDOS = 900;
   var SO_ANEXA = ["log_auditoria", "log_eventos", "fct_movimentacao_carteira"];
@@ -133,7 +133,9 @@ var CARTEIRA_ARMAZENAMENTO = (() => {
         }
         const bytes = Utilities.base64Decode(b64);
         const json = Utilities.ungzip(Utilities.newBlob(bytes, "application/x-gzip")).getDataAsString();
-        return JSON.parse(json);
+        const db = JSON.parse(json);
+        for (const t of import_core.NOMES_TABELAS) if (!Array.isArray(db[t])) db[t] = [];
+        return db;
       } catch (e) {
         return null;
       }

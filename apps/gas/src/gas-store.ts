@@ -7,7 +7,7 @@ declare const SpreadsheetApp: any;
 declare const Utilities: any;
 declare const CacheService: any;
 
-const CHAVE_CACHE = 'carteira:db:v3';
+const CHAVE_CACHE = 'carteira:db:v4';
 const TAMANHO_BLOCO = 90_000; // limite do CacheService: 100 KB por chave
 const TTL_SEGUNDOS = 900; // 15 min: edição manual da planilha aparece em até 15 min (ou use "Recarregar da planilha")
 const SO_ANEXA: NomeTabela[] = ['log_auditoria', 'log_eventos', 'fct_movimentacao_carteira'];
@@ -81,7 +81,9 @@ export class GasStore {
       }
       const bytes = Utilities.base64Decode(b64);
       const json = Utilities.ungzip(Utilities.newBlob(bytes, 'application/x-gzip')).getDataAsString();
-      return JSON.parse(json) as Db;
+      const db = JSON.parse(json) as Db;
+      for (const t of NOMES_TABELAS) if (!Array.isArray(db[t])) (db[t] as unknown[]) = []; // cache de versão anterior sem tabelas novas
+      return db;
     } catch {
       return null;
     }
