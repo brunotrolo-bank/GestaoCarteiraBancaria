@@ -4,7 +4,8 @@ import bannerPortoBank from '../ativos/PortoBank_Banner.jpg';
 
 /**
  * Capa de apresentação para o gestor de negócio. O herói usa o banner oficial do Porto Seguro Bank
- * (imagem centralizada; o Vite a embute como data URI no build do Apps Script, sem URL externa).
+ * ao fundo (imagem centralizada, embutida como data URI no build do Apps Script); os textos ficam
+ * ancorados no topo e na base para não cobrir o logo do banner.
  */
 const JORNADAS = [
   {
@@ -49,10 +50,10 @@ export function Capa({ definirSessao, navegar }: { definirSessao: (s: Sessao) =>
           aria-hidden
           className="absolute inset-0 size-full object-cover object-center"
         />
-        <div className="relative px-6 py-12 md:px-12 md:py-16">
+        <div className="relative flex min-h-72 flex-col justify-between gap-10 px-6 py-8 md:min-h-96 md:px-12">
           <p className="text-micro-cap uppercase text-on-primary">Porto Bank · Prova de conceito</p>
           <h1 id="titulo-capa" className="sr-only">Gestão de carteira por Posição, não por pessoa</h1>
-          <p className="mt-4 max-w-2xl text-body-lg text-on-primary">
+          <p className="max-w-2xl text-body-lg text-on-primary">
             Uma carteira por mesa: turnover, férias e rebalanceamento sem migrar um único cliente.
           </p>
         </div>
