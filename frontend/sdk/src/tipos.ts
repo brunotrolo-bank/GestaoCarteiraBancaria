@@ -5,6 +5,12 @@ export type Modo = 'Escrita' | 'Leitura';
 export interface Titular { id_gerente: string; nome: string }
 export interface OrigemAcesso { origem: 'Titular' | 'Delegado' | 'GerenteGeral'; id_delegacao?: string; escopo?: string; titular_ausente?: boolean }
 
+export interface MetasPosicao { meta_aum: number; meta_clientes: number; utilizacao_minima: number; utilizacao_maxima: number }
+export interface MetaPosicaoAtingimento {
+  id_posicao: string; nome_posicao: string; aum: number; meta_aum: number; pct_meta_aum: number | null; clientes: number; meta_clientes: number;
+  pct_meta_clientes: number | null; utilizacao: number; utilizacao_minima: number; utilizacao_maxima: number; desbalanceamento: Desbalanceamento;
+}
+
 export interface ResumoPosicao {
   id_posicao: string;
   nome_posicao: string;
@@ -17,6 +23,7 @@ export interface ResumoPosicao {
   utilizacao: number;
   aum_total: number;
   desbalanceamento: Desbalanceamento;
+  metas: MetasPosicao;
   modo: Modo;
   origens: OrigemAcesso[];
 }
@@ -52,7 +59,26 @@ export interface AnaliseCarteira {
   oportunidades: (ClienteResumo & { produtos_ativos: number; produtos_faltantes: string[] })[];
   top_clientes: (ClienteResumo & { pct_do_total: number })[];
   delegacoes: { vigentes: number; expirando_7d: number };
+  metas_posicoes: MetaPosicaoAtingimento[];
   insights: InsightNegocio[];
+}
+
+export type LeituraMetrica = 'melhora' | 'piora' | 'estavel' | 'neutra';
+export interface MetricaComparada {
+  chave: string; rotulo: string; unidade: 'clientes' | 'reais' | 'quantidade' | 'percentual';
+  atual: number; anterior: number; variacao: number; variacao_pct: number | null; leitura: LeituraMetrica;
+}
+export interface ParPeriodo { atual: number; anterior: number }
+export interface Comparativo {
+  calculado_em: string;
+  escopo: 'Agencia' | 'Carteira';
+  dias: number;
+  atual: { inicio: string; fim: string };
+  anterior: { inicio: string; fim: string };
+  metricas: MetricaComparada[];
+  por_posicao: { id_posicao: string; nome_posicao: string; interacoes: ParPeriodo; contratacoes: ParPeriodo; novos_clientes: ParPeriodo }[];
+  serie: { indice: number; inicio_atual: string; inicio_anterior: string; interacoes: ParPeriodo; contratacoes: ParPeriodo }[];
+  ressalvas: string[];
 }
 
 export interface ClienteMascarado {

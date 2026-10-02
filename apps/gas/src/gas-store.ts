@@ -11,6 +11,8 @@ const CHAVE_CACHE = 'carteira:db:v3';
 const TAMANHO_BLOCO = 90_000; // limite do CacheService: 100 KB por chave
 const TTL_SEGUNDOS = 900; // 15 min: edição manual da planilha aparece em até 15 min (ou use "Recarregar da planilha")
 const SO_ANEXA: NomeTabela[] = ['log_auditoria', 'log_eventos', 'fct_movimentacao_carteira'];
+/** Abas criadas depois da 1ª versão: planilhas antigas não as têm; ausentes = tabela vazia e a aba nasce na primeira gravação. */
+const OPCIONAIS: NomeTabela[] = ['cfg_metas_posicao'];
 
 /**
  * Adaptador de persistência do Apps Script (D-02), otimizado para latência:
@@ -120,7 +122,10 @@ export class GasStore {
     const db = criarDbVazio();
     for (const t of NOMES_TABELAS) {
       const aba = ss.getSheetByName(t);
-      if (!aba) throw new Error(`ABAS_AUSENTES: ${t}`);
+      if (!aba) {
+        if (OPCIONAIS.includes(t)) continue;
+        throw new Error(`ABAS_AUSENTES: ${t}`);
+      }
       const valores = (aba.getDataRange().getValues() as unknown[][]).map((linha) =>
         linha.map((v) => (v instanceof Date ? Utilities.formatDate(v, 'America/Sao_Paulo', 'yyyy-MM-dd') : v)),
       );
@@ -141,7 +146,7 @@ export class GasStore {
     for (const t of tabelas) {
       let aba = ss.getSheetByName(t);
       if (!aba) {
-        if (!criarAbas && !SO_ANEXA.includes(t)) throw new Error(`Aba ausente: ${t}`);
+        if (!criarAbas && !SO_ANEXA.includes(t) && !OPCIONAIS.includes(t)) throw new Error(`Aba ausente: ${t}`);
         aba = ss.insertSheet(t);
       }
       const matriz = tabelaParaMatriz(this.db, t);

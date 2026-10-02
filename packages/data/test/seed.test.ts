@@ -74,9 +74,9 @@ describe('06 Plataforma de Dados — dados sintéticos e qualidade', () => {
     expect(() => matrizParaTabela('dim_posicoes', [['id_posicao'], ['X']])).toThrow(/coluna ausente/);
   });
 
-  it('tabelas e nomes de coluna seguem o dicionário (snake_case, prefixos dim_/fct_/bridge_/ref_/log_)', () => {
+  it('tabelas e nomes de coluna seguem o dicionário (snake_case, prefixos dim_/fct_/bridge_/ref_/log_/cfg_)', () => {
     for (const t of NOMES_TABELAS) {
-      expect(t).toMatch(/^(dim|fct|bridge|ref|log)_[a-z_]+$/);
+      expect(t).toMatch(/^(dim|fct|bridge|ref|log|cfg)_[a-z_]+$/);
       for (const [c] of TABELAS[t].colunas) expect(c).toMatch(/^[a-z][a-z0-9_]*$/);
     }
   });

@@ -214,6 +214,31 @@ paths:
       tags: [Posições]
       parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }]
       responses: { '200': { description: Ocupações em ordem cronológica }, '403': { $ref: '#/components/responses/Problema' } }
+  /posicoes/{id}/metas:
+    get:
+      operationId: get_posicoes_metas
+      summary: Metas e limites de alerta de uma posição visível
+      tags: [Posições]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }]
+      responses: { '200': { description: Metas efetivas (padrão quando não configuradas) }, '403': { $ref: '#/components/responses/Problema' } }
+    post:
+      operationId: post_posicoes_metas
+      summary: Define metas e limites de alerta da posição (Gerente Geral)
+      tags: [Posições]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/PapelSimulado' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [meta_aum, meta_clientes, utilizacao_minima, utilizacao_maxima]
+              properties:
+                meta_aum: { type: number, minimum: 0, description: 'Meta de AUM em reais (0 = sem meta)' }
+                meta_clientes: { type: integer, minimum: 0, description: 'Meta de clientes ativos (0 = sem meta)' }
+                utilizacao_minima: { type: number, minimum: 0, maximum: 1, exclusiveMaximum: true, description: 'Razão; abaixo dela a posição entra em alerta' }
+                utilizacao_maxima: { type: number, maximum: 3, description: 'Razão; acima dela a posição entra em alerta' }
+      responses: { '200': { description: Configuração gravada }, '403': { $ref: '#/components/responses/Problema' }, '404': { $ref: '#/components/responses/Problema' }, '422': { $ref: '#/components/responses/Problema' } }
   /gerentes:
     get:
       operationId: get_gerentes
@@ -339,6 +364,18 @@ paths:
       tags: [Insights]
       parameters: [{ $ref: '#/components/parameters/PapelSimulado' }, { $ref: '#/components/parameters/DataSimulada' }, { $ref: '#/components/parameters/Asof' }]
       responses: { '200': { description: Análises calculadas só sobre os clientes que o ator pode ver } }
+  /insights/comparativo:
+    get:
+      operationId: get_insights_comparativo
+      summary: Comparativo entre o período pedido e o período anterior de mesma duração
+      tags: [Insights]
+      parameters:
+        - { $ref: '#/components/parameters/PapelSimulado' }
+        - { $ref: '#/components/parameters/DataSimulada' }
+        - { $ref: '#/components/parameters/Asof' }
+        - { name: inicio, in: query, required: false, schema: { type: string, format: date }, description: 'Início do período (padrão: 29 dias antes do fim)' }
+        - { name: fim, in: query, required: false, schema: { type: string, format: date }, description: 'Fim do período (padrão: data de referência)' }
+      responses: { '200': { description: 'Métricas dos dois períodos, quebra por posição e série alinhada' }, '422': { $ref: '#/components/responses/Problema' } }
   /insights/posicoes/{id}:
     get:
       operationId: get_insights_posicoes_por_id

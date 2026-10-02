@@ -283,8 +283,20 @@
     return Component;
   }
 
-  // node_modules/lucide-react/dist/esm/icons/arrow-right-left.mjs
+  // node_modules/lucide-react/dist/esm/icons/arrow-down.mjs
   var __iconData = {
+    name: "arrow-down",
+    size: 24,
+    node: [
+      ["path", { d: "M12 5v14", key: "s699le" }],
+      ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+    ]
+  };
+  __iconData.node;
+  var ArrowDown = createLucideIcon(__iconData);
+
+  // node_modules/lucide-react/dist/esm/icons/arrow-right-left.mjs
+  var __iconData2 = {
     name: "arrow-right-left",
     size: 24,
     node: [
@@ -294,121 +306,369 @@
       ["path", { d: "M4 17h16", key: "g4d7ey" }]
     ]
   };
-  __iconData.node;
-  var ArrowRightLeft = createLucideIcon(__iconData);
+  __iconData2.node;
+  var ArrowRightLeft = createLucideIcon(__iconData2);
+
+  // node_modules/lucide-react/dist/esm/icons/arrow-up.mjs
+  var __iconData3 = {
+    name: "arrow-up",
+    size: 24,
+    node: [
+      ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
+      ["path", { d: "M12 19V5", key: "x0mq9r" }]
+    ]
+  };
+  __iconData3.node;
+  var ArrowUp = createLucideIcon(__iconData3);
+
+  // node_modules/lucide-react/dist/esm/icons/minus.mjs
+  var __iconData4 = {
+    name: "minus",
+    size: 24,
+    node: [["path", { d: "M5 12h14", key: "1ays0h" }]]
+  };
+  __iconData4.node;
+  var Minus = createLucideIcon(__iconData4);
+
+  // node_modules/lucide-react/dist/esm/icons/sliders-horizontal.mjs
+  var __iconData5 = {
+    name: "sliders-horizontal",
+    size: 24,
+    node: [
+      ["path", { d: "M10 5H3", key: "1qgfaw" }],
+      ["path", { d: "M12 19H3", key: "yhmn1j" }],
+      ["path", { d: "M14 3v4", key: "1sua03" }],
+      ["path", { d: "M16 17v4", key: "1q0r14" }],
+      ["path", { d: "M21 12h-9", key: "1o4lsq" }],
+      ["path", { d: "M21 19h-5", key: "1rlt1p" }],
+      ["path", { d: "M21 5h-7", key: "1oszz2" }],
+      ["path", { d: "M8 10v4", key: "tgpxqk" }],
+      ["path", { d: "M8 12H3", key: "a7s4jb" }]
+    ]
+  };
+  __iconData5.node;
+  var SlidersHorizontal = createLucideIcon(__iconData5);
 
   // frontend/mfe-cockpit/src/index.tsx
+  var import_ui3 = __toESM(require_ui(), 1);
+  var import_sdk2 = __toESM(require_sdk(), 1);
+
+  // frontend/mfe-cockpit/src/comparativo.tsx
+  var React = __toESM(require_react(), 1);
   var import_ui = __toESM(require_ui(), 1);
   var import_sdk = __toESM(require_sdk(), 1);
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
-  function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }) {
-    var _a, _b;
-    const { dados, erro, carregando, recarregar } = (0, import_sdk.useConsulta)(() => api.agencia(), [sessao.papel, sessao.dataSimulada, versao]);
-    const analise = (0, import_sdk.useConsulta)(() => api.analise(), [sessao.papel, sessao.dataSimulada, versao]).dados;
-    if (carregando && !dados) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Carregando, {});
-    if (erro) return erro instanceof import_sdk.ApiErro && (erro.codigo === "ACESSO_NEGADO" || erro.status === 403) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.SemPermissao, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.EstadoErro, { mensagem: erro.message, aoTentar: recarregar });
-    if (!dados) return null;
-    const agencia = dados.escopo === "Agencia";
-    const grafico = dados.posicoes.map((p) => ({ nome: p.id_posicao.replace("POS-AG01-", "POS-"), pct: Math.round(p.utilizacao * 1e3) / 10, alerta: p.desbalanceamento }));
-    const pct1 = (v) => "".concat(v.toLocaleString("pt-BR", { maximumFractionDigits: 1 }), "%");
-    const abrirCliente = (idCliente) => emitir({ tipo: "cliente-selecionado", idCliente });
-    const ROTULO_DESTINO = { posicoes: "Ver posi\xE7\xF5es", carteira: "Ver carteira", delegacoes: "Ver delega\xE7\xF5es", cockpit: "Ver Torre de Controle" };
+  var PRESETS = [
+    { valor: "7", rotulo: "\xDAltimos 7 dias" },
+    { valor: "30", rotulo: "\xDAltimos 30 dias" },
+    { valor: "90", rotulo: "\xDAltimos 90 dias" },
+    { valor: "mes-atual", rotulo: "M\xEAs atual at\xE9 hoje" },
+    { valor: "mes-anterior", rotulo: "M\xEAs anterior (completo)" },
+    { valor: "personalizado", rotulo: "Personalizado" }
+  ];
+  var dia = (iso) => Date.parse("".concat(iso, "T00:00:00Z"));
+  var somarDias = (iso, n) => new Date(dia(iso) + n * 864e5).toISOString().slice(0, 10);
+  function janelaDoPreset(preset, hoje) {
+    if (preset === "mes-atual") return { inicio: "".concat(hoje.slice(0, 8), "01"), fim: hoje };
+    if (preset === "mes-anterior") {
+      const fimAnterior = somarDias("".concat(hoje.slice(0, 8), "01"), -1);
+      return { inicio: "".concat(fimAnterior.slice(0, 8), "01"), fim: fimAnterior };
+    }
+    return { inicio: somarDias(hoje, -(Number(preset) - 1)), fim: hoje };
+  }
+  function valor(m, v) {
+    if (m.unidade === "reais") return (0, import_ui.moedaCompacta)(v);
+    if (m.unidade === "percentual") return "".concat(v.toLocaleString("pt-BR", { maximumFractionDigits: 1 }), "%");
+    return (0, import_ui.inteiro)(v);
+  }
+  var ROTULO_LEITURA = { melhora: "Melhora", piora: "Piora", estavel: "Est\xE1vel", neutra: "Informativo" };
+  function Variacao({ m }) {
+    const Icone = m.variacao > 0 ? ArrowUp : m.variacao < 0 ? ArrowDown : Minus;
+    const pontos = m.unidade === "percentual";
+    const texto = m.variacao_pct === null ? m.variacao === 0 ? "0%" : "novo" : "".concat(m.variacao_pct > 0 ? "+" : "").concat(m.variacao_pct.toLocaleString("pt-BR", { maximumFractionDigits: 1 }), "%");
+    const cor = m.leitura === "melhora" ? "text-chart-1" : m.leitura === "piora" ? "text-critico" : "text-secondary-foreground";
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "inline-flex items-center gap-1 text-caption text-foreground", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icone, { "aria-hidden": true, className: "size-3.5 ".concat(cor) }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "tnum", children: pontos ? "".concat(m.variacao > 0 ? "+" : "").concat(m.variacao.toLocaleString("pt-BR", { maximumFractionDigits: 1 }), " p.p.") : texto }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "text-secondary-foreground", children: [
+        "\xB7 ",
+        ROTULO_LEITURA[m.leitura]
+      ] })
+    ] });
+  }
+  function PainelComparativo({ api, sessao, versao }) {
+    var _a;
+    const hoje = (_a = sessao.dataSimulada) != null ? _a : (/* @__PURE__ */ new Date()).toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+    const [preset, setPreset] = React.useState("30");
+    const [custom, setCustom] = React.useState({ inicio: somarDias(hoje, -29), fim: hoje });
+    const janela = preset === "personalizado" ? custom : janelaDoPreset(preset, hoje);
+    const valida = janela.inicio <= janela.fim && janela.fim <= hoje && /^\d{4}-\d{2}-\d{2}$/.test(janela.inicio) && /^\d{4}-\d{2}-\d{2}$/.test(janela.fim);
+    const { dados, erro, carregando, recarregar } = (0, import_sdk.useConsulta)(() => valida ? api.comparativo(janela.inicio, janela.fim) : Promise.resolve(null), [sessao.papel, sessao.dataSimulada, versao, janela.inicio, janela.fim, valida]);
     const colunas = [
       { id: "posicao", header: "Posi\xE7\xE3o", accessorFn: (p) => p.nome_posicao, cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-body-md text-foreground", children: row.original.nome_posicao }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-caption text-muted-foreground", children: row.original.id_posicao })
       ] }), meta: { rotulo: "Posi\xE7\xE3o" } },
+      ...[["interacoes", "Intera\xE7\xF5es"], ["contratacoes", "Contrata\xE7\xF5es"], ["novos_clientes", "Novos clientes"]].map(([k, titulo]) => ({
+        id: k,
+        header: titulo,
+        accessorFn: (p) => p[k].atual,
+        cell: ({ row }) => {
+          const d = row.original[k].atual - row.original[k].anterior;
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "tnum", children: [
+            (0, import_ui.inteiro)(row.original[k].atual),
+            " ",
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "text-secondary-foreground", children: [
+              "(antes ",
+              (0, import_ui.inteiro)(row.original[k].anterior),
+              ", ",
+              d > 0 ? "+" : "",
+              d,
+              ")"
+            ] })
+          ] });
+        },
+        meta: { numerica: true, rotulo: titulo }
+      }))
+    ];
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Comparativo entre per\xEDodos", className: "flex flex-col gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-wrap items-end justify-between gap-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { className: "text-heading-lg text-foreground", children: "Comparativo entre per\xEDodos" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-1 text-body-md text-secondary-foreground", children: "O per\xEDodo escolhido contra o imediatamente anterior, com a mesma dura\xE7\xE3o." })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-wrap items-end gap-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "periodo-preset", rotulo: "Per\xEDodo", valor: preset, aoMudar: (v) => setPreset(v), opcoes: PRESETS }),
+          preset === "personalizado" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "periodo-inicio", children: "De" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "periodo-inicio", type: "date", className: "tnum w-40", max: hoje, value: custom.inicio, onChange: (e) => setCustom((c) => ({ ...c, inicio: e.target.value })) })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "periodo-fim", children: "At\xE9" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "periodo-fim", type: "date", className: "tnum w-40", max: hoje, value: custom.fim, onChange: (e) => setCustom((c) => ({ ...c, fim: e.target.value })) })
+            ] })
+          ] }) : null
+        ] })
+      ] }),
+      !valida ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { role: "alert", className: "text-body-md text-foreground", children: [
+        "Informe um per\xEDodo v\xE1lido: o in\xEDcio n\xE3o pode ser depois do fim, nem o fim depois de ",
+        (0, import_ui.dataBR)(hoje),
+        "."
+      ] }) : null,
+      erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.EstadoErro, { mensagem: erro.message, aoTentar: recarregar }) : null,
+      valida && carregando && !dados ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-64" }) : null,
+      dados ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-caption text-secondary-foreground", children: [
+          "Atual: ",
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "tnum text-foreground", children: [
+            (0, import_ui.dataBR)(dados.atual.inicio),
+            " a ",
+            (0, import_ui.dataBR)(dados.atual.fim)
+          ] }),
+          " \xB7 Anterior: ",
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "tnum text-foreground", children: [
+            (0, import_ui.dataBR)(dados.anterior.inicio),
+            " a ",
+            (0, import_ui.dataBR)(dados.anterior.fim)
+          ] }),
+          " (",
+          dados.dias,
+          " dias cada)"
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4", children: dados.metricas.map((m) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { className: "p-4", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-caption text-secondary-foreground", children: m.rotulo }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "tnum mt-1 text-display-md text-foreground", children: valor(m, m.atual) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "tnum text-caption text-secondary-foreground", children: [
+            "antes: ",
+            valor(m, m.anterior)
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-1", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Variacao, { m }) })
+        ] }, m.chave)) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-1 gap-4 lg:grid-cols-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Intera\xE7\xF5es ao longo do per\xEDodo" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Cada ponto soma uma faixa de dias; a linha tracejada \xE9 o per\xEDodo anterior." }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.LinhasComparadas, { rotulo: "Intera\xE7\xF5es", dados: dados.serie.map((s) => ({ rotulo: (0, import_ui.dataBR)(s.inicio_atual).slice(0, 5), atual: s.interacoes.atual, anterior: s.interacoes.anterior })) }) })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Contrata\xE7\xF5es ao longo do per\xEDodo" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Produtos contratados por faixa de dias, contra o per\xEDodo anterior." }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.LinhasComparadas, { rotulo: "Contrata\xE7\xF5es", dados: dados.serie.map((s) => ({ rotulo: (0, import_ui.dataBR)(s.inicio_atual).slice(0, 5), atual: s.contratacoes.atual, anterior: s.contratacoes.anterior })) }) })
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.TabelaDados, { colunas, dados: dados.por_posicao, rotulo: "Comparativo por posi\xE7\xE3o", tamanhoPagina: 10 }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", { className: "flex flex-col gap-1 text-caption text-secondary-foreground", children: dados.ressalvas.map((r) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: r }, r)) })
+      ] }) : null
+    ] });
+  }
+
+  // frontend/mfe-cockpit/src/metas.tsx
+  var import_ui2 = __toESM(require_ui(), 1);
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
+  function PainelMetas({ metas, aoConfigurar, ehGerenteGeral }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("section", { "aria-label": "Metas por posi\xE7\xE3o", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Cartao, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CartaoTitulo, { children: "Metas por posi\xE7\xE3o" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CartaoDescricao, { children: "Atingimento de AUM e de clientes ativos, e o intervalo de utiliza\xE7\xE3o que dispara alerta em cada posi\xE7\xE3o." })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Botao, { variante: "secundario", tamanho: "sm", onClick: aoConfigurar, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(SlidersHorizontal, { "aria-hidden": true, className: "size-4" }),
+          " ",
+          ehGerenteGeral ? "Configurar metas e alertas" : "Ver posi\xE7\xF5es"
+        ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("ul", { className: "mt-4 grid grid-cols-1 gap-x-8 gap-y-5 lg:grid-cols-2", children: metas.map((m) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("li", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-wrap items-baseline justify-between gap-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-body-md text-foreground", children: m.nome_posicao }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { className: "text-caption text-secondary-foreground", children: [
+            "Alerta fora de ",
+            (0, import_ui2.percentual)(m.utilizacao_minima, 0),
+            "\u2013",
+            (0, import_ui2.percentual)(m.utilizacao_maxima, 0),
+            " \xB7 hoje ",
+            (0, import_ui2.percentual)(m.utilizacao, 0),
+            m.desbalanceamento ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
+              " ",
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Selo, { variante: m.desbalanceamento === "Acima" ? "critico" : "atencao", children: m.desbalanceamento === "Acima" ? "Acima do limite" : "Abaixo do m\xEDnimo" })
+            ] }) : null
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Barra, { rotulo: "AUM", pct: m.pct_meta_aum, detalhe: m.meta_aum > 0 ? "".concat((0, import_ui2.moedaCompacta)(m.aum), " de ").concat((0, import_ui2.moedaCompacta)(m.meta_aum)) : "sem meta" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Barra, { rotulo: "Clientes", pct: m.pct_meta_clientes, detalhe: m.meta_clientes > 0 ? "".concat((0, import_ui2.inteiro)(m.clientes), " de ").concat((0, import_ui2.inteiro)(m.meta_clientes)) : "sem meta" })
+      ] }, m.id_posicao)) })
+    ] }) });
+  }
+  function Barra({ rotulo, pct, detalhe }) {
+    const v = pct != null ? pct : 0;
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mt-2 flex items-center gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "w-14 shrink-0 text-caption text-secondary-foreground", children: rotulo }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "h-2 flex-1 rounded-pill bg-secondary", role: "progressbar", "aria-label": "Meta de ".concat(rotulo), "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.min(v, 100), "aria-valuetext": pct === null ? "sem meta" : "".concat(pct, "% da meta"), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: v >= 100 ? "h-2 rounded-pill bg-chart-3" : v < 70 && pct !== null ? "h-2 rounded-pill bg-chart-4" : "h-2 rounded-pill bg-chart-1", style: { width: "".concat(Math.min(v, 100), "%") } }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { className: "tnum w-44 shrink-0 text-right text-caption text-secondary-foreground", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-foreground", children: pct === null ? "\u2014" : "".concat(pct, "%") }),
+        " \xB7 ",
+        detalhe
+      ] })
+    ] });
+  }
+
+  // frontend/mfe-cockpit/src/index.tsx
+  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+  function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }) {
+    var _a, _b;
+    const { dados, erro, carregando, recarregar } = (0, import_sdk2.useConsulta)(() => api.agencia(), [sessao.papel, sessao.dataSimulada, versao]);
+    const analise = (0, import_sdk2.useConsulta)(() => api.analise(), [sessao.papel, sessao.dataSimulada, versao]).dados;
+    if (carregando && !dados) return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Carregando, {});
+    if (erro) return erro instanceof import_sdk2.ApiErro && (erro.codigo === "ACESSO_NEGADO" || erro.status === 403) ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.SemPermissao, {}) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.EstadoErro, { mensagem: erro.message, aoTentar: recarregar });
+    if (!dados) return null;
+    const agencia = dados.escopo === "Agencia";
+    const grafico = dados.posicoes.map((p) => ({ nome: p.id_posicao.replace("POS-AG01-", "POS-"), pct: Math.round(p.utilizacao * 1e3) / 10, alerta: p.desbalanceamento }));
+    const uniforme = dados.posicoes.every((p) => p.metas.utilizacao_minima === dados.posicoes[0].metas.utilizacao_minima && p.metas.utilizacao_maxima === dados.posicoes[0].metas.utilizacao_maxima);
+    const limites = uniforme && dados.posicoes[0] ? { minima: Math.round(dados.posicoes[0].metas.utilizacao_minima * 100), maxima: Math.round(dados.posicoes[0].metas.utilizacao_maxima * 100) } : null;
+    const pct1 = (v) => "".concat(v.toLocaleString("pt-BR", { maximumFractionDigits: 1 }), "%");
+    const abrirCliente = (idCliente) => emitir({ tipo: "cliente-selecionado", idCliente });
+    const ROTULO_DESTINO = { posicoes: "Ver posi\xE7\xF5es", carteira: "Ver carteira", delegacoes: "Ver delega\xE7\xF5es", cockpit: "Ver Torre de Controle" };
+    const colunas = [
+      { id: "posicao", header: "Posi\xE7\xE3o", accessorFn: (p) => p.nome_posicao, cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "text-body-md text-foreground", children: row.original.nome_posicao }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "text-caption text-muted-foreground", children: row.original.id_posicao })
+      ] }), meta: { rotulo: "Posi\xE7\xE3o" } },
       { id: "titular", header: "Titular", accessorFn: (p) => {
         var _a2, _b2;
         return (_b2 = (_a2 = p.titular) == null ? void 0 : _a2.nome) != null ? _b2 : "Vaga";
-      }, cell: ({ row }) => row.original.titular ? row.original.titular.nome : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "atencao", children: "Vaga" }), meta: { rotulo: "Titular" } },
+      }, cell: ({ row }) => row.original.titular ? row.original.titular.nome : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Selo, { variante: "atencao", children: "Vaga" }), meta: { rotulo: "Titular" } },
       { accessorKey: "segmento_especialidade", header: "Segmento", meta: { rotulo: "Segmento" } },
-      { accessorKey: "clientes_ativos", header: "Clientes", cell: ({ getValue }) => (0, import_ui.inteiro)(getValue()), meta: { numerica: true, rotulo: "Clientes" } },
+      { accessorKey: "clientes_ativos", header: "Clientes", cell: ({ getValue }) => (0, import_ui3.inteiro)(getValue()), meta: { numerica: true, rotulo: "Clientes" } },
       {
         id: "utilizacao",
         header: "Utiliza\xE7\xE3o",
         accessorFn: (p) => p.utilizacao,
-        cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "inline-flex items-center justify-end gap-2", children: [
-          row.original.desbalanceamento === "Acima" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "critico", children: "Acima do limite" }) : row.original.desbalanceamento === "Abaixo" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "atencao", children: "Abaixo do m\xEDnimo" }) : null,
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: (0, import_ui.percentual)(row.original.utilizacao) })
+        cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("span", { className: "inline-flex items-center justify-end gap-2", children: [
+          row.original.desbalanceamento === "Acima" ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Selo, { variante: "critico", children: "Acima do limite" }) : row.original.desbalanceamento === "Abaixo" ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Selo, { variante: "atencao", children: "Abaixo do m\xEDnimo" }) : null,
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: (0, import_ui3.percentual)(row.original.utilizacao) })
         ] }),
         meta: { numerica: true, rotulo: "Utiliza\xE7\xE3o" }
       },
-      { accessorKey: "aum_total", header: "AUM", cell: ({ getValue }) => (0, import_ui.moeda)(getValue()), meta: { numerica: true, rotulo: "AUM" } },
-      { accessorKey: "status", header: "Status", cell: ({ getValue }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "neutro", children: getValue() }), meta: { rotulo: "Status" } }
+      { accessorKey: "aum_total", header: "AUM", cell: ({ getValue }) => (0, import_ui3.moeda)(getValue()), meta: { numerica: true, rotulo: "AUM" } },
+      { accessorKey: "status", header: "Status", cell: ({ getValue }) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Selo, { variante: "neutro", children: getValue() }), meta: { rotulo: "Status" } }
     ];
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-8", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "flex flex-wrap items-end justify-between gap-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "text-display-lg text-foreground", children: agencia ? "Torre de Controle" : "Resumo da minha carteira" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-1 text-body-md text-secondary-foreground", children: agencia ? "Vis\xE3o consolidada da ag\xEAncia: todas as posi\xE7\xF5es, como se fosse uma ag\xEAncia banc\xE1ria." : "Voc\xEA v\xEA apenas a carteira da sua posi\xE7\xE3o e as coberturas tempor\xE1rias vigentes." })
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex flex-col gap-8", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("header", { className: "flex flex-wrap items-end justify-between gap-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h1", { className: "text-display-lg text-foreground", children: agencia ? "Torre de Controle" : "Resumo da minha carteira" }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "mt-1 text-body-md text-secondary-foreground", children: agencia ? "Vis\xE3o consolidada da ag\xEAncia: todas as posi\xE7\xF5es, como se fosse uma ag\xEAncia banc\xE1ria." : "Voc\xEA v\xEA apenas a carteira da sua posi\xE7\xE3o e as coberturas tempor\xE1rias vigentes." })
         ] }),
-        ehGerenteGeral ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Botao, { onClick: () => emitir({ tipo: "abrir-redistribuicao" }), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRightLeft, { "aria-hidden": true, className: "size-4" }),
+        ehGerenteGeral ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Botao, { onClick: () => emitir({ tipo: "abrir-redistribuicao" }), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ArrowRightLeft, { "aria-hidden": true, className: "size-4" }),
           " Simular redistribui\xE7\xE3o"
         ] }) : null
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Indicadores", className: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { destaque: true, rotulo: "AUM total", valor: (0, import_ui.moedaCompacta)(dados.aum_total), dica: (0, import_ui.moeda)(dados.aum_total) }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Clientes ativos", valor: (0, import_ui.inteiro)(dados.total_clientes), dica: "AUM m\xE9dio ".concat((0, import_ui.moedaCompacta)(dados.aum_medio_por_cliente)) }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Penetra\xE7\xE3o m\xE9dia de produtos", valor: (0, import_ui.percentual)(dados.penetracao_media, 0), dica: "".concat(dados.penetracao_por_produto.length, " produtos no cat\xE1logo") }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Posi\xE7\xF5es em alerta", valor: (0, import_ui.inteiro)(dados.posicoes_em_alerta), dica: "Acima de 100% ou abaixo de 50% da capacidade" })
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("section", { "aria-label": "Indicadores", className: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Kpi, { destaque: true, rotulo: "AUM total", valor: (0, import_ui3.moedaCompacta)(dados.aum_total), dica: (0, import_ui3.moeda)(dados.aum_total) }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Kpi, { rotulo: "Clientes ativos", valor: (0, import_ui3.inteiro)(dados.total_clientes), dica: "AUM m\xE9dio ".concat((0, import_ui3.moedaCompacta)(dados.aum_medio_por_cliente)) }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Kpi, { rotulo: "Penetra\xE7\xE3o m\xE9dia de produtos", valor: (0, import_ui3.percentual)(dados.penetracao_media, 0), dica: "".concat(dados.penetracao_por_produto.length, " produtos no cat\xE1logo") }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Kpi, { rotulo: "Posi\xE7\xF5es em alerta", valor: (0, import_ui3.inteiro)(dados.posicoes_em_alerta), dica: "Fora dos limites de capacidade da posi\xE7\xE3o" })
       ] }),
-      analise ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "O que merece aten\xE7\xE3o", className: "flex flex-col gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { className: "text-heading-lg text-foreground", children: "O que merece aten\xE7\xE3o" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.ListaInsights, { itens: analise.insights, rotuloAcao: (d) => {
+      analise ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("section", { "aria-label": "O que merece aten\xE7\xE3o", className: "flex flex-col gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h2", { className: "text-heading-lg text-foreground", children: "O que merece aten\xE7\xE3o" }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.ListaInsights, { itens: analise.insights, rotuloAcao: (d) => {
           var _a2;
           return (_a2 = ROTULO_DESTINO[d]) != null ? _a2 : "Abrir";
         }, aoAbrir: (d) => emitir({ tipo: "navegar", destino: d }) })
       ] }) : null,
-      analise ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Indicadores de relacionamento e concentra\xE7\xE3o", className: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Concentra\xE7\xE3o nos 10 maiores", valor: pct1(analise.concentracao.top10_pct), dica: "Maior cliente: ".concat(pct1(analise.concentracao.maior_cliente_pct), " do AUM") }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Sem contato h\xE1 mais de 90 dias", valor: (0, import_ui.inteiro)(analise.engajamento.sem_contato_90d), dica: "".concat(pct1(analise.engajamento.pct_sem_contato), " dos clientes ativos") }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Coberturas vigentes", valor: (0, import_ui.inteiro)(analise.delegacoes.vigentes), dica: "".concat((0, import_ui.inteiro)(analise.delegacoes.expirando_7d), " terminam em at\xE9 7 dias") }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Kpi, { rotulo: "Novos clientes em 12 meses", valor: (0, import_ui.inteiro)(analise.serie_mensal.reduce((a, m) => a + m.novos_clientes, 0)), dica: "Entradas na carteira (carteiriza\xE7\xE3o)" })
+      analise ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("section", { "aria-label": "Indicadores de relacionamento e concentra\xE7\xE3o", className: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Kpi, { rotulo: "Concentra\xE7\xE3o nos 10 maiores", valor: pct1(analise.concentracao.top10_pct), dica: "Maior cliente: ".concat(pct1(analise.concentracao.maior_cliente_pct), " do AUM") }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Kpi, { rotulo: "Sem contato h\xE1 mais de 90 dias", valor: (0, import_ui3.inteiro)(analise.engajamento.sem_contato_90d), dica: "".concat(pct1(analise.engajamento.pct_sem_contato), " dos clientes ativos") }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Kpi, { rotulo: "Coberturas vigentes", valor: (0, import_ui3.inteiro)(analise.delegacoes.vigentes), dica: "".concat((0, import_ui3.inteiro)(analise.delegacoes.expirando_7d), " terminam em at\xE9 7 dias") }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Kpi, { rotulo: "Novos clientes em 12 meses", valor: (0, import_ui3.inteiro)(analise.serie_mensal.reduce((a, m) => a + m.novos_clientes, 0)), dica: "Entradas na carteira (carteiriza\xE7\xE3o)" })
       ] }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Capacidade e segmentos", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { className: "lg:col-span-2", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Capacidade por posi\xE7\xE3o" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Utiliza\xE7\xE3o = clientes ativos \xF7 capacidade. Linhas: m\xEDnimo de 50% e limite de 100%." }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.BarrasCapacidade, { dados: grafico }) })
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Capacidade e segmentos", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { className: "lg:col-span-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Capacidade por posi\xE7\xE3o" }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.CartaoDescricao, { children: [
+            "Utiliza\xE7\xE3o = clientes ativos \xF7 capacidade. ",
+            limites ? "Linhas: m\xEDnimo de ".concat(limites.minima, "% e limite de ").concat(limites.maxima, "%.") : "Cada posi\xE7\xE3o tem seus pr\xF3prios limites de alerta (veja em Metas por posi\xE7\xE3o)."
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.BarrasCapacidade, { dados: grafico, limites }) })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "AUM por segmento" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Participa\xE7\xE3o de cada segmento no AUM dos clientes ativos." }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "mt-4", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rosca, { dados: dados.por_segmento.map((x) => ({ rotulo: x.segmento, valor: x.aum })), formatar: import_ui.moedaCompacta, total: (0, import_ui.moedaCompacta)(dados.aum_total), rotuloTotal: "AUM total" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "mt-3 text-caption text-secondary-foreground", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "AUM por segmento" }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "Participa\xE7\xE3o de cada segmento no AUM dos clientes ativos." }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mt-4", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Rosca, { dados: dados.por_segmento.map((x) => ({ rotulo: x.segmento, valor: x.aum })), formatar: import_ui3.moedaCompacta, total: (0, import_ui3.moedaCompacta)(dados.aum_total), rotuloTotal: "AUM total" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("p", { className: "mt-3 text-caption text-secondary-foreground", children: [
               "Clientes: ",
-              dados.por_segmento.map((x) => "".concat(x.segmento, " ").concat((0, import_ui.inteiro)(x.clientes))).join(" \xB7 ")
+              dados.por_segmento.map((x) => "".concat(x.segmento, " ").concat((0, import_ui3.inteiro)(x.clientes))).join(" \xB7 ")
             ] })
           ] })
         ] })
       ] }),
-      analise ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Tend\xEAncia e concentra\xE7\xE3o", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { className: "lg:col-span-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Tend\xEAncia dos \xFAltimos 12 meses" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Contrata\xE7\xF5es de produtos, intera\xE7\xF5es de relacionamento e novos clientes por m\xEAs." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.LinhasTempo, { rotulo: "Tend\xEAncia mensal", dados: analise.serie_mensal, series: [{ chave: "interacoes", rotulo: "Intera\xE7\xF5es" }, { chave: "contratacoes", rotulo: "Contrata\xE7\xF5es de produtos" }, { chave: "novos_clientes", rotulo: "Novos clientes" }] }) })
+      analise ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(PainelMetas, { metas: analise.metas_posicoes, aoConfigurar: () => emitir({ tipo: "navegar", destino: "posicoes" }), ehGerenteGeral }) : null,
+      analise ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Tend\xEAncia e concentra\xE7\xE3o", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { className: "lg:col-span-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Tend\xEAncia dos \xFAltimos 12 meses" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "Contrata\xE7\xF5es de produtos, intera\xE7\xF5es de relacionamento e novos clientes por m\xEAs." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.LinhasTempo, { rotulo: "Tend\xEAncia mensal", dados: analise.serie_mensal, series: [{ chave: "interacoes", rotulo: "Intera\xE7\xF5es" }, { chave: "contratacoes", rotulo: "Contrata\xE7\xF5es de produtos" }, { chave: "novos_clientes", rotulo: "Novos clientes" }] }) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Concentra\xE7\xE3o do AUM" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Quanto do AUM cabe nos maiores clientes. A linha tracejada seria a distribui\xE7\xE3o igualit\xE1ria." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CurvaConcentracao, { curva: analise.concentracao.curva }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "mt-2 text-caption text-secondary-foreground", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Concentra\xE7\xE3o do AUM" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "Quanto do AUM cabe nos maiores clientes. A linha tracejada seria a distribui\xE7\xE3o igualit\xE1ria." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CurvaConcentracao, { curva: analise.concentracao.curva }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("p", { className: "mt-2 text-caption text-secondary-foreground", children: [
               "20% dos clientes concentram ",
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "tnum text-foreground", children: pct1(analise.concentracao.top20pct_clientes_pct) }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "tnum text-foreground", children: pct1(analise.concentracao.top20pct_clientes_pct) }),
               " do AUM."
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Perfil da base", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { className: "lg:col-span-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Posi\xE7\xE3o \xD7 segmento de cliente" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Clientes ativos em cada combina\xE7\xE3o: mostra se as posi\xE7\xF5es seguem sua especialidade." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-              import_ui.MapaCalor,
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Perfil da base", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { className: "lg:col-span-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Posi\xE7\xE3o \xD7 segmento de cliente" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "Clientes ativos em cada combina\xE7\xE3o: mostra se as posi\xE7\xF5es seguem sua especialidade." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+              import_ui3.MapaCalor,
               {
                 rotulo: "Mapa de calor: posi\xE7\xE3o por segmento",
                 colunas: (_b = (_a = analise.mapa_posicao_segmento[0]) == null ? void 0 : _a.celulas.map((c) => c.segmento)) != null ? _b : [],
@@ -416,52 +676,53 @@
               }
             ) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Clientes por faixa de AUM" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Poucos clientes grandes e muitos pequenos." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.BarrasHorizontais, { rotuloValor: "Clientes", altura: "h-56", dados: analise.faixas_aum.map((f) => ({ rotulo: f.faixa, valor: f.clientes })) }) })
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Clientes por faixa de AUM" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "Poucos clientes grandes e muitos pequenos." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.BarrasHorizontais, { rotuloValor: "Clientes", altura: "h-56", dados: analise.faixas_aum.map((f) => ({ rotulo: f.faixa, valor: f.clientes })) }) })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Produtos e canais", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Penetra\xE7\xE3o por produto" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "% dos clientes ativos que t\xEAm o produto." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.BarrasHorizontais, { rotuloValor: "Penetra\xE7\xE3o", formatar: (v) => "".concat(v, "%"), dados: [...dados.penetracao_por_produto].sort((a, b) => b.penetracao - a.penetracao).map((p) => ({ rotulo: p.nome, valor: Math.round(p.penetracao * 100) })) }) })
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Produtos e canais", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Penetra\xE7\xE3o por produto" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "% dos clientes ativos que t\xEAm o produto." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.BarrasHorizontais, { rotuloValor: "Penetra\xE7\xE3o", formatar: (v) => "".concat(v, "%"), dados: [...dados.penetracao_por_produto].sort((a, b) => b.penetracao - a.penetracao).map((p) => ({ rotulo: p.nome, valor: Math.round(p.penetracao * 100) })) }) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Produtos por cliente" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Clientes com poucos produtos s\xE3o oportunidade de venda cruzada." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Colunas, { chave: "produtos", rotuloValor: "Clientes", dados: analise.produtos_por_cliente.map((f) => ({ produtos: f.produtos.replace(" produtos", "").replace(" produto", "").replace("Nenhum", "0").replace(" ou mais", "+"), valor: f.clientes })) }) })
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Produtos por cliente" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "Clientes com poucos produtos s\xE3o oportunidade de venda cruzada." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Colunas, { chave: "produtos", rotuloValor: "Clientes", dados: analise.produtos_por_cliente.map((f) => ({ produtos: f.produtos.replace(" produtos", "").replace(" produto", "").replace("Nenhum", "0").replace(" ou mais", "+"), valor: f.clientes })) }) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Canais de relacionamento" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Intera\xE7\xF5es registradas nos \xFAltimos 90 dias." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.BarrasHorizontais, { rotuloValor: "Intera\xE7\xF5es", dados: analise.canais_90d.map((c) => ({ rotulo: c.canal, valor: c.interacoes })) }) })
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Canais de relacionamento" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "Intera\xE7\xF5es registradas nos \xFAltimos 90 dias." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.BarrasHorizontais, { rotuloValor: "Intera\xE7\xF5es", dados: analise.canais_90d.map((c) => ({ rotulo: c.canal, valor: c.interacoes })) }) })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Clientes em foco", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Maiores clientes" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Por AUM, com a participa\xE7\xE3o no total." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.ListaRanking, { vazio: "Sem clientes ativos.", itens: analise.top_clientes.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: "".concat(c.segmento, " \xB7 ").concat(c.id_cliente), valor: (0, import_ui.moedaCompacta)(c.aum), apoio: pct1(c.pct_do_total), aoClicar: () => abrirCliente(c.id_cliente) })) }) })
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("section", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", "aria-label": "Clientes em foco", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Maiores clientes" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "Por AUM, com a participa\xE7\xE3o no total." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.ListaRanking, { vazio: "Sem clientes ativos.", itens: analise.top_clientes.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: "".concat(c.segmento, " \xB7 ").concat(c.id_cliente), valor: (0, import_ui3.moedaCompacta)(c.aum), apoio: pct1(c.pct_do_total), aoClicar: () => abrirCliente(c.id_cliente) })) }) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Prioridade de contato" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Maiores clientes sem intera\xE7\xE3o h\xE1 mais de 90 dias." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.ListaRanking, { vazio: "Todos os clientes tiveram contato recente.", itens: analise.engajamento.prioritarios.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: "".concat(c.segmento, " \xB7 ").concat(c.id_cliente), valor: (0, import_ui.moedaCompacta)(c.aum), apoio: c.dias_sem_contato === null ? "nunca contatado" : "".concat(c.dias_sem_contato, " dias"), aoClicar: () => abrirCliente(c.id_cliente) })) }) })
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Prioridade de contato" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "Maiores clientes sem intera\xE7\xE3o h\xE1 mais de 90 dias." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.ListaRanking, { vazio: "Todos os clientes tiveram contato recente.", itens: analise.engajamento.prioritarios.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: "".concat(c.segmento, " \xB7 ").concat(c.id_cliente), valor: (0, import_ui3.moedaCompacta)(c.aum), apoio: c.dias_sem_contato === null ? "nunca contatado" : "".concat(c.dias_sem_contato, " dias"), aoClicar: () => abrirCliente(c.id_cliente) })) }) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Oportunidades de venda cruzada" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoDescricao, { children: "Maiores clientes com at\xE9 2 produtos." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.ListaRanking, { vazio: "Nenhuma oportunidade identificada.", itens: analise.oportunidades.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: "Falta: ".concat(c.produtos_faltantes.slice(0, 3).join(", ")).concat(c.produtos_faltantes.length > 3 ? "\u2026" : ""), valor: (0, import_ui.moedaCompacta)(c.aum), apoio: "".concat(c.produtos_ativos, " de 5 produtos"), aoClicar: () => abrirCliente(c.id_cliente) })) }) })
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_ui3.Cartao, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoTitulo, { children: "Oportunidades de venda cruzada" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.CartaoDescricao, { children: "Maiores clientes com at\xE9 2 produtos." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-3", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.ListaRanking, { vazio: "Nenhuma oportunidade identificada.", itens: analise.oportunidades.map((c) => ({ id: c.id_cliente, titulo: c.nome, subtitulo: "Falta: ".concat(c.produtos_faltantes.slice(0, 3).join(", ")).concat(c.produtos_faltantes.length > 3 ? "\u2026" : ""), valor: (0, import_ui3.moedaCompacta)(c.aum), apoio: "".concat(c.produtos_ativos, " de 5 produtos"), aoClicar: () => abrirCliente(c.id_cliente) })) }) })
           ] })
         ] })
-      ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-80" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Posi\xE7\xF5es", className: "flex flex-col gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { className: "text-heading-lg text-foreground", children: "Posi\xE7\xF5es" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.TabelaDados, { colunas, dados: dados.posicoes, rotulo: "Posi\xE7\xF5es", tamanhoPagina: 10, buscaPlaceholder: "Buscar posi\xE7\xE3o ou titular\u2026" })
+      ] }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Esqueleto, { className: "h-80" }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(PainelComparativo, { api, sessao, versao }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("section", { "aria-label": "Posi\xE7\xF5es", className: "flex flex-col gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h2", { className: "text-heading-lg text-foreground", children: "Posi\xE7\xF5es" }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.TabelaDados, { colunas, dados: dados.posicoes, rotulo: "Posi\xE7\xF5es", tamanhoPagina: 10, buscaPlaceholder: "Buscar posi\xE7\xE3o ou titular\u2026" })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-caption text-secondary-foreground", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("p", { className: "text-caption text-secondary-foreground", children: [
         "Calculado em ",
         new Date(dados.calculado_em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }),
         " \xB7 valores em reais."
@@ -469,10 +730,10 @@
     ] });
   }
   function Carregando() {
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-6", "aria-busy": "true", "aria-label": "Carregando", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-10 w-72" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4", children: [0, 1, 2, 3].map((i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-28" }, i)) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-80" })
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex flex-col gap-6", "aria-busy": "true", "aria-label": "Carregando", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Esqueleto, { className: "h-10 w-72" }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4", children: [0, 1, 2, 3].map((i) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Esqueleto, { className: "h-28" }, i)) }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_ui3.Esqueleto, { className: "h-80" })
     ] });
   }
 

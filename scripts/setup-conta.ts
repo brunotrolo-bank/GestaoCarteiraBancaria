@@ -33,7 +33,7 @@ if (flag('verificar')) {
   try { obterToken(); console.log('OK   impersonation da service account'); } catch { console.log('FALHA impersonation: rode `gcloud auth login` na conta nova e o setup com --gcp (aguarde ~1 min de propagação do IAM)'); process.exit(1); }
   try { const db = await lerDb(amb.planilhaId); console.log(`OK   planilha lida (${db.dim_clientes.length} clientes)`); } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    console.log(/Aba|coluna ausente|400|Unable to parse range/.test(msg) ? 'OK   acesso à planilha (ainda sem as 14 abas: rode `npm run sheets:carga`)' : `FALHA planilha: ${msg.slice(0, 200)}\n     → compartilhe a planilha como EDITOR com ${amb.contaServico}`);
+    console.log(/Aba|coluna ausente|400|Unable to parse range/.test(msg) ? 'OK   acesso à planilha (ainda sem as 15 abas: rode `npm run sheets:carga`)' : `FALHA planilha: ${msg.slice(0, 200)}\n     → compartilhe a planilha como EDITOR com ${amb.contaServico}`);
   }
   setTimeout(() => process.exit(0), 300); // aguarda os handles de rede fecharem (evita ruído do libuv no Windows)
   await new Promise<void>(() => undefined);
@@ -80,6 +80,6 @@ console.log(`\nConfigurado.\n  planilha: ${planilha}\n  script:   ${script}\n  p
 console.log('Próximos passos:');
 if (contaServico) console.log(`  1) Compartilhe a planilha como EDITOR com: ${contaServico}`);
 console.log('  2) npm run setup:conta -- --verificar');
-console.log('  3) npm run sheets:carga        (popula as 14 abas com os dados sintéticos)');
+console.log('  3) npm run sheets:carga        (popula as 15 abas com os dados sintéticos)');
 console.log('  4) npm run gas:build && npm run apps-script:push');
 console.log('  5) (dentro de apps-script/) clasp deploy --description "POC"   → abra a URL /exec');

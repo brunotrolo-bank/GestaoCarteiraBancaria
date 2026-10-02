@@ -68,12 +68,15 @@ var DOM_posicoes = (() => {
   var index_exports = {};
   __export(index_exports, {
     DomainError: () => import_errors.DomainError,
+    LIMITES_PADRAO: () => LIMITES_PADRAO,
     alterarStatusPosicao: () => alterarStatusPosicao,
     cadastrarGerente: () => cadastrarGerente,
     criarPosicao: () => criarPosicao,
+    definirMetas: () => definirMetas,
     desligarGerente: () => desligarGerente,
     exigirGerenteGeral: () => exigirGerenteGeral,
     historicoDaPosicao: () => historicoDaPosicao,
+    metasDaPosicao: () => metasDaPosicao,
     obterGerente: () => obterGerente,
     obterPosicao: () => obterPosicao,
     ocupacaoDoGerente: () => ocupacaoDoGerente,
@@ -250,6 +253,31 @@ var DOM_posicoes = (() => {
   }
   function posicaoVaga(db, idPosicao, dia) {
     return titularVigente(db, idPosicao, dia) === null;
+  }
+  var LIMITES_PADRAO = { utilizacao_minima: 0.5, utilizacao_maxima: 1 };
+  function metasDaPosicao(db, idPosicao) {
+    const m = db.cfg_metas_posicao.find((x) => x.id_posicao === idPosicao);
+    return m ? { meta_aum: m.meta_aum, meta_clientes: m.meta_clientes, utilizacao_minima: m.utilizacao_minima, utilizacao_maxima: m.utilizacao_maxima } : { meta_aum: 0, meta_clientes: 0, ...LIMITES_PADRAO };
+  }
+  function definirMetas(db, clock, idPosicao, entrada, ator) {
+    exigirGerenteGeral(db, ator);
+    obterPosicao(db, idPosicao);
+    const { meta_aum, meta_clientes, utilizacao_minima, utilizacao_maxima } = entrada;
+    for (const [campo, v] of Object.entries(entrada)) (0, import_errors.exigir)(Number.isFinite(v), "DADOS_INVALIDOS", `${campo}: informe um n\xFAmero.`);
+    (0, import_errors.exigir)(meta_aum >= 0, "DADOS_INVALIDOS", 'meta_aum: n\xE3o pode ser negativa (use 0 para "sem meta").');
+    (0, import_errors.exigir)(Number.isInteger(meta_clientes) && meta_clientes >= 0, "DADOS_INVALIDOS", "meta_clientes: use um n\xFAmero inteiro maior ou igual a 0 (0 = sem meta).");
+    (0, import_errors.exigir)(utilizacao_minima >= 0 && utilizacao_minima < 1, "DADOS_INVALIDOS", "utilizacao_minima: deve estar entre 0% e 100% (exclusive).");
+    (0, import_errors.exigir)(utilizacao_maxima > utilizacao_minima && utilizacao_maxima <= 3, "DADOS_INVALIDOS", "utilizacao_maxima: deve ser maior que a m\xEDnima e no m\xE1ximo 300%.");
+    return (0, import_db.emTransacao)(db, () => {
+      const anterior = metasDaPosicao(db, idPosicao);
+      const linha = { id_posicao: idPosicao, ...entrada, atualizado_por: ator.idGerente, atualizado_em: clock.agora().toISOString() };
+      const i = db.cfg_metas_posicao.findIndex((x) => x.id_posicao === idPosicao);
+      if (i >= 0) db.cfg_metas_posicao[i] = linha;
+      else db.cfg_metas_posicao.push(linha);
+      (0, import_registro.auditar)(db, clock, ator.idGerente, "POSICAO_METAS_DEFINIDAS", "cfg_metas_posicao", idPosicao, { de: anterior, para: entrada });
+      (0, import_registro.publicar)(db, clock, "MetasPosicaoDefinidas", { id_posicao: idPosicao, ...entrada });
+      return linha;
+    });
   }
   return __toCommonJS(index_exports);
 })();

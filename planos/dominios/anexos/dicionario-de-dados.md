@@ -3,7 +3,7 @@
 > **GERADO** por `scripts/gerar-dicionario.ts` (npm run dicionario) a partir do esquema real (`TABELAS`) e dos metadados em `scripts/dicionario.ts`. Não editar à mão: um teste compara este arquivo com o esquema (AC-DAD-08).
 > Convenções: dinheiro em decimal exato; datas de negócio ISO (America/Sao_Paulo, intervalos fechados); instantes em UTC; chaves opacas e perenes; estados derivados do relógio não são persistidos.
 
-Total: 14 tabelas, 83 colunas.
+Total: 15 tabelas, 90 colunas.
 
 ## `ref_segmentos`
 
@@ -160,6 +160,20 @@ Movimentações de clientes entre posições (redistribuição, transferência, 
 | `ator` | string | varchar(30) | Quem executou. | Identificador | novo |
 | `instante` | string | timestamptz | Quando ocorreu. | Interno | novo |
 | `tipo` | string | varchar(20) | Redistribuicao, Transferencia ou Compensacao. | Interno | novo |
+
+## `cfg_metas_posicao`
+
+Metas e limites de alerta por posição, configuráveis pelo Gerente Geral. Sem linha = sem meta e limites padrão (50% a 100%). *(domínio 01; PK: `id_posicao`)*
+
+| Coluna | Tipo lógico | Tipo SQL alvo | Descrição | LGPD | Origem |
+|---|---|---|---|---|---|
+| `id_posicao` | string | varchar(30) | Posição configurada (FK dim_posicoes). | Identificador | Plano Geral |
+| `meta_aum` | number | numeric(18,2) | Meta de AUM total da posição em reais (0 = sem meta). | Interno | Plano Geral |
+| `meta_clientes` | number | integer | Meta de clientes ativos da posição (0 = sem meta). | Interno | Plano Geral |
+| `utilizacao_minima` | number | numeric(5,4) | Utilização mínima da capacidade (razão); abaixo dela a posição entra em alerta "Abaixo do mínimo". | Interno | Plano Geral |
+| `utilizacao_maxima` | number | numeric(5,4) | Utilização máxima da capacidade (razão); acima dela a posição entra em alerta "Acima do limite". | Interno | Plano Geral |
+| `atualizado_por` | string | varchar(30) | Gerente Geral que definiu a configuração. | Identificador | Plano Geral |
+| `atualizado_em` | string | timestamptz | Instante da última alteração (ISO 8601). | Interno | Plano Geral |
 
 ## `log_auditoria`
 

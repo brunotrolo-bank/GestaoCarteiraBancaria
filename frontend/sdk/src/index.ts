@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type {
-  AnaliseCarteira, AtoresResposta, ClienteMascarado, Delegacao, GerenteInfo, Ocupacao, Pagina, ResultadoLote, ResumoAgencia, ResumoPosicao,
+  AnaliseCarteira, AtoresResposta, Comparativo, MetasPosicao, ClienteMascarado, Delegacao, GerenteInfo, Ocupacao, Pagina, ResultadoLote, ResumoAgencia, ResumoPosicao,
   SecaoCarteira, Sessao, SimulacaoRedistribuicao, Visao360,
 } from './tipos';
 
@@ -103,6 +103,8 @@ export function criarApi(cfg: ConfigApi) {
 
     agencia: () => chamar<ResumoAgencia>('GET', '/insights/agencia'),
     analise: () => chamar<AnaliseCarteira>('GET', '/insights/analise'),
+    comparativo: (inicio: string, fim: string) => chamar<Comparativo>('GET', '/insights/comparativo' + q({ inicio, fim })),
+    definirMetas: (id: string, corpo: MetasPosicao) => chamar<MetasPosicao & { id_posicao: string }>('POST', `/posicoes/${id}/metas`, { corpo }),
     desbalanceamento: () => chamar<{ itens: ResumoPosicao[] }>('GET', '/insights/desbalanceamento'),
   };
 }

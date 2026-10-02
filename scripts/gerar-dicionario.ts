@@ -45,6 +45,7 @@ const FKS: Record<string, [string, string][]> = {
   fct_produtos_cliente: [['id_cliente', 'dim_clientes(id_cliente)'], ['codigo_produto', 'ref_produtos(codigo)']],
   fct_interacoes_crm: [['id_cliente', 'dim_clientes(id_cliente)'], ['id_posicao', 'dim_posicoes(id_posicao)']],
   fct_movimentacao_carteira: [['id_cliente', 'dim_clientes(id_cliente)']],
+  cfg_metas_posicao: [['id_posicao', 'dim_posicoes(id_posicao)']],
 };
 
 export function conteudoDdl(): string {

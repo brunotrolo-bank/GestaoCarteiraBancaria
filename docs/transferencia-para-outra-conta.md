@@ -15,9 +15,9 @@ O app roda **100% dentro do Google Apps Script**: front (`index.html`), backend 
 1. **Levar o projeto**, de um destes modos:
    - **Fazer uma cópia** (recomendado): abra o projeto → ⋮ ao lado do nome → *Fazer uma cópia*; depois compartilhe a cópia com a conta nova ou baixe/copie os arquivos para um projeto novo; **ou**
    - **Transferir a propriedade** do projeto no Google Drive (clique direito no arquivo do projeto → *Compartilhar* → tornar a conta nova **proprietária**).
-2. Na conta nova, abra o projeto e rode **`instalar`** (▶ no editor, escolhendo a função `instalar`). Autorize quando o Google pedir. Isso **cria uma planilha nova** no Drive da conta nova, com as 14 abas e os dados sintéticos de demonstração, e registra o id nas propriedades do script. (Se você pular este passo, o app faz o mesmo sozinho na primeira abertura, e a primeira tela pode levar cerca de 30–60 segundos.)
+2. Na conta nova, abra o projeto e rode **`instalar`** (▶ no editor, escolhendo a função `instalar`). Autorize quando o Google pedir. Isso **cria uma planilha nova** no Drive da conta nova, com as 15 abas e os dados sintéticos de demonstração, e registra o id nas propriedades do script. (Se você pular este passo, o app faz o mesmo sozinho na primeira abertura, e a primeira tela pode levar cerca de 30–60 segundos.)
 3. **Implantar o web app**: *Implantar → Nova implantação → App da Web*; *Executar como*: **Eu**; *Quem tem acesso*: **Somente eu** (ou as pessoas que forem homologar). Abra a URL `/exec`.
-4. Para ver os dados: rode `urlDaPlanilha` (o endereço aparece no log) ou abra a planilha pelo Drive. Para apontar o app para **outra planilha já existente** com as 14 abas: rode `usarPlanilha('ID_DA_PLANILHA')`.
+4. Para ver os dados: rode `urlDaPlanilha` (o endereço aparece no log) ou abra a planilha pelo Drive. Para apontar o app para **outra planilha já existente** com as 15 abas: rode `usarPlanilha('ID_DA_PLANILHA')`.
 
 ## Pontos de atenção
 - A planilha antiga (da conta de origem) **não é copiada**; o app da conta nova nasce com um cenário demo novo. Se quiser levar os dados, copie a planilha antiga (*Arquivo → Fazer uma cópia*) e use `usarPlanilha` com o id da cópia.

@@ -373,6 +373,41 @@ var ESQUEMA = {
       }
     ]
   },
+  "cfg_metas_posicao": {
+    "pk": [
+      "id_posicao"
+    ],
+    "colunas": [
+      {
+        "nome": "id_posicao",
+        "tipo": "string"
+      },
+      {
+        "nome": "meta_aum",
+        "tipo": "number"
+      },
+      {
+        "nome": "meta_clientes",
+        "tipo": "number"
+      },
+      {
+        "nome": "utilizacao_minima",
+        "tipo": "number"
+      },
+      {
+        "nome": "utilizacao_maxima",
+        "tipo": "number"
+      },
+      {
+        "nome": "atualizado_por",
+        "tipo": "string"
+      },
+      {
+        "nome": "atualizado_em",
+        "tipo": "string"
+      }
+    ]
+  },
   "log_auditoria": {
     "pk": [
       "id_log"

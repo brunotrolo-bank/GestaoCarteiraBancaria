@@ -30,12 +30,23 @@ const rotaDoHash = (): Rota => {
   return ROTAS.some((r) => r.id === h) ? h : 'capa';
 };
 
+/** Dia de hoje (AAAA-MM-DD) no fuso de São Paulo, que é o que o campo de data mostra por padrão. */
+function hojeISO(): string {
+  try { return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' }); } catch { return new Date().toISOString().slice(0, 10); }
+}
+
+/**
+ * O papel é lembrado entre aberturas; a data NÃO: o app sempre abre na data de hoje. Um link de demonstração pode fixar a data
+ * com `?data=AAAA-MM-DD` (usado nos testes e para reproduzir cenários).
+ */
 function lerSessao(): Sessao {
+  let papel = 'GG';
   try {
     const bruto = window.localStorage.getItem('carteira.sessao');
-    if (bruto) return JSON.parse(bruto) as Sessao;
+    if (bruto) papel = (JSON.parse(bruto) as Sessao).papel ?? papel;
   } catch { /* armazenamento indisponível: usa o padrão */ }
-  return { papel: 'GG', dataSimulada: null };
+  const data = new URLSearchParams(window.location.search).get('data');
+  return { papel, dataSimulada: data && /^\d{4}-\d{2}-\d{2}$/.test(data) ? data : null };
 }
 
 export function App({ mfes }: { mfes: Mfes }) {
@@ -57,7 +68,7 @@ export function App({ mfes }: { mfes: Mfes }) {
   }, []);
 
   React.useEffect(() => {
-    try { window.localStorage.setItem('carteira.sessao', JSON.stringify(sessao)); } catch { /* sem persistência */ }
+    try { window.localStorage.setItem('carteira.sessao', JSON.stringify({ papel: sessao.papel })); } catch { /* sem persistência */ }
   }, [sessao]);
 
   // Papel salvo que não existe mais (posição vaga/extinta) volta para o Gerente Geral.
@@ -125,7 +136,7 @@ export function App({ mfes }: { mfes: Mfes }) {
             />
             <div>
               <Rotulo htmlFor="data-simulada">Data da demonstração</Rotulo>
-              <Campo id="data-simulada" type="date" className="tnum w-44" value={sessao.dataSimulada ?? ''} onChange={(e) => setSessao((s) => ({ ...s, dataSimulada: e.target.value || null }))} />
+              <Campo id="data-simulada" type="date" className="tnum w-44" value={sessao.dataSimulada ?? hojeISO()} onChange={(e) => setSessao((s) => ({ ...s, dataSimulada: !e.target.value || e.target.value === hojeISO() ? null : e.target.value }))} />
             </div>
             {sessao.dataSimulada ? <Botao variante="fantasma" onClick={() => setSessao((s) => ({ ...s, dataSimulada: null }))}>Voltar para hoje</Botao> : null}
             <div className="ml-auto flex flex-wrap gap-2">

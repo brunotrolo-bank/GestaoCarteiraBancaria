@@ -33,8 +33,8 @@ npm run api                 # API local (cenário demo em memória) em :3001 ; n
 npm run gas:build           # gera apps-script/*.js e *.html (backend por domínio + um HTML por MFE)
 npm run apps-script:push    # envia ao Apps Script (clasp) ; depois: (cd apps-script && clasp deploy / clasp redeploy <id>)
 npm run gas:smoke           # backend do Apps Script em sandbox sem Node/Intl/URL
-npm run sheets:carga        # popula as 14 abas da planilha com o cenário demo (idempotente)
-npm run sheets:homologar    # roda o código REAL do Apps Script sobre a planilha (52 checks) e grava homologacao_resultado
+npm run sheets:carga        # popula as 15 abas da planilha com o cenário demo (idempotente)
+npm run sheets:homologar    # roda o código REAL do Apps Script sobre a planilha (54 checks) e grava homologacao_resultado
 npm run setup:conta -- --planilha <ID> --script <ID> [--gcp <projeto>]   # configura OUTRA conta Google
 npm run gates               # arquitetura + OpenAPI + tipos + testes com cobertura
 npm run e2e                 # Playwright (jornadas J1/J2/J3, axe, front composto como no Apps Script)
@@ -51,6 +51,9 @@ Siga **docs/instalacao-em-nova-conta.md** (Caminho A). Resumo: o usuário cria �
 - Tokens de design são **gerados** (`npm run tokens`); não usar cores/raios/pesos fora dos tokens (há teste em `frontend/ui/test/design.test.ts`). Evitar o namespace `--spacing-*` do Tailwind para tokens de espaço (colide com `max-w-xl`).
 - **Armadilhas do HtmlService (aprendidas em produção)**: (1) o servidor carrega os `.js` em ordem **alfabética**, ignorando `filePushOrder` quando nada mudou → arquivos de backend têm prefixo numérico (`00-`, `1x-`, `2x-`); (2) `&nome;` dentro de script vira entidade HTML e quebra o JS → `comoScript` separa o `&`; (3) template literals (crases) quebram o `document.write` da página → esbuild com `supported: {'template-literal': false}`; (4) link `<a href="#/rota">` com `<base target="_top">` navega a janela externa → navegar por JS (`preventDefault`); (5) o teste `e2e/gas-front.spec.ts` NÃO reproduz esses problemas, então depois de publicar confira no app real.
 - Erros de carga e de renderização aparecem numa caixa vermelha no rodapé (`CARTEIRA_MOSTRAR` em `index.html`, `Contencao` em `main.gas.tsx`): se o usuário relatar tela branca, peça o texto dela.
+- **Data da demonstração**: o app SEMPRE abre em hoje (fuso de São Paulo); só o papel é lembrado. Para reproduzir um cenário use `?data=AAAA-MM-DD` na URL (os testes E2E fazem isso). No Apps Script o parâmetro não chega ao iframe: use o campo de data.
+- **Abas opcionais**: tabelas criadas depois da 1ª versão (hoje `cfg_metas_posicao`) entram em `OPCIONAIS` no `GasStore`: planilha antiga sem a aba continua funcionando (vazia = padrão) e a aba nasce na 1ª gravação. Nova tabela exige: `TABELAS`, `types.ts`, `scripts/dicionario.ts`, FK em `gerar-dicionario.ts`, seed, `npm run dicionario` e `npm run schema:apps-script`.
+- Metas/limites de alerta por posição ficam em `cfg_metas_posicao` (só o Gerente Geral grava; padrão 50%–100%). O comparativo entre períodos NÃO compara AUM histórico (a POC não guarda saldo no tempo): usa fluxos e o valor atual da base.
 - `clasp run` não funciona neste projeto; a homologação roda o mesmo código em Node (`sheets:homologar`) ou pelo editor (`homologar()`).
 - Heredocs grandes no Bash tool às vezes quebram: prefira criar arquivos com a ferramenta Write.
 - O web app usa `executeAs: USER_DEPLOYING` e `access: MYSELF`; papel e data são **simulados** (não há login por usuário).

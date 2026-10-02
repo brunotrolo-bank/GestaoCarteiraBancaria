@@ -1,5 +1,5 @@
 import {
-  acesso, auditar, clientes, delegacao, DomainError, FixedClock, insights, isISODate, meioDia, diaDe, posicoes,
+  acesso, addDays, auditar, clientes, delegacao, DomainError, FixedClock, insights, isISODate, meioDia, diaDe, posicoes,
   type Clock, type Db, type Ator, type CodigoErro,
 } from '@carteira/core';
 import type { Store } from './store.ts';
@@ -72,11 +72,12 @@ const STATUS: Partial<Record<CodigoErro, number>> = {
 };
 
 /** Validação de corpo mínima (sem dependências: o backend do Apps Script precisa ser leve — cada execução carrega todos os arquivos). */
-type Campo = { tipo: 'txt'; opcional?: boolean } | { tipo: 'data' } | { tipo: 'enum'; opcoes: string[] } | { tipo: 'lista' };
+type Campo = { tipo: 'txt'; opcional?: boolean } | { tipo: 'data' } | { tipo: 'enum'; opcoes: string[] } | { tipo: 'lista' } | { tipo: 'num' };
 const txt = (opcional = false): Campo => ({ tipo: 'txt', opcional });
 const dt = (): Campo => ({ tipo: 'data' });
 const opc = (opcoes: string[]): Campo => ({ tipo: 'enum', opcoes });
 const lista = (): Campo => ({ tipo: 'lista' });
+const num = (): Campo => ({ tipo: 'num' });
 
 function esquema<T>(campos: Record<string, Campo>): (corpo: unknown) => T {
   return (corpo) => {
@@ -90,6 +91,8 @@ function esquema<T>(campos: Record<string, Campo>): (corpo: unknown) => T {
         if (ausente) { if (!campo.opcional) erros.push(`${nome}: obrigatório`); } else if (typeof v !== 'string') erros.push(`${nome}: esperado texto`); else if (!campo.opcional && v.length < 1) erros.push(`${nome}: não pode ser vazio`);
       } else if (campo.tipo === 'data') {
         if (typeof v !== 'string' || !isISODate(v)) erros.push(`${nome}: Data deve estar no formato AAAA-MM-DD`);
+      } else if (campo.tipo === 'num') {
+        if (typeof v !== 'number' || !Number.isFinite(v)) erros.push(`${nome}: esperado número`);
       } else if (campo.tipo === 'enum') {
         if (typeof v !== 'string' || !campo.opcoes.includes(v)) erros.push(`${nome}: valor inválido (use ${campo.opcoes.join(', ')})`);
       } else if (!Array.isArray(v) || v.length < 1 || v.some((x) => typeof x !== 'string')) erros.push(`${nome}: esperada lista não vazia de textos`);
@@ -108,6 +111,7 @@ const corpos = {
   delegacao: esquema<{ id_posicao_origem: string; id_gerente_delegado: string; data_inicio: string; data_fim: string; motivo: string; escopo: Escopo }>({
     id_posicao_origem: txt(), id_gerente_delegado: txt(), data_inicio: dt(), data_fim: dt(), motivo: txt(), escopo: opc(ESCOPOS),
   }),
+  metas: esquema<{ meta_aum: number; meta_clientes: number; utilizacao_minima: number; utilizacao_maxima: number }>({ meta_aum: num(), meta_clientes: num(), utilizacao_minima: num(), utilizacao_maxima: num() }),
   transferencia: esquema<{ id_posicao_destino: string; motivo: string; justificativa?: string }>({ id_posicao_destino: txt(), motivo: txt(), justificativa: txt(true) }),
   simulacao: esquema<{ ids_clientes: string[]; id_posicao_destino: string }>({ ids_clientes: lista(), id_posicao_destino: txt() }),
   redistribuicao: esquema<{ ids_clientes: string[]; id_posicao_destino: string; motivo: string; justificativa?: string }>({ ids_clientes: lista(), id_posicao_destino: txt(), motivo: txt(), justificativa: txt(true) }),
@@ -185,6 +189,14 @@ const ROTAS: Rota[] = [
     tratador: (c) => posicoes.trocarTitular(c.db, c.clock, { id_posicao: c.params.id!, ...analisar(corpos.titular, c.corpo) }, c.ator),
   },
   {
+    metodo: 'GET', caminho: '/posicoes/{id}/metas',
+    tratador: (c) => { exigirPosicaoVisivel(c, c.params.id!); return { id_posicao: c.params.id, ...posicoes.metasDaPosicao(c.db, c.params.id!) }; },
+  },
+  {
+    metodo: 'POST', caminho: '/posicoes/{id}/metas', escrita: true,
+    tratador: (c) => posicoes.definirMetas(c.db, c.clock, c.params.id!, analisar(corpos.metas, c.corpo), c.ator),
+  },
+  {
     metodo: 'GET', caminho: '/gerentes',
     tratador: (c) => { exigirGG(c); return { itens: c.db.dim_gerentes.map((g) => ({ ...g, posicao: posicoes.ocupacaoDoGerente(c.db, g.id_gerente, diaDe(c.instante))?.id_posicao ?? null })) }; },
   },
@@ -240,6 +252,15 @@ const ROTAS: Rota[] = [
   { metodo: 'POST', caminho: '/carteira/redistribuicoes/{id}:desfazer', escrita: true, tratador: (c) => clientes.desfazerLote(c.db, c.clock, c.params.id!, c.ator) },
 
   { metodo: 'GET', caminho: '/insights/analise', tratador: (c) => insights.analiseCarteira(c.db, ctxInsights(c, c.consulta.get('asof'))) },
+  {
+    metodo: 'GET', caminho: '/insights/comparativo',
+    tratador: (c) => {
+      const ctx = ctxInsights(c, c.consulta.get('asof'));
+      const fim = c.consulta.get('fim') ?? diaDe(ctx.instante);
+      const inicio = c.consulta.get('inicio') ?? addDays(fim, -29);
+      return insights.comparativo(c.db, ctx, { inicio, fim });
+    },
+  },
   { metodo: 'GET', caminho: '/insights/agencia', tratador: (c) => insights.resumoAgencia(c.db, ctxInsights(c, c.consulta.get('asof'))) },
   {
     metodo: 'GET', caminho: '/insights/posicoes/{id}',

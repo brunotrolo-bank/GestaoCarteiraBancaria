@@ -1,4 +1,4 @@
-import type { Db, Gerente, Ocupacao, Posicao, PerfilGerente, SegmentoPosicao, StatusPosicao, TipoVinculo, Ator } from '../model/types.ts';
+import type { Db, Gerente, MetaPosicao, Ocupacao, Posicao, PerfilGerente, SegmentoPosicao, StatusPosicao, TipoVinculo, Ator } from '../model/types.ts';
 import { emTransacao, proximoId } from '../model/db.ts';
 import { addDays, diaDe, intervalosSobrepostos, isISODate, noIntervalo, type ISODate } from '../shared/dates.ts';
 import type { Clock } from '../shared/clock.ts';
@@ -199,6 +199,40 @@ export function desligarGerente(db: Db, clock: Clock, idGerente: string, ator: A
 
 export function posicaoVaga(db: Db, idPosicao: string, dia: ISODate): boolean {
   return titularVigente(db, idPosicao, dia) === null;
+}
+
+/** Limites de alerta padrão (Q-27) quando a posição não tem configuração própria. */
+export const LIMITES_PADRAO = { utilizacao_minima: 0.5, utilizacao_maxima: 1 } as const;
+export type Metas = Pick<MetaPosicao, 'meta_aum' | 'meta_clientes' | 'utilizacao_minima' | 'utilizacao_maxima'>;
+
+/** Metas efetivas da posição: a configuração gravada ou, na falta dela, "sem meta" e os limites padrão. */
+export function metasDaPosicao(db: Db, idPosicao: string): Metas {
+  const m = db.cfg_metas_posicao.find((x) => x.id_posicao === idPosicao);
+  return m
+    ? { meta_aum: m.meta_aum, meta_clientes: m.meta_clientes, utilizacao_minima: m.utilizacao_minima, utilizacao_maxima: m.utilizacao_maxima }
+    : { meta_aum: 0, meta_clientes: 0, ...LIMITES_PADRAO };
+}
+
+/** Define metas e limites de alerta de uma posição (só o Gerente Geral). Grava auditoria e evento. */
+export function definirMetas(db: Db, clock: Clock, idPosicao: string, entrada: Metas, ator: Ator): MetaPosicao {
+  exigirGerenteGeral(db, ator);
+  obterPosicao(db, idPosicao);
+  const { meta_aum, meta_clientes, utilizacao_minima, utilizacao_maxima } = entrada;
+  for (const [campo, v] of Object.entries(entrada)) exigir(Number.isFinite(v), 'DADOS_INVALIDOS', `${campo}: informe um número.`);
+  exigir(meta_aum >= 0, 'DADOS_INVALIDOS', 'meta_aum: não pode ser negativa (use 0 para "sem meta").');
+  exigir(Number.isInteger(meta_clientes) && meta_clientes >= 0, 'DADOS_INVALIDOS', 'meta_clientes: use um número inteiro maior ou igual a 0 (0 = sem meta).');
+  exigir(utilizacao_minima >= 0 && utilizacao_minima < 1, 'DADOS_INVALIDOS', 'utilizacao_minima: deve estar entre 0% e 100% (exclusive).');
+  exigir(utilizacao_maxima > utilizacao_minima && utilizacao_maxima <= 3, 'DADOS_INVALIDOS', 'utilizacao_maxima: deve ser maior que a mínima e no máximo 300%.');
+  return emTransacao(db, () => {
+    const anterior = metasDaPosicao(db, idPosicao);
+    const linha: MetaPosicao = { id_posicao: idPosicao, ...entrada, atualizado_por: ator.idGerente, atualizado_em: clock.agora().toISOString() };
+    const i = db.cfg_metas_posicao.findIndex((x) => x.id_posicao === idPosicao);
+    if (i >= 0) db.cfg_metas_posicao[i] = linha;
+    else db.cfg_metas_posicao.push(linha);
+    auditar(db, clock, ator.idGerente, 'POSICAO_METAS_DEFINIDAS', 'cfg_metas_posicao', idPosicao, { de: anterior, para: entrada });
+    publicar(db, clock, 'MetasPosicaoDefinidas', { id_posicao: idPosicao, ...entrada });
+    return linha;
+  });
 }
 
 export { DomainError };

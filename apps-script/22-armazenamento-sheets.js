@@ -71,6 +71,7 @@ var CARTEIRA_ARMAZENAMENTO = (() => {
   var TAMANHO_BLOCO = 9e4;
   var TTL_SEGUNDOS = 900;
   var SO_ANEXA = ["log_auditoria", "log_eventos", "fct_movimentacao_carteira"];
+  var OPCIONAIS = ["cfg_metas_posicao"];
   var GasStore = class {
     /** `semear`: cria/popula todas as abas com o cenário demo (instalação em uma conta nova). */
     constructor(planilhaId, opcoes = {}) {
@@ -168,7 +169,10 @@ var CARTEIRA_ARMAZENAMENTO = (() => {
       const db = (0, import_core.criarDbVazio)();
       for (const t of import_core.NOMES_TABELAS) {
         const aba = ss.getSheetByName(t);
-        if (!aba) throw new Error(`ABAS_AUSENTES: ${t}`);
+        if (!aba) {
+          if (OPCIONAIS.includes(t)) continue;
+          throw new Error(`ABAS_AUSENTES: ${t}`);
+        }
         const valores = aba.getDataRange().getValues().map(
           (linha) => linha.map((v) => v instanceof Date ? Utilities.formatDate(v, "America/Sao_Paulo", "yyyy-MM-dd") : v)
         );
@@ -187,7 +191,7 @@ var CARTEIRA_ARMAZENAMENTO = (() => {
       for (const t of tabelas) {
         let aba = ss.getSheetByName(t);
         if (!aba) {
-          if (!criarAbas && !SO_ANEXA.includes(t)) throw new Error(`Aba ausente: ${t}`);
+          if (!criarAbas && !SO_ANEXA.includes(t) && !OPCIONAIS.includes(t)) throw new Error(`Aba ausente: ${t}`);
           aba = ss.insertSheet(t);
         }
         const matriz = (0, import_matriz.tabelaParaMatriz)(this.db, t);

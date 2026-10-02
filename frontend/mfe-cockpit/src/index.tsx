@@ -2,6 +2,8 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { ArrowRightLeft } from 'lucide-react';
 import { BarrasCapacidade, BarrasHorizontais, Botao, Cartao, CartaoDescricao, CartaoTitulo, Colunas, CurvaConcentracao, EstadoErro, Esqueleto, Kpi, LinhasTempo, ListaInsights, ListaRanking, MapaCalor, Rosca, Selo, SemPermissao, TabelaDados, inteiro, moeda, moedaCompacta, percentual } from '@carteira/ui';
 import { ApiErro, useConsulta, type PropsMfe, type ResumoPosicao } from '@carteira/sdk';
+import { PainelComparativo } from './comparativo';
+import { PainelMetas } from './metas';
 
 /** MFE do domínio 05 — Torre de Controle (GG) e resumo da própria carteira. Nada é calculado aqui: só exibe o que a API devolve. */
 export default function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }: PropsMfe) {
@@ -14,6 +16,8 @@ export default function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }:
 
   const agencia = dados.escopo === 'Agencia';
   const grafico = dados.posicoes.map((p) => ({ nome: p.id_posicao.replace('POS-AG01-', 'POS-'), pct: Math.round(p.utilizacao * 1000) / 10, alerta: p.desbalanceamento }));
+  const uniforme = dados.posicoes.every((p) => p.metas.utilizacao_minima === dados.posicoes[0]!.metas.utilizacao_minima && p.metas.utilizacao_maxima === dados.posicoes[0]!.metas.utilizacao_maxima);
+  const limites = uniforme && dados.posicoes[0] ? { minima: Math.round(dados.posicoes[0].metas.utilizacao_minima * 100), maxima: Math.round(dados.posicoes[0].metas.utilizacao_maxima * 100) } : null;
   const pct1 = (v: number): string => `${v.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`;
   const abrirCliente = (idCliente: string) => emitir({ tipo: 'cliente-selecionado', idCliente });
   const ROTULO_DESTINO: Record<string, string> = { posicoes: 'Ver posições', carteira: 'Ver carteira', delegacoes: 'Ver delegações', cockpit: 'Ver Torre de Controle' };
@@ -57,7 +61,7 @@ export default function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }:
         <Kpi destaque rotulo="AUM total" valor={moedaCompacta(dados.aum_total)} dica={moeda(dados.aum_total)} />
         <Kpi rotulo="Clientes ativos" valor={inteiro(dados.total_clientes)} dica={`AUM médio ${moedaCompacta(dados.aum_medio_por_cliente)}`} />
         <Kpi rotulo="Penetração média de produtos" valor={percentual(dados.penetracao_media, 0)} dica={`${dados.penetracao_por_produto.length} produtos no catálogo`} />
-        <Kpi rotulo="Posições em alerta" valor={inteiro(dados.posicoes_em_alerta)} dica="Acima de 100% ou abaixo de 50% da capacidade" />
+        <Kpi rotulo="Posições em alerta" valor={inteiro(dados.posicoes_em_alerta)} dica="Fora dos limites de capacidade da posição" />
       </section>
 
       {analise ? (
@@ -79,8 +83,8 @@ export default function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }:
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-3" aria-label="Capacidade e segmentos">
         <Cartao className="lg:col-span-2">
           <CartaoTitulo>Capacidade por posição</CartaoTitulo>
-          <CartaoDescricao>Utilização = clientes ativos ÷ capacidade. Linhas: mínimo de 50% e limite de 100%.</CartaoDescricao>
-          <div className="mt-4"><BarrasCapacidade dados={grafico} /></div>
+          <CartaoDescricao>Utilização = clientes ativos ÷ capacidade. {limites ? `Linhas: mínimo de ${limites.minima}% e limite de ${limites.maxima}%.` : 'Cada posição tem seus próprios limites de alerta (veja em Metas por posição).'}</CartaoDescricao>
+          <div className="mt-4"><BarrasCapacidade dados={grafico} limites={limites} /></div>
         </Cartao>
         <Cartao>
           <CartaoTitulo>AUM por segmento</CartaoTitulo>
@@ -91,6 +95,8 @@ export default function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }:
           </div>
         </Cartao>
       </section>
+
+      {analise ? <PainelMetas metas={analise.metas_posicoes} aoConfigurar={() => emitir({ tipo: 'navegar', destino: 'posicoes' })} ehGerenteGeral={ehGerenteGeral} /> : null}
 
       {analise ? (
         <>
@@ -163,6 +169,8 @@ export default function Cockpit({ api, sessao, versao, ehGerenteGeral, emitir }:
       ) : (
         <Esqueleto className="h-80" />
       )}
+
+      <PainelComparativo api={api} sessao={sessao} versao={versao} />
 
       <section aria-label="Posições" className="flex flex-col gap-3">
         <h2 className="text-heading-lg text-foreground">Posições</h2>

@@ -60,7 +60,7 @@
   });
 
   // frontend/mfe-posicoes/src/index.tsx
-  var React = __toESM(require_react(), 1);
+  var React2 = __toESM(require_react(), 1);
 
   // node_modules/lucide-react/dist/esm/createLucideIcon.mjs
   var import_react3 = __toESM(require_react(), 1);
@@ -286,8 +286,27 @@
     return Component;
   }
 
-  // node_modules/lucide-react/dist/esm/icons/user-round-cog.mjs
+  // node_modules/lucide-react/dist/esm/icons/sliders-horizontal.mjs
   var __iconData = {
+    name: "sliders-horizontal",
+    size: 24,
+    node: [
+      ["path", { d: "M10 5H3", key: "1qgfaw" }],
+      ["path", { d: "M12 19H3", key: "yhmn1j" }],
+      ["path", { d: "M14 3v4", key: "1sua03" }],
+      ["path", { d: "M16 17v4", key: "1q0r14" }],
+      ["path", { d: "M21 12h-9", key: "1o4lsq" }],
+      ["path", { d: "M21 19h-5", key: "1rlt1p" }],
+      ["path", { d: "M21 5h-7", key: "1oszz2" }],
+      ["path", { d: "M8 10v4", key: "tgpxqk" }],
+      ["path", { d: "M8 12H3", key: "a7s4jb" }]
+    ]
+  };
+  __iconData.node;
+  var SlidersHorizontal = createLucideIcon(__iconData);
+
+  // node_modules/lucide-react/dist/esm/icons/user-round-cog.mjs
+  var __iconData2 = {
     name: "user-round-cog",
     size: 24,
     node: [
@@ -305,83 +324,189 @@
     ],
     aliases: ["user-cog-2"]
   };
-  __iconData.node;
-  var UserRoundCog = createLucideIcon(__iconData);
+  __iconData2.node;
+  var UserRoundCog = createLucideIcon(__iconData2);
 
   // frontend/mfe-posicoes/src/index.tsx
-  var import_ui = __toESM(require_ui(), 1);
+  var import_ui2 = __toESM(require_ui(), 1);
   var import_sdk = __toESM(require_sdk(), 1);
+
+  // frontend/mfe-posicoes/src/metas.tsx
+  var React = __toESM(require_react(), 1);
+  var import_ui = __toESM(require_ui(), 1);
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
+  var pct = (atual, meta) => meta > 0 ? Math.round(atual / meta * 100) : 0;
+  function CartaoMetas({ posicao, ehGerenteGeral, aoConfigurar }) {
+    const m = posicao.metas;
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Metas e alertas" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.CartaoDescricao, { children: [
+        "O alerta de capacidade dispara abaixo de ",
+        (0, import_ui.percentual)(m.utilizacao_minima, 0),
+        " ou acima de ",
+        (0, import_ui.percentual)(m.utilizacao_maxima, 0),
+        " de utiliza\xE7\xE3o."
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "mt-4 flex flex-col gap-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Progresso, { rotulo: "AUM", texto: m.meta_aum > 0 ? "".concat((0, import_ui.moeda)(posicao.aum_total), " de ").concat((0, import_ui.moeda)(m.meta_aum)) : "Sem meta de AUM definida", valor: m.meta_aum > 0 ? pct(posicao.aum_total, m.meta_aum) : null }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Progresso, { rotulo: "Clientes ativos", texto: m.meta_clientes > 0 ? "".concat((0, import_ui.inteiro)(posicao.clientes_ativos), " de ").concat((0, import_ui.inteiro)(m.meta_clientes)) : "Sem meta de clientes definida", valor: m.meta_clientes > 0 ? pct(posicao.clientes_ativos, m.meta_clientes) : null })
+      ] }),
+      ehGerenteGeral ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Botao, { variante: "secundario", className: "mt-4", onClick: aoConfigurar, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SlidersHorizontal, { "aria-hidden": true, className: "size-4" }),
+        " Configurar metas e alertas"
+      ] }) : null
+    ] });
+  }
+  function Progresso({ rotulo, texto, valor }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-baseline justify-between gap-3 text-body-md", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-foreground", children: rotulo }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "tnum text-body-tabular text-secondary-foreground", children: valor === null ? "\u2014" : "".concat(valor, "% da meta") })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-1 h-2 rounded-pill bg-secondary", role: "progressbar", "aria-label": "Atingimento da meta de ".concat(rotulo), "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.min(valor != null ? valor : 0, 100), "aria-valuetext": valor === null ? "sem meta" : "".concat(valor, "%"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: valor !== null && valor >= 100 ? "h-2 rounded-pill bg-chart-3" : "h-2 rounded-pill bg-chart-1", style: { width: "".concat(Math.min(valor != null ? valor : 0, 100), "%") } }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-1 text-caption text-secondary-foreground", children: texto })
+    ] });
+  }
+  function ConfigurarMetas({ api, posicao, aoFechar, aoConcluir }) {
+    const m = posicao.metas;
+    const [aum, setAum] = React.useState(String(m.meta_aum));
+    const [clientes, setClientes] = React.useState(String(m.meta_clientes));
+    const [minima, setMinima] = React.useState(String(Math.round(m.utilizacao_minima * 100)));
+    const [maxima, setMaxima] = React.useState(String(Math.round(m.utilizacao_maxima * 100)));
+    const [erro, setErro] = React.useState(null);
+    const [enviando, setEnviando] = React.useState(false);
+    async function salvar(e) {
+      e.preventDefault();
+      setErro(null);
+      setEnviando(true);
+      try {
+        await api.definirMetas(posicao.id_posicao, { meta_aum: Number(aum), meta_clientes: Number(clientes), utilizacao_minima: Number(minima) / 100, utilizacao_maxima: Number(maxima) / 100 });
+        aoConcluir("Metas e alertas de ".concat(posicao.nome_posicao, " atualizados."));
+      } catch (x) {
+        setErro(x instanceof Error ? x.message : "Falha ao salvar as metas.");
+      } finally {
+        setEnviando(false);
+      }
+    }
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Dialogo, { open: true, onOpenChange: (a) => {
+      if (!a) aoFechar();
+    }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.DialogoConteudo, { titulo: "Metas e alertas", descricao: "".concat(posicao.nome_posicao, ". Use 0 para ficar sem meta. A altera\xE7\xE3o fica registrada em auditoria."), children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", { onSubmit: salvar, className: "flex flex-col gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "meta-aum", children: "Meta de AUM (R$)" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "meta-aum", type: "number", min: 0, step: "any", inputMode: "decimal", className: "tnum", value: aum, onChange: (e) => setAum(e.target.value), required: true })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "meta-clientes", children: "Meta de clientes ativos" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "meta-clientes", type: "number", min: 0, step: 1, className: "tnum", value: clientes, onChange: (e) => setClientes(e.target.value), required: true })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-2 gap-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "util-minima", children: "Alerta abaixo de (% da capacidade)" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "util-minima", type: "number", min: 0, max: 99, step: 1, className: "tnum", value: minima, onChange: (e) => setMinima(e.target.value), required: true })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "util-maxima", children: "Alerta acima de (% da capacidade)" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "util-maxima", type: "number", min: 1, max: 300, step: 1, className: "tnum", value: maxima, onChange: (e) => setMaxima(e.target.value), required: true })
+        ] })
+      ] }),
+      erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", children: erro }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex justify-end gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { type: "button", variante: "secundario", onClick: aoFechar, children: "Cancelar" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { type: "submit", disabled: enviando, children: enviando ? "Salvando\u2026" : "Salvar" })
+      ] })
+    ] }) }) });
+  }
+
+  // frontend/mfe-posicoes/src/index.tsx
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   function Posicoes({ api, sessao, versao, ehGerenteGeral, emitir }) {
     var _a, _b, _c, _d;
     const lista = (0, import_sdk.useConsulta)(() => api.posicoes(), [sessao.papel, sessao.dataSimulada, versao]);
-    const [selecionada, setSelecionada] = React.useState(null);
-    if (lista.carregando && !lista.dados) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { "aria-busy": "true", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-96" }) });
-    if (lista.erro) return lista.erro instanceof import_sdk.ApiErro && lista.erro.status === 403 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.SemPermissao, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.EstadoErro, { mensagem: lista.erro.message, aoTentar: lista.recarregar });
+    const [selecionada, setSelecionada] = React2.useState(null);
+    if (lista.carregando && !lista.dados) return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { "aria-busy": "true", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-96" }) });
+    if (lista.erro) return lista.erro instanceof import_sdk.ApiErro && lista.erro.status === 403 ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.SemPermissao, {}) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.EstadoErro, { mensagem: lista.erro.message, aoTentar: lista.recarregar });
     const itens = (_b = (_a = lista.dados) == null ? void 0 : _a.itens) != null ? _b : [];
     const colunas = [
-      { id: "posicao", header: "Posi\xE7\xE3o", accessorFn: (p) => p.nome_posicao, cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-body-md text-foreground", children: row.original.nome_posicao }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-caption text-muted-foreground", children: row.original.id_posicao })
+      { id: "posicao", header: "Posi\xE7\xE3o", accessorFn: (p) => p.nome_posicao, cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "text-body-md text-foreground", children: row.original.nome_posicao }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "text-caption text-muted-foreground", children: row.original.id_posicao })
       ] }), meta: { rotulo: "Posi\xE7\xE3o" } },
       { id: "titular", header: "Titular atual", accessorFn: (p) => {
         var _a2, _b2;
         return (_b2 = (_a2 = p.titular) == null ? void 0 : _a2.nome) != null ? _b2 : "Vaga";
       }, cell: ({ row }) => {
         var _a2, _b2;
-        return (_b2 = (_a2 = row.original.titular) == null ? void 0 : _a2.nome) != null ? _b2 : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "atencao", children: "Vaga" });
+        return (_b2 = (_a2 = row.original.titular) == null ? void 0 : _a2.nome) != null ? _b2 : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Selo, { variante: "atencao", children: "Vaga" });
       }, meta: { rotulo: "Titular atual" } },
       { accessorKey: "segmento_especialidade", header: "Especialidade", meta: { rotulo: "Especialidade" } },
-      { accessorKey: "clientes_ativos", header: "Clientes ativos", cell: ({ getValue }) => (0, import_ui.inteiro)(getValue()), meta: { numerica: true, rotulo: "Clientes ativos" } },
-      { accessorKey: "utilizacao", header: "Capacidade", cell: ({ row }) => "".concat((0, import_ui.percentual)(row.original.utilizacao), " de ").concat((0, import_ui.inteiro)(row.original.capacidade)), meta: { numerica: true, rotulo: "Capacidade" } },
-      { accessorKey: "status", header: "Status", cell: ({ getValue }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "neutro", children: getValue() }), meta: { rotulo: "Status" } }
+      { accessorKey: "clientes_ativos", header: "Clientes ativos", cell: ({ getValue }) => (0, import_ui2.inteiro)(getValue()), meta: { numerica: true, rotulo: "Clientes ativos" } },
+      { accessorKey: "utilizacao", header: "Capacidade", cell: ({ row }) => "".concat((0, import_ui2.percentual)(row.original.utilizacao), " de ").concat((0, import_ui2.inteiro)(row.original.capacidade)), meta: { numerica: true, rotulo: "Capacidade" } },
+      { id: "alerta", header: "Alerta", accessorFn: (p) => {
+        var _a2;
+        return (_a2 = p.desbalanceamento) != null ? _a2 : "";
+      }, cell: ({ row }) => row.original.desbalanceamento === "Acima" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Selo, { variante: "critico", children: [
+        "Acima de ",
+        (0, import_ui2.percentual)(row.original.metas.utilizacao_maxima, 0)
+      ] }) : row.original.desbalanceamento === "Abaixo" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Selo, { variante: "atencao", children: [
+        "Abaixo de ",
+        (0, import_ui2.percentual)(row.original.metas.utilizacao_minima, 0)
+      ] }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-secondary-foreground", children: "Dentro dos limites" }), meta: { rotulo: "Alerta" } },
+      { id: "meta_aum", header: "Meta de AUM", accessorFn: (p) => p.metas.meta_aum > 0 ? p.aum_total / p.metas.meta_aum : -1, cell: ({ row }) => row.original.metas.meta_aum > 0 ? "".concat(Math.round(row.original.aum_total / row.original.metas.meta_aum * 100), "%") : "\u2014", meta: { numerica: true, rotulo: "Meta de AUM" } },
+      { accessorKey: "status", header: "Status", cell: ({ getValue }) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Selo, { variante: "neutro", children: getValue() }), meta: { rotulo: "Status" } }
     ];
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-6", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "text-display-lg text-foreground", children: "Posi\xE7\xF5es" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-1 text-body-md text-secondary-foreground", children: "A carteira pertence \xE0 posi\xE7\xE3o (a cadeira), nunca \xE0 pessoa. Trocar o titular n\xE3o altera nenhum cliente." })
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-col gap-6", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("header", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h1", { className: "text-display-lg text-foreground", children: "Posi\xE7\xF5es" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mt-1 text-body-md text-secondary-foreground", children: "A carteira pertence \xE0 posi\xE7\xE3o (a cadeira), nunca \xE0 pessoa. Trocar o titular n\xE3o altera nenhum cliente." })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.TabelaDados, { colunas, dados: itens, rotulo: "Posi\xE7\xF5es", tamanhoPagina: 10, aoClicarLinha: (p) => setSelecionada(p.id_posicao), buscaPlaceholder: "Buscar posi\xE7\xE3o ou titular\u2026" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Gaveta, { open: selecionada !== null, onOpenChange: (a) => {
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.TabelaDados, { colunas, dados: itens, rotulo: "Posi\xE7\xF5es", tamanhoPagina: 10, aoClicarLinha: (p) => setSelecionada(p.id_posicao), buscaPlaceholder: "Buscar posi\xE7\xE3o ou titular\u2026" }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Gaveta, { open: selecionada !== null, onOpenChange: (a) => {
         if (!a) setSelecionada(null);
-      }, children: selecionada ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.GavetaConteudo, { titulo: (_d = (_c = itens.find((p) => p.id_posicao === selecionada)) == null ? void 0 : _c.nome_posicao) != null ? _d : selecionada, descricao: selecionada, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DetalhePosicao, { api, posicao: itens.find((p) => p.id_posicao === selecionada), sessao, versao, ehGerenteGeral, aoTrocar: () => emitir({ tipo: "dados-alterados", origem: "posicoes" }) }) }) : null })
+      }, children: selecionada ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.GavetaConteudo, { titulo: (_d = (_c = itens.find((p) => p.id_posicao === selecionada)) == null ? void 0 : _c.nome_posicao) != null ? _d : selecionada, descricao: selecionada, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(DetalhePosicao, { api, posicao: itens.find((p) => p.id_posicao === selecionada), sessao, versao, ehGerenteGeral, aoTrocar: () => emitir({ tipo: "dados-alterados", origem: "posicoes" }) }) }) : null })
     ] });
   }
   function DetalhePosicao({ api, posicao, sessao, versao, ehGerenteGeral, aoTrocar }) {
     var _a, _b, _c, _d;
     const hist = (0, import_sdk.useConsulta)(() => api.historico(posicao.id_posicao), [posicao.id_posicao, sessao.papel, versao]);
-    const [trocando, setTrocando] = React.useState(false);
-    const [resultado, setResultado] = React.useState(null);
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-6", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Titular vigente" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-2 text-display-md text-foreground", children: (_b = (_a = posicao.titular) == null ? void 0 : _a.nome) != null ? _b : "Posi\xE7\xE3o vaga" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.CartaoDescricao, { children: [
+    const [trocando, setTrocando] = React2.useState(false);
+    const [resultado, setResultado] = React2.useState(null);
+    const [configurando, setConfigurando] = React2.useState(false);
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex flex-col gap-6", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Cartao, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CartaoTitulo, { children: "Titular vigente" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mt-2 text-display-md text-foreground", children: (_b = (_a = posicao.titular) == null ? void 0 : _a.nome) != null ? _b : "Posi\xE7\xE3o vaga" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.CartaoDescricao, { children: [
           "A carteira com ",
-          (0, import_ui.inteiro)(posicao.clientes_ativos),
+          (0, import_ui2.inteiro)(posicao.clientes_ativos),
           " clientes ativos permanece com a posi\xE7\xE3o em qualquer troca ou vac\xE2ncia."
         ] }),
-        ehGerenteGeral ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Botao, { className: "mt-4", onClick: () => setTrocando(true), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserRoundCog, { "aria-hidden": true, className: "size-4" }),
+        ehGerenteGeral ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Botao, { className: "mt-4", onClick: () => setTrocando(true), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(UserRoundCog, { "aria-hidden": true, className: "size-4" }),
           " Trocar titular"
         ] }) : null
       ] }),
-      resultado ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { titulo: "Titular alterado", children: resultado }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Hist\xF3rico de titularidade", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { className: "text-heading-md text-foreground", children: "Hist\xF3rico de titularidade" }),
-        hist.carregando ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "mt-3 h-24" }) : hist.erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.EstadoErro, { mensagem: hist.erro.message, aoTentar: hist.recarregar }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ol", { className: "mt-3 flex flex-col gap-4 border-l border-border pl-4", children: [...(_d = (_c = hist.dados) == null ? void 0 : _c.itens) != null ? _d : []].reverse().map((o) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { className: "relative", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, className: "absolute -left-[21px] top-1.5 size-2.5 rounded-pill bg-primary" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-body-md text-foreground", children: o.nome_gerente }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "tnum text-caption text-muted-foreground", children: [
-            (0, import_ui.dataBR)(o.data_inicio),
+      resultado ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { titulo: "Atualizado", children: resultado }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(CartaoMetas, { posicao, ehGerenteGeral, aoConfigurar: () => setConfigurando(true) }),
+      configurando ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(ConfigurarMetas, { api, posicao, aoFechar: () => setConfigurando(false), aoConcluir: (msg) => {
+        setConfigurando(false);
+        setResultado(msg);
+        aoTrocar();
+      } }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("section", { "aria-label": "Hist\xF3rico de titularidade", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h2", { className: "text-heading-md text-foreground", children: "Hist\xF3rico de titularidade" }),
+        hist.carregando ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "mt-3 h-24" }) : hist.erro ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.EstadoErro, { mensagem: hist.erro.message, aoTentar: hist.recarregar }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("ol", { className: "mt-3 flex flex-col gap-4 border-l border-border pl-4", children: [...(_d = (_c = hist.dados) == null ? void 0 : _c.itens) != null ? _d : []].reverse().map((o) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("li", { className: "relative", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { "aria-hidden": true, className: "absolute -left-[21px] top-1.5 size-2.5 rounded-pill bg-primary" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "text-body-md text-foreground", children: o.nome_gerente }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("p", { className: "tnum text-caption text-muted-foreground", children: [
+            (0, import_ui2.dataBR)(o.data_inicio),
             " \u2192 ",
-            o.data_fim ? (0, import_ui.dataBR)(o.data_fim) : "atual",
+            o.data_fim ? (0, import_ui2.dataBR)(o.data_fim) : "atual",
             " \xB7 ",
             o.tipo_vinculo
           ] })
         ] }, o.id_ocupacao)) })
       ] }),
-      trocando ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TrocarTitular, { api, posicao, dataPadrao: sessao.dataSimulada, aoFechar: () => setTrocando(false), aoConcluir: (msg) => {
+      trocando ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(TrocarTitular, { api, posicao, dataPadrao: sessao.dataSimulada, aoFechar: () => setTrocando(false), aoConcluir: (msg) => {
         setTrocando(false);
         setResultado(msg);
         aoTrocar();
@@ -391,12 +516,12 @@
   function TrocarTitular({ api, posicao, dataPadrao, aoFechar, aoConcluir }) {
     var _a, _b;
     const gerentes = (0, import_sdk.useConsulta)(() => api.gerentes(), []);
-    const [gerente, setGerente] = React.useState("");
-    const [inicio, setInicio] = React.useState(dataPadrao != null ? dataPadrao : (/* @__PURE__ */ new Date()).toISOString().slice(0, 10));
-    const [tipo, setTipo] = React.useState("Titular Efetivo");
-    const [motivo, setMotivo] = React.useState("");
-    const [erro, setErro] = React.useState(null);
-    const [enviando, setEnviando] = React.useState(false);
+    const [gerente, setGerente] = React2.useState("");
+    const [inicio, setInicio] = React2.useState(dataPadrao != null ? dataPadrao : (/* @__PURE__ */ new Date()).toISOString().slice(0, 10));
+    const [tipo, setTipo] = React2.useState("Titular Efetivo");
+    const [motivo, setMotivo] = React2.useState("");
+    const [erro, setErro] = React2.useState(null);
+    const [enviando, setEnviando] = React2.useState(false);
     const disponiveis = ((_b = (_a = gerentes.dados) == null ? void 0 : _a.itens) != null ? _b : []).filter((g) => g.status === "Ativo" && g.perfil !== "Gerente Geral" && g.posicao === null);
     async function confirmar(e) {
       var _a2, _b2;
@@ -406,30 +531,30 @@
       try {
         await api.trocarTitular(posicao.id_posicao, { id_gerente: gerente, data_inicio: inicio, tipo_vinculo: tipo, motivo: motivo || void 0 });
         const nome = (_b2 = (_a2 = disponiveis.find((g) => g.id_gerente === gerente)) == null ? void 0 : _a2.nome_completo) != null ? _b2 : gerente;
-        aoConcluir("".concat(nome, " assume a posi\xE7\xE3o em ").concat((0, import_ui.dataBR)(inicio), ". Os ").concat((0, import_ui.inteiro)(posicao.clientes_ativos), " clientes ativos continuam intactos na posi\xE7\xE3o."));
+        aoConcluir("".concat(nome, " assume a posi\xE7\xE3o em ").concat((0, import_ui2.dataBR)(inicio), ". Os ").concat((0, import_ui2.inteiro)(posicao.clientes_ativos), " clientes ativos continuam intactos na posi\xE7\xE3o."));
       } catch (x) {
         setErro(x instanceof Error ? x.message : "Falha ao trocar o titular.");
       } finally {
         setEnviando(false);
       }
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Dialogo, { open: true, onOpenChange: (a) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Dialogo, { open: true, onOpenChange: (a) => {
       if (!a) aoFechar();
-    }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.DialogoConteudo, { titulo: "Trocar titular", descricao: "".concat(posicao.nome_posicao, ". Nenhum cliente ser\xE1 alterado."), children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", { onSubmit: confirmar, className: "flex flex-col gap-4", children: [
-      gerentes.carregando ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-10" }) : disponiveis.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "atencao", children: "N\xE3o h\xE1 gerente ativo dispon\xEDvel (sem posi\xE7\xE3o). Cadastre ou desligue o titular de outra posi\xE7\xE3o antes." }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "novo-titular", rotulo: "Novo titular (gerente sem posi\xE7\xE3o)", valor: gerente, aoMudar: setGerente, opcoes: disponiveis.map((g) => ({ valor: g.id_gerente, rotulo: g.nome_completo })) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "inicio-titular", children: "In\xEDcio da titularidade" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "inicio-titular", type: "date", value: inicio, onChange: (e) => setInicio(e.target.value), required: true })
+    }, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.DialogoConteudo, { titulo: "Trocar titular", descricao: "".concat(posicao.nome_posicao, ". Nenhum cliente ser\xE1 alterado."), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("form", { onSubmit: confirmar, className: "flex flex-col gap-4", children: [
+      gerentes.carregando ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-10" }) : disponiveis.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: "atencao", children: "N\xE3o h\xE1 gerente ativo dispon\xEDvel (sem posi\xE7\xE3o). Cadastre ou desligue o titular de outra posi\xE7\xE3o antes." }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CampoSelecao, { id: "novo-titular", rotulo: "Novo titular (gerente sem posi\xE7\xE3o)", valor: gerente, aoMudar: setGerente, opcoes: disponiveis.map((g) => ({ valor: g.id_gerente, rotulo: g.nome_completo })) }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "inicio-titular", children: "In\xEDcio da titularidade" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Campo, { id: "inicio-titular", type: "date", value: inicio, onChange: (e) => setInicio(e.target.value), required: true })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "tipo-vinculo", rotulo: "Tipo de v\xEDnculo", valor: tipo, aoMudar: setTipo, opcoes: ["Titular Efetivo", "Trainee", "Interino"].map((t) => ({ valor: t, rotulo: t })) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "motivo-titular", children: "Motivo (obrigat\xF3rio em troca retroativa)" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.AreaTexto, { id: "motivo-titular", value: motivo, onChange: (e) => setMotivo(e.target.value) })
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.CampoSelecao, { id: "tipo-vinculo", rotulo: "Tipo de v\xEDnculo", valor: tipo, aoMudar: setTipo, opcoes: ["Titular Efetivo", "Trainee", "Interino"].map((t) => ({ valor: t, rotulo: t })) }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "motivo-titular", children: "Motivo (obrigat\xF3rio em troca retroativa)" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.AreaTexto, { id: "motivo-titular", value: motivo, onChange: (e) => setMotivo(e.target.value) })
       ] }),
-      erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", children: erro }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex justify-end gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { type: "button", variante: "secundario", onClick: aoFechar, children: "Cancelar" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { type: "submit", disabled: !gerente || enviando, children: enviando ? "Trocando\u2026" : "Confirmar troca" })
+      erro ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Aviso, { variante: "critico", children: erro }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex justify-end gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { type: "button", variante: "secundario", onClick: aoFechar, children: "Cancelar" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { type: "submit", disabled: !gerente || enviando, children: enviando ? "Trocando\u2026" : "Confirmar troca" })
       ] })
     ] }) }) });
   }

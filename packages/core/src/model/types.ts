@@ -92,6 +92,17 @@ export interface Movimentacao {
   tipo: TipoMovimentacao;
 }
 
+/** Metas e limites de alerta de uma posição (configuráveis pelo Gerente Geral). 0 em uma meta = sem meta. */
+export interface MetaPosicao {
+  id_posicao: string;
+  meta_aum: number;
+  meta_clientes: number;
+  utilizacao_minima: number;
+  utilizacao_maxima: number;
+  atualizado_por: string;
+  atualizado_em: string;
+}
+
 export interface LogAuditoria { id_log: string; instante: string; ator: string; acao: string; entidade: string; id_entidade: string; detalhe: string }
 export interface LogEvento { id_evento: string; instante: string; tipo: string; payload: string }
 
@@ -108,6 +119,7 @@ export interface Db {
   fct_produtos_cliente: ProdutoCliente[];
   fct_interacoes_crm: InteracaoCrm[];
   fct_movimentacao_carteira: Movimentacao[];
+  cfg_metas_posicao: MetaPosicao[];
   log_auditoria: LogAuditoria[];
   log_eventos: LogEvento[];
 }

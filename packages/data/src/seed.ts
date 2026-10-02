@@ -219,6 +219,17 @@ export function criarSeed(opcoes: OpcoesSeed): Db {
     });
   }
 
+  // Metas do ciclo (demo): fatores sobre o AUM atual dão um painel com posições acima e abaixo da meta; limites de alerta padrão.
+  const FATOR_META_AUM = [0.92, 1.1, 1.3, 1.5, 1.05];
+  const META_CLIENTES = [80, 80, 75, 60, 78];
+  db.cfg_metas_posicao = db.dim_posicoes.map((p, i) => {
+    const aum = db.dim_clientes.filter((c) => c.id_posicao_carteira === p.id_posicao && c.status === 'Ativo').reduce((a, c) => a + Math.round(c.volume_aum * 100), 0) / 100;
+    return {
+      id_posicao: p.id_posicao, meta_aum: Math.round((aum * (FATOR_META_AUM[i] ?? 1)) / 1e6) * 1e6, meta_clientes: META_CLIENTES[i] ?? 0,
+      utilizacao_minima: 0.5, utilizacao_maxima: 1, atualizado_por: 'GER-100', atualizado_em: '2026-09-30T12:00:00.000Z',
+    };
+  });
+
   db.log_auditoria.push({
     id_log: 'LOG-000001', instante: new Date('2026-10-01T12:00:00Z').toISOString(), ator: 'SISTEMA', acao: 'SEED_CARREGADO', entidade: 'seed', id_entidade: opcoes.cenario,
     detalhe: JSON.stringify({ semente: opcoes.semente ?? 20261001, cenario: opcoes.cenario }),

@@ -108,7 +108,7 @@
 Limite: não detecta mudança de **formato do corpo** de resposta entre API e SDK (tipos do SDK são manuais). Evolução: gerar os tipos do SDK a partir do OpenAPI.
 
 ## 5. Ambiente Google
-Ver [system-design/02-ambiente-google-sheets-apps-script.md](system-design/02-ambiente-google-sheets-apps-script.md): planilha com 14 abas e 370 clientes sintéticos; homologação 52/52 checks OK; Apps Script publicado via clasp (sem web app); API validada contra o Sheets vivo.
+Ver [system-design/02-ambiente-google-sheets-apps-script.md](system-design/02-ambiente-google-sheets-apps-script.md): planilha com 14 abas e 370 clientes sintéticos; homologação 52/54 checks OK; Apps Script publicado via clasp (sem web app); API validada contra o Sheets vivo.
 
 ## 6. Métricas e relatórios
 *(preenchido ao final da execução — ver 00-consolidacao §Status e o README)*

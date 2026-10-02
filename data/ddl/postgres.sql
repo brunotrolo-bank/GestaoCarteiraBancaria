@@ -154,6 +154,19 @@ CREATE TABLE fct_movimentacao_carteira (
   FOREIGN KEY (id_cliente) REFERENCES dim_clientes(id_cliente)
 );
 
+COMMENT ON TABLE cfg_metas_posicao IS 'Metas e limites de alerta por posição, configuráveis pelo Gerente Geral. Sem linha = sem meta e limites padrão (50% a 100%).';
+CREATE TABLE cfg_metas_posicao (
+  id_posicao varchar(30) NOT NULL,
+  meta_aum numeric(18,2) NOT NULL,
+  meta_clientes integer NOT NULL,
+  utilizacao_minima numeric(5,4) NOT NULL,
+  utilizacao_maxima numeric(5,4) NOT NULL,
+  atualizado_por varchar(30) NOT NULL,
+  atualizado_em timestamptz NOT NULL,
+  PRIMARY KEY (id_posicao),
+  FOREIGN KEY (id_posicao) REFERENCES dim_posicoes(id_posicao)
+);
+
 COMMENT ON TABLE log_auditoria IS 'Auditoria append-only (sem expurgo na POC). Nunca contém CPF/CNPJ em claro.';
 CREATE TABLE log_auditoria (
   id_log varchar(30) NOT NULL,

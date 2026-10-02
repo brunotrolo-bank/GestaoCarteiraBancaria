@@ -67,7 +67,7 @@ const ok = (nome: string, cond: boolean, detalhe = ''): void => { console.log(`$
 const atores = chamar('GET', '/api/v1/simulacao/atores');
 ok('atores (rota pública)', atores.status === 200 && atores.corpo.atores.length === 6);
 const leituras1 = leiturasPlanilha;
-ok('1ª chamada leu as 14 abas', leituras1 === 14, String(leituras1));
+ok(`1ª chamada leu as ${NOMES_TABELAS.length} abas`, leituras1 === NOMES_TABELAS.length, String(leituras1));
 const torre = chamar('GET', '/api/v1/insights/agencia', { papel: 'GG' });
 ok('Torre de Controle: 348 clientes ativos, 2 posições em alerta', torre.corpo.total_clientes === 348 && torre.corpo.posicoes_em_alerta === 2, JSON.stringify([torre.corpo.total_clientes, torre.corpo.posicoes_em_alerta]));
 chamar('GET', '/api/v1/posicoes', { papel: 'GG' });
@@ -91,6 +91,17 @@ const negado = chamar('GET', '/api/v1/clientes/CLI-0300/visao-360', { papel: 'PO
 ok('acesso negado → 403 problem+json', negado.status === 403 && negado.corpo.codigo_dominio === 'ACESSO_NEGADO');
 const reset = chamar('POST', '/api/v1/simulacao/reset');
 ok('reiniciar cenário', reset.status === 200 && chamar('GET', '/api/v1/posicoes/POS-AG01-003/historico', { papel: 'GG' }).corpo.itens.length === 1);
+// Planilha criada antes da aba de metas: continua funcionando (limites padrão) e a aba nasce na primeira gravação
+abas.delete('cfg_metas_posicao');
+cacheMem.clear();
+const semAba = chamar('GET', '/api/v1/posicoes', { papel: 'GG' });
+ok('planilha antiga (sem a aba de metas) segue funcionando com limites padrão', semAba.status === 200 && semAba.corpo.itens[0].metas.utilizacao_maxima === 1 && !abas.has('cfg_metas_posicao'));
+const gravaMetas = chamar('POST', '/api/v1/posicoes/POS-AG01-002/metas', { papel: 'GG', corpo: { meta_aum: 5e8, meta_clientes: 70, utilizacao_minima: 0.4, utilizacao_maxima: 0.95 } });
+ok('gravar metas cria a aba que faltava e persiste', gravaMetas.status === 200 && abas.has('cfg_metas_posicao') && abas.get('cfg_metas_posicao')!.length === 2, `status ${gravaMetas.status}`);
+ok('metas gravadas valem na leitura seguinte', chamar('GET', '/api/v1/posicoes/POS-AG01-002/metas', { papel: 'GG' }).corpo.utilizacao_maxima === 0.95);
+const metaNegada = chamar('POST', '/api/v1/posicoes/POS-AG01-002/metas', { papel: 'POS-AG01-002', corpo: { meta_aum: 1, meta_clientes: 1, utilizacao_minima: 0.4, utilizacao_maxima: 0.95 } });
+ok('gerente de contas não configura metas (403)', metaNegada.status === 403);
+chamar('POST', '/api/v1/simulacao/reset');
 // O retorno de google.script.run só aceita JSON puro: sem undefined, Date, NaN/Infinity ou funções (senão o front nunca recebe a resposta)
 const invalido = (v: unknown, caminho = '$'): string | null => {
   if (v === undefined) return `${caminho} é undefined`;
@@ -99,7 +110,7 @@ const invalido = (v: unknown, caminho = '$'): string | null => {
   if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) { const r = invalido(x, `${caminho}.${k}`); if (r) return r; }
   return null;
 };
-for (const [caminho, papel] of [['/api/v1/simulacao/atores', 'GG'], ['/api/v1/insights/agencia', 'GG'], ['/api/v1/insights/analise', 'GG'], ['/api/v1/insights/analise', 'POS-AG01-002'], ['/api/v1/insights/desbalanceamento', 'GG'], ['/api/v1/posicoes', 'GG'], ['/api/v1/delegacoes', 'GG'], ['/api/v1/carteira/minha', 'POS-AG01-001'], ['/api/v1/carteira/clientes', 'GG']] as const) {
+for (const [caminho, papel] of [['/api/v1/simulacao/atores', 'GG'], ['/api/v1/insights/agencia', 'GG'], ['/api/v1/insights/analise', 'GG'], ['/api/v1/insights/comparativo', 'GG'], ['/api/v1/insights/comparativo', 'POS-AG01-002'], ['/api/v1/insights/analise', 'POS-AG01-002'], ['/api/v1/insights/desbalanceamento', 'GG'], ['/api/v1/posicoes', 'GG'], ['/api/v1/delegacoes', 'GG'], ['/api/v1/carteira/minha', 'POS-AG01-001'], ['/api/v1/carteira/clientes', 'GG']] as const) {
   const r = chamar('GET', caminho, { papel, consulta: caminho.endsWith('clientes') ? { limit: '50' } : {} });
   const problema = invalido(r);
   ok(`retorno serializável ${caminho}`, r.status === 200 && problema === null, `${r.status} ${problema ?? ''} ${(JSON.stringify(r).length / 1024).toFixed(0)} KB`);

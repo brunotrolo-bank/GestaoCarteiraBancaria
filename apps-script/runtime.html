@@ -16117,6 +16117,7 @@
     Gaveta: () => Gaveta,
     GavetaConteudo: () => GavetaConteudo,
     Kpi: () => Kpi,
+    LinhasComparadas: () => LinhasComparadas,
     LinhasTempo: () => LinhasTempo,
     ListaInsights: () => ListaInsights,
     ListaRanking: () => ListaRanking,
@@ -56843,17 +56844,42 @@
       return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("li", { children: it.aoClicar ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("button", { type: "button", onClick: it.aoClicar, className: "flex min-h-12 w-full items-center gap-3 rounded-md px-1 py-2 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", children: conteudo }) : /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "flex min-h-12 items-center gap-3 px-1 py-2", children: conteudo }) }, it.id);
     }) });
   }
-  function BarrasCapacidade({ dados }) {
+  function BarrasCapacidade({ dados, limites = { minima: 50, maxima: 100 } }) {
     const limite = Math.max(130, ...dados.map((g) => g.pct + 15));
     return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "h-72 w-full", role: "img", "aria-label": "Utiliza\xE7\xE3o de capacidade: ".concat(dados.map((g) => "".concat(g.nome, " ").concat(g.pct, "%")).join("; ")), children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(ResponsiveContainer, { width: "100%", height: "100%", children: /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(BarChart, { data: dados, layout: "vertical", margin: { left: 8, right: 56, top: 28, bottom: 8 }, children: [
       /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(CartesianGrid, { horizontal: false, stroke: "var(--color-hairline)" }),
       /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(XAxis, { type: "number", domain: [0, limite], ticks: [0, 25, 50, 75, 100, 125, 150].filter((t) => t <= limite), tickFormatter: (v) => "".concat(v, "%"), className: "tnum", tick: eixo }),
       /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(YAxis, { type: "category", dataKey: "nome", width: 64, tick: { ...eixo, fill: "var(--color-ink-secondary)" } }),
       /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Tooltip2, { formatter: (v) => ["".concat(v, "%"), "Utiliza\xE7\xE3o"], cursor: { fill: "var(--color-canvas-soft)" }, contentStyle: dica }),
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(ReferenceLine, { x: 100, stroke: "var(--color-ink-mute)", strokeDasharray: "4 4", label: { value: "100%", position: "top", fill: "var(--color-ink-mute)", fontSize: 11 } }),
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(ReferenceLine, { x: 50, stroke: "var(--color-ink-mute)", strokeDasharray: "4 4", label: { value: "50%", position: "top", fill: "var(--color-ink-mute)", fontSize: 11 } }),
+      limites ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(ReferenceLine, { x: limites.maxima, stroke: "var(--color-ink-mute)", strokeDasharray: "4 4", label: { value: "".concat(limites.maxima, "%"), position: "top", fill: "var(--color-ink-mute)", fontSize: 11 } }) : null,
+      limites ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(ReferenceLine, { x: limites.minima, stroke: "var(--color-ink-mute)", strokeDasharray: "4 4", label: { value: "".concat(limites.minima, "%"), position: "top", fill: "var(--color-ink-mute)", fontSize: 11 } }) : null,
       /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Bar, { dataKey: "pct", radius: [0, 4, 4, 0], barSize: 22, isAnimationActive: false, label: { position: "right", fill: "var(--color-ink)", fontSize: 12, formatter: (v) => "".concat(v, "%") }, children: dados.map((g) => /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Cell, { fill: g.alerta ? "var(--color-chart-4)" : "var(--color-chart-1)" }, g.nome)) })
     ] }) }) });
+  }
+  function LinhasComparadas({ dados, rotulo, altura = "h-52" }) {
+    const total = (k) => dados.reduce((a, d) => a + d[k], 0);
+    return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: cn("w-full", altura), role: "img", "aria-label": "".concat(rotulo, ": ").concat(total("atual"), " no per\xEDodo atual contra ").concat(total("anterior"), " no anterior"), children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(ResponsiveContainer, { width: "100%", height: "100%", children: /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(LineChart, { data: dados, margin: { top: 12, right: 12, left: 0, bottom: 0 }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(CartesianGrid, { vertical: false, stroke: "var(--color-hairline)" }),
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(XAxis, { dataKey: "rotulo", tick: eixo, tickLine: false, interval: "preserveStartEnd" }),
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(YAxis, { tick: eixo, tickLine: false, axisLine: false, width: 32, allowDecimals: false, className: "tnum" }),
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Tooltip2, { contentStyle: dica, labelFormatter: (r2) => "Faixa iniciada em ".concat(r2) }),
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Line, { type: "monotone", dataKey: "anterior", name: "Per\xEDodo anterior", stroke: "var(--color-chart-5)", strokeWidth: 2, strokeDasharray: "5 4", dot: false, isAnimationActive: false }),
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Line, { type: "monotone", dataKey: "atual", name: "Per\xEDodo atual", stroke: "var(--color-chart-1)", strokeWidth: 3, dot: false, activeDot: { r: 4 }, isAnimationActive: false })
+      ] }) }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("ul", { className: "mt-2 flex flex-wrap gap-x-5 gap-y-1", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("li", { className: "inline-flex items-center gap-2 text-caption text-secondary-foreground", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { "aria-hidden": true, className: "h-0.5 w-5 rounded-pill bg-chart-1" }),
+          "Per\xEDodo atual: ",
+          /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "tnum text-foreground", children: total("atual") })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("li", { className: "inline-flex items-center gap-2 text-caption text-secondary-foreground", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { "aria-hidden": true, className: "w-5 border-t-2 border-dashed border-chart-5" }),
+          "Per\xEDodo anterior: ",
+          /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "tnum text-foreground", children: total("anterior") })
+        ] })
+      ] })
+    ] });
   }
 
   // frontend/sdk/src/index.ts
@@ -56987,6 +57013,8 @@
       desfazerLote: (id) => chamar("POST", "/carteira/redistribuicoes/".concat(id, ":desfazer")),
       agencia: () => chamar("GET", "/insights/agencia"),
       analise: () => chamar("GET", "/insights/analise"),
+      comparativo: (inicio, fim) => chamar("GET", "/insights/comparativo" + q({ inicio, fim })),
+      definirMetas: (id, corpo) => chamar("POST", "/posicoes/".concat(id, "/metas"), { corpo }),
       desbalanceamento: () => chamar("GET", "/insights/desbalanceamento")
     };
   }

@@ -10,8 +10,8 @@ async function reiniciar(page: Page): Promise<void> {
 }
 
 async function abrir(page: Page, rota: string, papel = 'GG', data: string | null = null): Promise<void> {
-  await page.addInitScript(([p, d]) => window.localStorage.setItem('carteira.sessao', JSON.stringify({ papel: p, dataSimulada: d })), [papel, data] as const);
-  await page.goto(`/#/${rota}`);
+  await page.addInitScript((p) => window.localStorage.setItem('carteira.sessao', JSON.stringify({ papel: p })), papel);
+  await page.goto(`/${data ? `?data=${data}` : ''}#/${rota}`);
 }
 
 test.beforeEach(async ({ page }) => { await reiniciar(page); });
@@ -194,3 +194,67 @@ for (const [rota, papel, data] of [['capa', 'GG', null], ['cockpit', 'GG', null]
     expect(graves.map((v) => `${v.id}: ${v.help} (${v.nodes.length}) ${v.nodes[0]?.target?.join(' ')}`)).toEqual([]);
   });
 }
+
+test('data da demonstração abre sempre em hoje; ?data= fixa outra data e "Voltar para hoje" restaura', async ({ page }) => {
+  const hoje = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
+  await page.addInitScript(() => window.localStorage.setItem('carteira.sessao', JSON.stringify({ papel: 'GG', dataSimulada: '2020-01-01' })));
+  await page.goto('/#/cockpit');
+  await expect(page.getByLabel('Data da demonstração')).toHaveValue(hoje); // uma data antiga guardada não é restaurada
+  await expect(page.getByRole('button', { name: 'Voltar para hoje' })).toHaveCount(0);
+  await page.goto('/?data=2026-11-05#/cockpit');
+  await expect(page.getByLabel('Data da demonstração')).toHaveValue('2026-11-05');
+  await page.getByRole('button', { name: 'Voltar para hoje' }).click();
+  await expect(page.getByLabel('Data da demonstração')).toHaveValue(hoje);
+});
+
+test('metas e alertas: o GG muda o limite de uma posição e o alerta aparece na lista e na Torre', async ({ page }) => {
+  await abrir(page, 'posicoes');
+  await page.getByRole('row', { name: /Mesa Alta Renda A/ }).click();
+  await page.getByRole('button', { name: 'Configurar metas e alertas' }).click();
+  const dialogo = page.getByRole('dialog', { name: 'Metas e alertas' });
+  await dialogo.getByLabel('Alerta acima de (% da capacidade)').fill('90');
+  await dialogo.getByLabel('Meta de clientes ativos').fill('100');
+  await dialogo.getByRole('button', { name: 'Salvar' }).click();
+  await expect(page.getByText('Metas e alertas de Mesa Alta Renda A atualizados.')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('row', { name: /Mesa Alta Renda A/ })).toContainText('Acima de 90%');
+  await page.goto('/#/cockpit');
+  await expect(page.getByRole('region', { name: 'Metas por posição' })).toContainText('Alerta fora de 50%–90%');
+  await expect(page.getByLabel('Posições em alerta')).toContainText('3');
+});
+
+test('metas e alertas: gerente de contas vê as metas mas não pode configurá-las', async ({ page }) => {
+  await abrir(page, 'posicoes', 'POS-AG01-002');
+  await page.getByRole('row').nth(1).click();
+  await expect(page.getByText('Metas e alertas').first()).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Configurar metas e alertas' })).toHaveCount(0);
+});
+
+test('metas e alertas: valores inconsistentes são recusados pela API com mensagem clara', async ({ page }) => {
+  await abrir(page, 'posicoes');
+  await page.getByRole('row', { name: /Mesa Geral/ }).click();
+  await page.getByRole('button', { name: 'Configurar metas e alertas' }).click();
+  const dialogo = page.getByRole('dialog', { name: 'Metas e alertas' });
+  await dialogo.getByLabel('Alerta abaixo de (% da capacidade)').fill('95');
+  await dialogo.getByLabel('Alerta acima de (% da capacidade)').fill('90');
+  await dialogo.getByRole('button', { name: 'Salvar' }).click();
+  await expect(dialogo.getByRole('alert')).toContainText('maior que a mínima');
+});
+
+test('comparativo entre períodos: atalhos, período personalizado e validação', async ({ page }) => {
+  await abrir(page, 'cockpit', 'GG', '2026-10-01');
+  const painel = page.getByRole('region', { name: 'Comparativo entre períodos' });
+  await expect(painel).toContainText('(30 dias cada)');
+  await expect(painel).toContainText('Interações de relacionamento');
+  await expect(painel).toContainText('AUM não tem histórico');
+  await page.getByRole('combobox', { name: 'Período' }).click();
+  await page.getByRole('option', { name: 'Últimos 90 dias' }).click();
+  await expect(painel).toContainText('(90 dias cada)');
+  await page.getByRole('combobox', { name: 'Período' }).click();
+  await page.getByRole('option', { name: 'Personalizado' }).click();
+  await painel.getByLabel('De').fill('2026-09-20');
+  await painel.getByLabel('Até').fill('2026-09-26');
+  await expect(painel).toContainText('(7 dias cada)');
+  await painel.getByLabel('De').fill('2026-09-30');
+  await expect(painel.getByRole('alert')).toContainText('período válido');
+});

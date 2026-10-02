@@ -87,15 +87,16 @@ var DOM_insights = (() => {
     carteiraDoAtor: () => carteiraDoAtor,
     classificarUtilizacao: () => classificarUtilizacao,
     clientesVisiveis: () => clientesVisiveis,
+    comparativo: () => comparativo,
     desbalanceamentos: () => desbalanceamentos,
     exigirAtorAtivo: () => exigirAtorAtivo,
     resumoAgencia: () => resumoAgencia,
     resumoPosicao: () => resumoPosicao,
     visao360: () => visao360
   });
-  var import_dates2 = __toESM(require_dates(), 1);
-  var import_errors = __toESM(require_errors(), 1);
-  var import_acesso2 = __toESM(require_acesso(), 1);
+  var import_dates3 = __toESM(require_dates(), 1);
+  var import_errors2 = __toESM(require_errors(), 1);
+  var import_acesso3 = __toESM(require_acesso(), 1);
   var import_delegacao2 = __toESM(require_delegacao(), 1);
   var import_posicoes = __toESM(require_posicoes(), 1);
   var import_clientes = __toESM(require_clientes(), 1);
@@ -200,6 +201,20 @@ var DOM_insights = (() => {
     const visiveis = new Set((0, import_acesso.resolverAcessos)(db, ctx.idGerente, ctx.instante).posicoes.map((p) => p.id_posicao));
     const delegacoesVigentes = db.fct_delegacoes.filter((d) => visiveis.has(d.id_posicao_origem) && (0, import_delegacao.situacao)(d, ctx.instante) === "Em Vigor");
     const delegacoes = { vigentes: delegacoesVigentes.length, expirando_7d: delegacoesVigentes.filter((d) => dias(hoje, d.data_fim) <= 7).length };
+    const metas_posicoes = resumo.posicoes.map((p) => ({
+      id_posicao: p.id_posicao,
+      nome_posicao: p.nome_posicao,
+      aum: p.aum_total,
+      meta_aum: p.metas.meta_aum,
+      pct_meta_aum: p.metas.meta_aum > 0 ? pct(p.aum_total, p.metas.meta_aum) : null,
+      clientes: p.clientes_ativos,
+      meta_clientes: p.metas.meta_clientes,
+      pct_meta_clientes: p.metas.meta_clientes > 0 ? pct(p.clientes_ativos, p.metas.meta_clientes) : null,
+      utilizacao: p.utilizacao,
+      utilizacao_minima: p.metas.utilizacao_minima,
+      utilizacao_maxima: p.metas.utilizacao_maxima,
+      desbalanceamento: p.desbalanceamento
+    }));
     const top_clientes = porAum.slice(0, 5).map((c) => ({ ...resumir(c), pct_do_total: pct(c.volume_aum, totalAum) }));
     const insights = [];
     for (const p of resumo.posicoes.filter((x) => x.status === "Ativa" && x.desbalanceamento === "Acima")) {
@@ -220,6 +235,17 @@ var DOM_insights = (() => {
     if (delegacoes.expirando_7d > 0) {
       insights.push({ severidade: "atencao", titulo: `${delegacoes.expirando_7d} cobertura(s) terminam em at\xE9 7 dias`, detalhe: "Confirme o retorno do titular ou renove a delega\xE7\xE3o antes do fim da vig\xEAncia.", destino: "delegacoes" });
     }
+    const ativasComMeta = metas_posicoes.filter((m) => {
+      var _a2;
+      return ((_a2 = resumo.posicoes.find((p) => p.id_posicao === m.id_posicao)) == null ? void 0 : _a2.status) === "Ativa";
+    });
+    const lista = (itens, valor) => itens.map((m) => `${m.nome_posicao} (${valor(m).toString().replace(".", ",")}%)`).join(", ");
+    const abaixoAum = ativasComMeta.filter((m) => m.pct_meta_aum !== null && m.pct_meta_aum < 70);
+    if (abaixoAum.length > 0) insights.push({ severidade: "atencao", titulo: `${abaixoAum.length} posi\xE7\xE3o(\xF5es) abaixo de 70% da meta de AUM`, detalhe: lista(abaixoAum, (m) => m.pct_meta_aum), destino: "posicoes" });
+    const abaixoClientes = ativasComMeta.filter((m) => m.pct_meta_clientes !== null && m.pct_meta_clientes < 70);
+    if (abaixoClientes.length > 0) insights.push({ severidade: "atencao", titulo: `${abaixoClientes.length} posi\xE7\xE3o(\xF5es) abaixo de 70% da meta de clientes`, detalhe: lista(abaixoClientes, (m) => m.pct_meta_clientes), destino: "posicoes" });
+    const atingiram = ativasComMeta.filter((m) => m.pct_meta_aum !== null && m.pct_meta_aum >= 100);
+    if (atingiram.length > 0) insights.push({ severidade: "positivo", titulo: `${atingiram.length} posi\xE7\xE3o(\xF5es) atingiram a meta de AUM`, detalhe: lista(atingiram, (m) => m.pct_meta_aum), destino: "posicoes" });
     if (ativos.length > 0 && concentracao.top10_pct >= 40) {
       insights.push({ severidade: "atencao", titulo: "Carteira concentrada", detalhe: `Os 10 maiores clientes somam ${concentracao.top10_pct.toString().replace(".", ",")}% do AUM; o maior sozinho responde por ${concentracao.maior_cliente_pct.toString().replace(".", ",")}%.`, destino: "carteira" });
     }
@@ -255,7 +281,101 @@ var DOM_insights = (() => {
       oportunidades,
       top_clientes,
       delegacoes,
+      metas_posicoes,
       insights
+    };
+  }
+
+  // packages/core/src/insights/comparativo.ts
+  var import_dates2 = __toESM(require_dates(), 1);
+  var import_errors = __toESM(require_errors(), 1);
+  var import_acesso2 = __toESM(require_acesso(), 1);
+  var LIMITE_DIAS = 366;
+  var FAIXA_ESTAVEL = 2;
+  var dias2 = (de, ate) => Math.round((Date.parse(`${ate}T00:00:00Z`) - Date.parse(`${de}T00:00:00Z`)) / 864e5);
+  var arred = (v, casas = 1) => Math.round(v * 10 ** casas) / 10 ** casas;
+  var dentro = (d, j) => d >= j.inicio && d <= j.fim;
+  function comparativo(db, ctx, pedido) {
+    const hoje = (0, import_dates2.diaDe)(ctx.instante);
+    (0, import_errors.exigir)((0, import_dates2.isISODate)(pedido.inicio) && (0, import_dates2.isISODate)(pedido.fim), "DADOS_INVALIDOS", "Informe in\xEDcio e fim no formato AAAA-MM-DD.");
+    (0, import_errors.exigir)(pedido.inicio <= pedido.fim, "DADOS_INVALIDOS", "O in\xEDcio do per\xEDodo n\xE3o pode ser depois do fim.");
+    (0, import_errors.exigir)(pedido.fim <= hoje, "DADOS_INVALIDOS", "O fim do per\xEDodo n\xE3o pode ser posterior \xE0 data de refer\xEAncia.");
+    const total = dias2(pedido.inicio, pedido.fim) + 1;
+    (0, import_errors.exigir)(total <= LIMITE_DIAS, "DADOS_INVALIDOS", `O per\xEDodo pode ter no m\xE1ximo ${LIMITE_DIAS} dias.`);
+    const atual = { inicio: pedido.inicio, fim: pedido.fim };
+    const anterior = { inicio: (0, import_dates2.addDays)(pedido.inicio, -total), fim: (0, import_dates2.addDays)(pedido.inicio, -1) };
+    const visiveis = clientesVisiveis(db, ctx);
+    const ids = new Set(visiveis.map((c) => c.id_cliente));
+    const ativos = visiveis.filter((c) => c.status === "Ativo");
+    const interacoes = db.fct_interacoes_crm.filter((i) => ids.has(i.id_cliente));
+    const contratos = db.fct_produtos_cliente.filter((p) => ids.has(p.id_cliente) && p.status === "Ativo");
+    const movimentos = db.fct_movimentacao_carteira.filter((m) => ids.has(m.id_cliente));
+    const baseAte = (j) => ativos.filter((c) => c.data_carteirizacao <= j.fim);
+    const por = (f) => ({ atual: f(atual), anterior: f(anterior) });
+    const idsAtivos = new Set(ativos.map((c) => c.id_cliente));
+    const contatados = (j) => new Set(interacoes.filter((i) => dentro(i.data, j) && idsAtivos.has(i.id_cliente)).map((i) => i.id_cliente)).size;
+    const centavos2 = (xs) => xs.reduce((a, b) => a + Math.round(b * 100), 0) / 100;
+    const metrica = (chave, rotulo, unidade, par, sentido = "maior") => {
+      const variacao = arred(par.atual - par.anterior, 2);
+      const variacao_pct = par.anterior === 0 ? null : arred((par.atual - par.anterior) / par.anterior * 100);
+      const delta = variacao_pct != null ? variacao_pct : par.atual === par.anterior ? 0 : par.atual > par.anterior ? 100 : -100;
+      const leitura = sentido === "neutro" ? "neutra" : Math.abs(delta) < FAIXA_ESTAVEL ? "estavel" : delta > 0 ? "melhora" : "piora";
+      return { chave, rotulo, unidade, atual: par.atual, anterior: par.anterior, variacao, variacao_pct, leitura };
+    };
+    const base = por((j) => baseAte(j).length);
+    const cobertura = { atual: arred(base.atual === 0 ? 0 : contatados(atual) / base.atual * 100), anterior: arred(base.anterior === 0 ? 0 : contatados(anterior) / base.anterior * 100) };
+    const metricas = [
+      metrica("base_clientes", "Clientes na carteira ao fim do per\xEDodo", "clientes", base),
+      metrica("base_aum", "AUM da base ao fim do per\xEDodo", "reais", por((j) => centavos2(baseAte(j).map((c) => c.volume_aum)))),
+      metrica("novos_clientes", "Novos clientes", "clientes", por((j) => ativos.filter((c) => dentro(c.data_carteirizacao, j)).length)),
+      metrica("contratacoes", "Contrata\xE7\xF5es de produtos", "quantidade", por((j) => contratos.filter((p) => dentro(p.data_contratacao, j)).length)),
+      metrica("interacoes", "Intera\xE7\xF5es de relacionamento", "quantidade", por((j) => interacoes.filter((i) => dentro(i.data, j)).length)),
+      metrica("clientes_contatados", "Clientes contatados", "clientes", por(contatados)),
+      metrica("cobertura_contato", "Cobertura de contato (contatados \xF7 base)", "percentual", cobertura),
+      metrica("movimentacoes", "Movimenta\xE7\xF5es entre posi\xE7\xF5es", "quantidade", por((j) => movimentos.filter((m) => dentro((0, import_dates2.diaDe)(new Date(m.instante)), j)).length), "neutro")
+    ];
+    const posicoes = (0, import_acesso2.resolverAcessos)(db, ctx.idGerente, ctx.instante).posicoes.map((a) => a.id_posicao).sort();
+    const por_posicao = posicoes.map((id) => {
+      var _a, _b;
+      const doGrupo = visiveis.filter((c) => c.posicao_no_instante === id);
+      const gi = new Set(doGrupo.map((c) => c.id_cliente));
+      return {
+        id_posicao: id,
+        nome_posicao: (_b = (_a = db.dim_posicoes.find((p) => p.id_posicao === id)) == null ? void 0 : _a.nome_posicao) != null ? _b : id,
+        interacoes: por((j) => interacoes.filter((i) => gi.has(i.id_cliente) && dentro(i.data, j)).length),
+        contratacoes: por((j) => contratos.filter((p) => gi.has(p.id_cliente) && dentro(p.data_contratacao, j)).length),
+        novos_clientes: por((j) => doGrupo.filter((c) => c.status === "Ativo" && dentro(c.data_carteirizacao, j)).length)
+      };
+    });
+    const largura = Math.ceil(total / 10);
+    const faixas = Math.ceil(total / largura);
+    const contar = (datas, j, i) => {
+      const de = (0, import_dates2.addDays)(j.inicio, i * largura);
+      const ate = (0, import_dates2.addDays)(de, largura - 1) > j.fim ? j.fim : (0, import_dates2.addDays)(de, largura - 1);
+      return datas.filter((d) => d >= de && d <= ate).length;
+    };
+    const dInter = interacoes.map((i) => i.data);
+    const dContr = contratos.map((p) => p.data_contratacao);
+    const serie = Array.from({ length: faixas }, (_, i) => ({
+      indice: i + 1,
+      inicio_atual: (0, import_dates2.addDays)(atual.inicio, i * largura),
+      inicio_anterior: (0, import_dates2.addDays)(anterior.inicio, i * largura),
+      interacoes: { atual: contar(dInter, atual, i), anterior: contar(dInter, anterior, i) },
+      contratacoes: { atual: contar(dContr, atual, i), anterior: contar(dContr, anterior, i) }
+    }));
+    return {
+      calculado_em: ctx.instante.toISOString(),
+      escopo: (0, import_acesso2.resolverAcessos)(db, ctx.idGerente, ctx.instante).geral ? "Agencia" : "Carteira",
+      dias: total,
+      atual,
+      anterior,
+      metricas,
+      por_posicao,
+      serie,
+      ressalvas: [
+        'O AUM n\xE3o tem hist\xF3rico na POC: "base" e "AUM da base" usam o valor atual dos clientes que j\xE1 estavam na carteira ao fim de cada per\xEDodo.',
+        "Clientes inativos ou em prospec\xE7\xE3o ficam fora da base; entradas contam pela data de carteiriza\xE7\xE3o."
+      ]
     };
   }
 
@@ -263,19 +383,19 @@ var DOM_insights = (() => {
   var LIMITE_SUPERIOR = 1;
   var LIMITE_INFERIOR = 0.5;
   var SEGMENTOS2 = ["UHNW", "Private", "Alta Renda", "Varejo"];
-  function classificarUtilizacao(utilizacao) {
-    if (utilizacao > LIMITE_SUPERIOR) return "Acima";
-    if (utilizacao < LIMITE_INFERIOR) return "Abaixo";
+  function classificarUtilizacao(utilizacao, limites = { minima: LIMITE_INFERIOR, maxima: LIMITE_SUPERIOR }) {
+    if (utilizacao > limites.maxima) return "Acima";
+    if (utilizacao < limites.minima) return "Abaixo";
     return null;
   }
   function posicaoVisivel(db, ctx) {
-    return new Map((0, import_acesso2.resolverAcessos)(db, ctx.idGerente, ctx.instante).posicoes.map((p) => [p.id_posicao, p]));
+    return new Map((0, import_acesso3.resolverAcessos)(db, ctx.idGerente, ctx.instante).posicoes.map((p) => [p.id_posicao, p]));
   }
   function clientesVisiveis(db, ctx) {
     const permitidas = posicaoVisivel(db, ctx);
     const resultado = [];
     for (const c of db.dim_clientes) {
-      const posicao = (0, import_acesso2.posicaoDoClienteEm)(db, c.id_cliente, ctx.instante);
+      const posicao = (0, import_acesso3.posicaoDoClienteEm)(db, c.id_cliente, ctx.instante);
       if (posicao && permitidas.has(posicao)) resultado.push({ ...c, posicao_no_instante: posicao });
     }
     return resultado;
@@ -285,11 +405,12 @@ var DOM_insights = (() => {
   function resumoPosicao(db, ctx, acesso) {
     const p = db.dim_posicoes.find((x) => x.id_posicao === acesso.id_posicao);
     const ativos = db.dim_clientes.filter(
-      (c) => c.status === "Ativo" && (0, import_acesso2.posicaoDoClienteEm)(db, c.id_cliente, ctx.instante) === p.id_posicao
+      (c) => c.status === "Ativo" && (0, import_acesso3.posicaoDoClienteEm)(db, c.id_cliente, ctx.instante) === p.id_posicao
     );
-    const ocupacao = (0, import_posicoes.titularVigente)(db, p.id_posicao, (0, import_dates2.diaDe)(ctx.instante));
+    const ocupacao = (0, import_posicoes.titularVigente)(db, p.id_posicao, (0, import_dates3.diaDe)(ctx.instante));
     const titular = ocupacao ? db.dim_gerentes.find((g) => g.id_gerente === ocupacao.id_gerente) : void 0;
     const utilizacao = razao(ativos.length, p.capacidade_max_contas);
+    const metas = (0, import_posicoes.metasDaPosicao)(db, p.id_posicao);
     return {
       id_posicao: p.id_posicao,
       nome_posicao: p.nome_posicao,
@@ -301,13 +422,14 @@ var DOM_insights = (() => {
       capacidade: p.capacidade_max_contas,
       utilizacao,
       aum_total: soma(ativos.map((c) => c.volume_aum)),
-      desbalanceamento: classificarUtilizacao(utilizacao),
+      desbalanceamento: classificarUtilizacao(utilizacao, { minima: metas.utilizacao_minima, maxima: metas.utilizacao_maxima }),
+      metas,
       modo: acesso.modo,
       origens: acesso.origens
     };
   }
   function resumoAgencia(db, ctx) {
-    const acessos = (0, import_acesso2.resolverAcessos)(db, ctx.idGerente, ctx.instante);
+    const acessos = (0, import_acesso3.resolverAcessos)(db, ctx.idGerente, ctx.instante);
     const posicoes = acessos.posicoes.map((a) => resumoPosicao(db, ctx, a)).sort((a, b) => a.id_posicao.localeCompare(b.id_posicao));
     const ativos = clientesVisiveis(db, ctx).filter((c) => c.status === "Ativo");
     const aumTotal = soma(ativos.map((c) => c.volume_aum));
@@ -335,7 +457,7 @@ var DOM_insights = (() => {
     return resumoAgencia(db, ctx).posicoes.filter((p) => p.desbalanceamento !== null && p.status === "Ativa");
   }
   function carteiraDoAtor(db, ctx) {
-    const acessos = (0, import_acesso2.resolverAcessos)(db, ctx.idGerente, ctx.instante);
+    const acessos = (0, import_acesso3.resolverAcessos)(db, ctx.idGerente, ctx.instante);
     const visiveis = clientesVisiveis(db, ctx);
     const secoes = [];
     for (const a of acessos.posicoes) {
@@ -358,9 +480,9 @@ var DOM_insights = (() => {
   }
   function visao360(db, ctx, idCliente) {
     const cliente = db.dim_clientes.find((c) => c.id_cliente === idCliente);
-    if (!cliente) throw new import_errors.DomainError("ACESSO_NEGADO", "Acesso negado ao cliente.");
-    const decisao = (0, import_acesso2.exigirAcessoCliente)(db, ctx.idGerente, idCliente, ctx.instante, "Leitura");
-    const posId = (0, import_acesso2.posicaoDoClienteEm)(db, idCliente, ctx.instante);
+    if (!cliente) throw new import_errors2.DomainError("ACESSO_NEGADO", "Acesso negado ao cliente.");
+    const decisao = (0, import_acesso3.exigirAcessoCliente)(db, ctx.idGerente, idCliente, ctx.instante, "Leitura");
+    const posId = (0, import_acesso3.posicaoDoClienteEm)(db, idCliente, ctx.instante);
     const nomePosicao = (id) => {
       var _a, _b;
       return (_b = (_a = db.dim_posicoes.find((p) => p.id_posicao === id)) == null ? void 0 : _a.nome_posicao) != null ? _b : id;
@@ -380,7 +502,7 @@ var DOM_insights = (() => {
   }
   function exigirAtorAtivo(db, idGerente) {
     const g = db.dim_gerentes.find((x) => x.id_gerente === idGerente);
-    (0, import_errors.exigir)(g && g.status === "Ativo", "ATOR_DESCONHECIDO", "Ator desconhecido ou inativo.");
+    (0, import_errors2.exigir)(g && g.status === "Ativo", "ATOR_DESCONHECIDO", "Ator desconhecido ou inativo.");
     return g;
   }
   return __toCommonJS(index_exports);

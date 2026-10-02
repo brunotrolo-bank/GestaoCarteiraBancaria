@@ -3,7 +3,7 @@ import { diaDe } from '../shared/dates.ts';
 import { DomainError, exigir } from '../shared/errors.ts';
 import { posicaoDoClienteEm, resolverAcessos, exigirAcessoCliente, type AcessoPosicao, type Decisao } from '../acesso/index.ts';
 import { situacao } from '../delegacao/index.ts';
-import { titularVigente } from '../posicoes/index.ts';
+import { metasDaPosicao, titularVigente, type Metas } from '../posicoes/index.ts';
 import { clienteMascarado, interacoesDoCliente, produtosDoCliente } from '../clientes/index.ts';
 
 /**
@@ -22,9 +22,10 @@ const SEGMENTOS: SegmentoCliente[] = ['UHNW', 'Private', 'Alta Renda', 'Varejo']
 
 export type Desbalanceamento = 'Acima' | 'Abaixo' | null;
 
-export function classificarUtilizacao(utilizacao: number): Desbalanceamento {
-  if (utilizacao > LIMITE_SUPERIOR) return 'Acima';
-  if (utilizacao < LIMITE_INFERIOR) return 'Abaixo';
+/** Classifica a utilização contra os limites da posição (padrão 50%–100%; configuráveis pelo Gerente Geral). */
+export function classificarUtilizacao(utilizacao: number, limites: { minima: number; maxima: number } = { minima: LIMITE_INFERIOR, maxima: LIMITE_SUPERIOR }): Desbalanceamento {
+  if (utilizacao > limites.maxima) return 'Acima';
+  if (utilizacao < limites.minima) return 'Abaixo';
   return null;
 }
 
@@ -40,6 +41,7 @@ export interface ResumoPosicao {
   utilizacao: number;
   aum_total: number;
   desbalanceamento: Desbalanceamento;
+  metas: Metas;
   modo: AcessoPosicao['modo'];
   origens: AcessoPosicao['origens'];
 }
@@ -84,6 +86,7 @@ export function resumoPosicao(db: Db, ctx: Contexto, acesso: AcessoPosicao): Res
   const ocupacao = titularVigente(db, p.id_posicao, diaDe(ctx.instante));
   const titular: Gerente | undefined = ocupacao ? db.dim_gerentes.find((g) => g.id_gerente === ocupacao.id_gerente) : undefined;
   const utilizacao = razao(ativos.length, p.capacidade_max_contas);
+  const metas = metasDaPosicao(db, p.id_posicao);
   return {
     id_posicao: p.id_posicao,
     nome_posicao: p.nome_posicao,
@@ -95,7 +98,8 @@ export function resumoPosicao(db: Db, ctx: Contexto, acesso: AcessoPosicao): Res
     capacidade: p.capacidade_max_contas,
     utilizacao,
     aum_total: soma(ativos.map((c) => c.volume_aum)),
-    desbalanceamento: classificarUtilizacao(utilizacao),
+    desbalanceamento: classificarUtilizacao(utilizacao, { minima: metas.utilizacao_minima, maxima: metas.utilizacao_maxima }),
+    metas,
     modo: acesso.modo,
     origens: acesso.origens,
   };
@@ -200,3 +204,4 @@ export function exigirAtorAtivo(db: Db, idGerente: string): Gerente {
 }
 
 export * from './analise.ts';
+export * from './comparativo.ts';

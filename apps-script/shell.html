@@ -512,13 +512,23 @@
     const h = window.location.hash.replace(/^#\/?/, "");
     return ROTAS.some((r) => r.id === h) ? h : "capa";
   };
+  function hojeISO() {
+    try {
+      return (/* @__PURE__ */ new Date()).toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+    } catch {
+      return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+    }
+  }
   function lerSessao() {
+    var _a3;
+    let papel = "GG";
     try {
       const bruto = window.localStorage.getItem("carteira.sessao");
-      if (bruto) return JSON.parse(bruto);
+      if (bruto) papel = (_a3 = JSON.parse(bruto).papel) != null ? _a3 : papel;
     } catch {
     }
-    return { papel: "GG", dataSimulada: null };
+    const data = new URLSearchParams(window.location.search).get("data");
+    return { papel, dataSimulada: data && /^\d{4}-\d{2}-\d{2}$/.test(data) ? data : null };
   }
   function App({ mfes: mfes2 }) {
     var _a3, _b, _c;
@@ -538,7 +548,7 @@
     }, []);
     React.useEffect(() => {
       try {
-        window.localStorage.setItem("carteira.sessao", JSON.stringify(sessao));
+        window.localStorage.setItem("carteira.sessao", JSON.stringify({ papel: sessao.papel }));
       } catch {
       }
     }, [sessao]);
@@ -612,7 +622,7 @@
           ),
           /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
             /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "data-simulada", children: "Data da demonstra\xE7\xE3o" }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Campo, { id: "data-simulada", type: "date", className: "tnum w-44", value: (_c = sessao.dataSimulada) != null ? _c : "", onChange: (e) => setSessao((s) => ({ ...s, dataSimulada: e.target.value || null })) })
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Campo, { id: "data-simulada", type: "date", className: "tnum w-44", value: (_c = sessao.dataSimulada) != null ? _c : hojeISO(), onChange: (e) => setSessao((s) => ({ ...s, dataSimulada: !e.target.value || e.target.value === hojeISO() ? null : e.target.value })) })
           ] }),
           sessao.dataSimulada ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { variante: "fantasma", onClick: () => setSessao((s) => ({ ...s, dataSimulada: null })), children: "Voltar para hoje" }) : null,
           /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "ml-auto flex flex-wrap gap-2", children: [

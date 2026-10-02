@@ -33,7 +33,23 @@ export interface AnaliseCarteira {
   oportunidades: (ClienteResumo & { produtos_ativos: number; produtos_faltantes: string[] })[];
   top_clientes: (ClienteResumo & { pct_do_total: number })[];
   delegacoes: { vigentes: number; expirando_7d: number };
+  metas_posicoes: MetaPosicaoAtingimento[];
   insights: Insight[];
+}
+
+export interface MetaPosicaoAtingimento {
+  id_posicao: string;
+  nome_posicao: string;
+  aum: number;
+  meta_aum: number;
+  pct_meta_aum: number | null;
+  clientes: number;
+  meta_clientes: number;
+  pct_meta_clientes: number | null;
+  utilizacao: number;
+  utilizacao_minima: number;
+  utilizacao_maxima: number;
+  desbalanceamento: 'Acima' | 'Abaixo' | null;
 }
 
 const SEGMENTOS: SegmentoCliente[] = ['UHNW', 'Private', 'Alta Renda', 'Varejo'];
@@ -146,6 +162,21 @@ export function analiseCarteira(db: Db, ctx: Contexto): AnaliseCarteira {
   const delegacoesVigentes = db.fct_delegacoes.filter((d) => visiveis.has(d.id_posicao_origem) && situacao(d, ctx.instante) === 'Em Vigor');
   const delegacoes = { vigentes: delegacoesVigentes.length, expirando_7d: delegacoesVigentes.filter((d) => dias(hoje, d.data_fim) <= 7).length };
 
+  const metas_posicoes: MetaPosicaoAtingimento[] = resumo.posicoes.map((p) => ({
+    id_posicao: p.id_posicao,
+    nome_posicao: p.nome_posicao,
+    aum: p.aum_total,
+    meta_aum: p.metas.meta_aum,
+    pct_meta_aum: p.metas.meta_aum > 0 ? pct(p.aum_total, p.metas.meta_aum) : null,
+    clientes: p.clientes_ativos,
+    meta_clientes: p.metas.meta_clientes,
+    pct_meta_clientes: p.metas.meta_clientes > 0 ? pct(p.clientes_ativos, p.metas.meta_clientes) : null,
+    utilizacao: p.utilizacao,
+    utilizacao_minima: p.metas.utilizacao_minima,
+    utilizacao_maxima: p.metas.utilizacao_maxima,
+    desbalanceamento: p.desbalanceamento,
+  }));
+
   const top_clientes = porAum.slice(0, 5).map((c) => ({ ...resumir(c), pct_do_total: pct(c.volume_aum, totalAum) }));
 
   // ---------- insights em linguagem de negócio ----------
@@ -168,6 +199,14 @@ export function analiseCarteira(db: Db, ctx: Contexto): AnaliseCarteira {
   if (delegacoes.expirando_7d > 0) {
     insights.push({ severidade: 'atencao', titulo: `${delegacoes.expirando_7d} cobertura(s) terminam em até 7 dias`, detalhe: 'Confirme o retorno do titular ou renove a delegação antes do fim da vigência.', destino: 'delegacoes' });
   }
+  const ativasComMeta = metas_posicoes.filter((m) => resumo.posicoes.find((p) => p.id_posicao === m.id_posicao)?.status === 'Ativa');
+  const lista = (itens: MetaPosicaoAtingimento[], valor: (m: MetaPosicaoAtingimento) => number | null): string => itens.map((m) => `${m.nome_posicao} (${valor(m)!.toString().replace('.', ',')}%)`).join(', ');
+  const abaixoAum = ativasComMeta.filter((m) => m.pct_meta_aum !== null && m.pct_meta_aum < 70);
+  if (abaixoAum.length > 0) insights.push({ severidade: 'atencao', titulo: `${abaixoAum.length} posição(ões) abaixo de 70% da meta de AUM`, detalhe: lista(abaixoAum, (m) => m.pct_meta_aum), destino: 'posicoes' });
+  const abaixoClientes = ativasComMeta.filter((m) => m.pct_meta_clientes !== null && m.pct_meta_clientes < 70);
+  if (abaixoClientes.length > 0) insights.push({ severidade: 'atencao', titulo: `${abaixoClientes.length} posição(ões) abaixo de 70% da meta de clientes`, detalhe: lista(abaixoClientes, (m) => m.pct_meta_clientes), destino: 'posicoes' });
+  const atingiram = ativasComMeta.filter((m) => m.pct_meta_aum !== null && m.pct_meta_aum >= 100);
+  if (atingiram.length > 0) insights.push({ severidade: 'positivo', titulo: `${atingiram.length} posição(ões) atingiram a meta de AUM`, detalhe: lista(atingiram, (m) => m.pct_meta_aum), destino: 'posicoes' });
   if (ativos.length > 0 && concentracao.top10_pct >= 40) {
     insights.push({ severidade: 'atencao', titulo: 'Carteira concentrada', detalhe: `Os 10 maiores clientes somam ${concentracao.top10_pct.toString().replace('.', ',')}% do AUM; o maior sozinho responde por ${concentracao.maior_cliente_pct.toString().replace('.', ',')}%.`, destino: 'carteira' });
   }
@@ -204,6 +243,7 @@ export function analiseCarteira(db: Db, ctx: Contexto): AnaliseCarteira {
     oportunidades,
     top_clientes,
     delegacoes,
+    metas_posicoes,
     insights,
   };
 }

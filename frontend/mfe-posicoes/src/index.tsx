@@ -6,6 +6,7 @@ import {
   TabelaDados, AreaTexto, dataBR, inteiro, percentual,
 } from '@carteira/ui';
 import { ApiErro, useConsulta, type PropsMfe, type ResumoPosicao } from '@carteira/sdk';
+import { CartaoMetas, ConfigurarMetas } from './metas';
 
 /** MFE do domínio 01 — Posições, titularidade e troca de titular (J1: turnover sem atrito). */
 export default function Posicoes({ api, sessao, versao, ehGerenteGeral, emitir }: PropsMfe) {
@@ -22,6 +23,8 @@ export default function Posicoes({ api, sessao, versao, ehGerenteGeral, emitir }
     { accessorKey: 'segmento_especialidade', header: 'Especialidade', meta: { rotulo: 'Especialidade' } },
     { accessorKey: 'clientes_ativos', header: 'Clientes ativos', cell: ({ getValue }) => inteiro(getValue<number>()), meta: { numerica: true, rotulo: 'Clientes ativos' } },
     { accessorKey: 'utilizacao', header: 'Capacidade', cell: ({ row }) => `${percentual(row.original.utilizacao)} de ${inteiro(row.original.capacidade)}`, meta: { numerica: true, rotulo: 'Capacidade' } },
+    { id: 'alerta', header: 'Alerta', accessorFn: (p) => p.desbalanceamento ?? '', cell: ({ row }) => row.original.desbalanceamento === 'Acima' ? <Selo variante="critico">Acima de {percentual(row.original.metas.utilizacao_maxima, 0)}</Selo> : row.original.desbalanceamento === 'Abaixo' ? <Selo variante="atencao">Abaixo de {percentual(row.original.metas.utilizacao_minima, 0)}</Selo> : <span className="text-secondary-foreground">Dentro dos limites</span>, meta: { rotulo: 'Alerta' } },
+    { id: 'meta_aum', header: 'Meta de AUM', accessorFn: (p) => (p.metas.meta_aum > 0 ? p.aum_total / p.metas.meta_aum : -1), cell: ({ row }) => (row.original.metas.meta_aum > 0 ? `${Math.round((row.original.aum_total / row.original.metas.meta_aum) * 100)}%` : '—'), meta: { numerica: true, rotulo: 'Meta de AUM' } },
     { accessorKey: 'status', header: 'Status', cell: ({ getValue }) => <Selo variante="neutro">{getValue<string>()}</Selo>, meta: { rotulo: 'Status' } },
   ];
 
@@ -47,6 +50,7 @@ function DetalhePosicao({ api, posicao, sessao, versao, ehGerenteGeral, aoTrocar
   const hist = useConsulta(() => api.historico(posicao.id_posicao), [posicao.id_posicao, sessao.papel, versao]);
   const [trocando, setTrocando] = React.useState(false);
   const [resultado, setResultado] = React.useState<string | null>(null);
+  const [configurando, setConfigurando] = React.useState(false);
   return (
     <div className="flex flex-col gap-6">
       <Cartao>
@@ -55,7 +59,9 @@ function DetalhePosicao({ api, posicao, sessao, versao, ehGerenteGeral, aoTrocar
         <CartaoDescricao>A carteira com {inteiro(posicao.clientes_ativos)} clientes ativos permanece com a posição em qualquer troca ou vacância.</CartaoDescricao>
         {ehGerenteGeral ? <Botao className="mt-4" onClick={() => setTrocando(true)}><UserRoundCog aria-hidden className="size-4" /> Trocar titular</Botao> : null}
       </Cartao>
-      {resultado ? <Aviso titulo="Titular alterado">{resultado}</Aviso> : null}
+      {resultado ? <Aviso titulo="Atualizado">{resultado}</Aviso> : null}
+      <CartaoMetas posicao={posicao} ehGerenteGeral={ehGerenteGeral} aoConfigurar={() => setConfigurando(true)} />
+      {configurando ? <ConfigurarMetas api={api} posicao={posicao} aoFechar={() => setConfigurando(false)} aoConcluir={(msg) => { setConfigurando(false); setResultado(msg); aoTrocar(); }} /> : null}
       <section aria-label="Histórico de titularidade">
         <h2 className="text-heading-md text-foreground">Histórico de titularidade</h2>
         {hist.carregando ? <Esqueleto className="mt-3 h-24" /> : hist.erro ? <EstadoErro mensagem={hist.erro.message} aoTentar={hist.recarregar} /> : (

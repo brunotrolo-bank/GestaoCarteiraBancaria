@@ -22,10 +22,10 @@ Dois caminhos; use o **A** (recomendado) quando quiser que o Claude faça a carg
    - grava `config/ambiente.json`, aponta `apps-script/.clasp.json` e `PLANILHA_PADRAO` (em `apps-script/Codigo.js`) para os seus IDs.
 2. **Você compartilha a planilha como Editor** com a service account impressa no final do passo anterior (`carteira-pipeline@<projeto>.iam.gserviceaccount.com`).
 3. `npm run setup:conta -- --verificar` → confere a impersonation e o acesso à planilha (aguarde ~1 min se o IAM ainda estiver propagando).
-4. `npm run sheets:carga` → **popula as 14 abas** com os dados sintéticos (idempotente; relê e valida por hash).
+4. `npm run sheets:carga` → **popula as 15 abas** com os dados sintéticos (idempotente; relê e valida por hash).
 5. `npm run gas:build && npm run apps-script:push` → gera e **atualiza o Apps Script** (23 arquivos: backend por domínio + um HTML por micro-frontend).
 6. Dentro de `apps-script/`: `npx clasp deploy --description "POC"` → abra a URL `/exec` com a conta nova e autorize os escopos na primeira vez.
-7. `npm run sheets:homologar` → confere a planilha com o código do Apps Script (52 verificações).
+7. `npm run sheets:homologar` → confere a planilha com o código do Apps Script (54 verificações).
 
 Se o Google Workspace da conta nova bloquear a criação de projetos (política da organização), use o Caminho B.
 
@@ -33,7 +33,7 @@ Se o Google Workspace da conta nova bloquear a criação de projetos (política 
 ## Caminho B — sem Google Cloud (a planilha é populada pelo próprio Apps Script)
 1. Faça os passos 1–5 acima, **exceto** `gcloud auth login`.
 2. Configure só o script: edite `apps-script/.clasp.json` (campo `scriptId`) e rode `npm run gas:build && npm run apps-script:push`.
-3. Implante o web app (`npx clasp deploy` dentro de `apps-script/`) e **abra a URL**: se o app não achar a planilha configurada, ele **cria uma nova planilha na conta e a popula sozinho** (primeira abertura: 30–60 s). Ou rode a função `instalar` no editor do Apps Script. Para usar a planilha que você criou à mão (vazia): rode `usarPlanilha('<ID>')` no editor e abra o app — na primeira chamada ele **popula as 14 abas sozinho** (ou edite `PLANILHA_PADRAO` em `Codigo.js` antes do `gas:build`).
+3. Implante o web app (`npx clasp deploy` dentro de `apps-script/`) e **abra a URL**: se o app não achar a planilha configurada, ele **cria uma nova planilha na conta e a popula sozinho** (primeira abertura: 30–60 s). Ou rode a função `instalar` no editor do Apps Script. Para usar a planilha que você criou à mão (vazia): rode `usarPlanilha('<ID>')` no editor e abra o app — na primeira chamada ele **popula as 15 abas sozinho** (ou edite `PLANILHA_PADRAO` em `Codigo.js` antes do `gas:build`).
 
 ---
 ## Conferências úteis

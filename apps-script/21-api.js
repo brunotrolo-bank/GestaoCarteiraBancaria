@@ -75,6 +75,7 @@ var CARTEIRA_API = (() => {
   var dt = () => ({ tipo: "data" });
   var opc = (opcoes) => ({ tipo: "enum", opcoes });
   var lista = () => ({ tipo: "lista" });
+  var num = () => ({ tipo: "num" });
   function esquema(campos) {
     return (corpo) => {
       const erros = [];
@@ -90,6 +91,8 @@ var CARTEIRA_API = (() => {
           else if (!campo.opcional && v.length < 1) erros.push(`${nome}: n\xE3o pode ser vazio`);
         } else if (campo.tipo === "data") {
           if (typeof v !== "string" || !(0, import_core.isISODate)(v)) erros.push(`${nome}: Data deve estar no formato AAAA-MM-DD`);
+        } else if (campo.tipo === "num") {
+          if (typeof v !== "number" || !Number.isFinite(v)) erros.push(`${nome}: esperado n\xFAmero`);
         } else if (campo.tipo === "enum") {
           if (typeof v !== "string" || !campo.opcoes.includes(v)) erros.push(`${nome}: valor inv\xE1lido (use ${campo.opcoes.join(", ")})`);
         } else if (!Array.isArray(v) || v.length < 1 || v.some((x) => typeof x !== "string")) erros.push(`${nome}: esperada lista n\xE3o vazia de textos`);
@@ -110,6 +113,7 @@ var CARTEIRA_API = (() => {
       motivo: txt(),
       escopo: opc(ESCOPOS)
     }),
+    metas: esquema({ meta_aum: num(), meta_clientes: num(), utilizacao_minima: num(), utilizacao_maxima: num() }),
     transferencia: esquema({ id_posicao_destino: txt(), motivo: txt(), justificativa: txt(true) }),
     simulacao: esquema({ ids_clientes: lista(), id_posicao_destino: txt() }),
     redistribuicao: esquema({ ids_clientes: lista(), id_posicao_destino: txt(), motivo: txt(), justificativa: txt(true) })
@@ -198,6 +202,20 @@ var CARTEIRA_API = (() => {
     },
     {
       metodo: "GET",
+      caminho: "/posicoes/{id}/metas",
+      tratador: (c) => {
+        exigirPosicaoVisivel(c, c.params.id);
+        return { id_posicao: c.params.id, ...import_core.posicoes.metasDaPosicao(c.db, c.params.id) };
+      }
+    },
+    {
+      metodo: "POST",
+      caminho: "/posicoes/{id}/metas",
+      escrita: true,
+      tratador: (c) => import_core.posicoes.definirMetas(c.db, c.clock, c.params.id, analisar(corpos.metas, c.corpo), c.ator)
+    },
+    {
+      metodo: "GET",
       caminho: "/gerentes",
       tratador: (c) => {
         exigirGG(c);
@@ -261,6 +279,17 @@ var CARTEIRA_API = (() => {
     },
     { metodo: "POST", caminho: "/carteira/redistribuicoes/{id}:desfazer", escrita: true, tratador: (c) => import_core.clientes.desfazerLote(c.db, c.clock, c.params.id, c.ator) },
     { metodo: "GET", caminho: "/insights/analise", tratador: (c) => import_core.insights.analiseCarteira(c.db, ctxInsights(c, c.consulta.get("asof"))) },
+    {
+      metodo: "GET",
+      caminho: "/insights/comparativo",
+      tratador: (c) => {
+        var _a, _b;
+        const ctx = ctxInsights(c, c.consulta.get("asof"));
+        const fim = (_a = c.consulta.get("fim")) != null ? _a : (0, import_core.diaDe)(ctx.instante);
+        const inicio = (_b = c.consulta.get("inicio")) != null ? _b : (0, import_core.addDays)(fim, -29);
+        return import_core.insights.comparativo(c.db, ctx, { inicio, fim });
+      }
+    },
     { metodo: "GET", caminho: "/insights/agencia", tratador: (c) => import_core.insights.resumoAgencia(c.db, ctxInsights(c, c.consulta.get("asof"))) },
     {
       metodo: "GET",

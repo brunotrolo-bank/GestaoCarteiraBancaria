@@ -238,7 +238,7 @@ export function ListaRanking({ itens, vazio }: { itens: ItemRanking[]; vazio: st
 }
 
 /** Utilização de capacidade por posição, com as linhas de 50% (mínimo) e 100% (limite). */
-export function BarrasCapacidade({ dados }: { dados: { nome: string; pct: number; alerta: 'Acima' | 'Abaixo' | null }[] }) {
+export function BarrasCapacidade({ dados, limites = { minima: 50, maxima: 100 } }: { dados: { nome: string; pct: number; alerta: 'Acima' | 'Abaixo' | null }[]; limites?: { minima: number; maxima: number } | null }) {
   const limite = Math.max(130, ...dados.map((g) => g.pct + 15));
   return (
     <div className="h-72 w-full" role="img" aria-label={`Utilização de capacidade: ${dados.map((g) => `${g.nome} ${g.pct}%`).join('; ')}`}>
@@ -248,13 +248,38 @@ export function BarrasCapacidade({ dados }: { dados: { nome: string; pct: number
           <XAxis type="number" domain={[0, limite]} ticks={[0, 25, 50, 75, 100, 125, 150].filter((t) => t <= limite)} tickFormatter={(v) => `${v}%`} className="tnum" tick={eixo} />
           <YAxis type="category" dataKey="nome" width={64} tick={{ ...eixo, fill: 'var(--color-ink-secondary)' }} />
           <Tooltip formatter={(v) => [`${v}%`, 'Utilização']} cursor={{ fill: 'var(--color-canvas-soft)' }} contentStyle={dica} />
-          <ReferenceLine x={100} stroke="var(--color-ink-mute)" strokeDasharray="4 4" label={{ value: '100%', position: 'top', fill: 'var(--color-ink-mute)', fontSize: 11 }} />
-          <ReferenceLine x={50} stroke="var(--color-ink-mute)" strokeDasharray="4 4" label={{ value: '50%', position: 'top', fill: 'var(--color-ink-mute)', fontSize: 11 }} />
+          {limites ? <ReferenceLine x={limites.maxima} stroke="var(--color-ink-mute)" strokeDasharray="4 4" label={{ value: `${limites.maxima}%`, position: 'top', fill: 'var(--color-ink-mute)', fontSize: 11 }} /> : null}
+          {limites ? <ReferenceLine x={limites.minima} stroke="var(--color-ink-mute)" strokeDasharray="4 4" label={{ value: `${limites.minima}%`, position: 'top', fill: 'var(--color-ink-mute)', fontSize: 11 }} /> : null}
           <Bar dataKey="pct" radius={[0, 4, 4, 0]} barSize={22} isAnimationActive={false} label={{ position: 'right', fill: 'var(--color-ink)', fontSize: 12, formatter: (v: unknown) => `${v}%` }}>
             {dados.map((g) => <Cell key={g.nome} fill={g.alerta ? 'var(--color-chart-4)' : 'var(--color-chart-1)'} />)}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
+    </div>
+  );
+}
+
+/** Duas curvas sobrepostas: o período atual (linha cheia) contra o anterior (tracejada), alinhadas por faixa de dias. */
+export function LinhasComparadas({ dados, rotulo, altura = 'h-52' }: { dados: { rotulo: string; atual: number; anterior: number }[]; rotulo: string; altura?: string }) {
+  const total = (k: 'atual' | 'anterior'): number => dados.reduce((a, d) => a + d[k], 0);
+  return (
+    <div>
+      <div className={cn('w-full', altura)} role="img" aria-label={`${rotulo}: ${total('atual')} no período atual contra ${total('anterior')} no anterior`}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={dados} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
+            <CartesianGrid vertical={false} stroke="var(--color-hairline)" />
+            <XAxis dataKey="rotulo" tick={eixo} tickLine={false} interval="preserveStartEnd" />
+            <YAxis tick={eixo} tickLine={false} axisLine={false} width={32} allowDecimals={false} className="tnum" />
+            <Tooltip contentStyle={dica} labelFormatter={(r) => `Faixa iniciada em ${r}`} />
+            <Line type="monotone" dataKey="anterior" name="Período anterior" stroke="var(--color-chart-5)" strokeWidth={2} strokeDasharray="5 4" dot={false} isAnimationActive={false} />
+            <Line type="monotone" dataKey="atual" name="Período atual" stroke="var(--color-chart-1)" strokeWidth={3} dot={false} activeDot={{ r: 4 }} isAnimationActive={false} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1">
+        <li className="inline-flex items-center gap-2 text-caption text-secondary-foreground"><span aria-hidden className="h-0.5 w-5 rounded-pill bg-chart-1" />Período atual: <span className="tnum text-foreground">{total('atual')}</span></li>
+        <li className="inline-flex items-center gap-2 text-caption text-secondary-foreground"><span aria-hidden className="w-5 border-t-2 border-dashed border-chart-5" />Período anterior: <span className="tnum text-foreground">{total('anterior')}</span></li>
+      </ul>
     </div>
   );
 }

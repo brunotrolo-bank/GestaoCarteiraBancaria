@@ -35,6 +35,15 @@ export const DICIONARIO: Record<NomeTabela, TabelaDic> = {
     capacidade_max_contas: ['integer', 'Capacidade operacional prudencial (clientes ativos).', 'Interno', PG],
     status: ['varchar(20)', 'Ativa, Congelada ou Extinta.', 'Interno', PG],
   } },
+  cfg_metas_posicao: { descricao: 'Metas e limites de alerta por posição, configuráveis pelo Gerente Geral. Sem linha = sem meta e limites padrão (50% a 100%).', dono: '01', colunas: {
+    id_posicao: ['varchar(30)', 'Posição configurada (FK dim_posicoes).', 'Identificador', PG],
+    meta_aum: ['numeric(18,2)', 'Meta de AUM total da posição em reais (0 = sem meta).', 'Interno', PG],
+    meta_clientes: ['integer', 'Meta de clientes ativos da posição (0 = sem meta).', 'Interno', PG],
+    utilizacao_minima: ['numeric(5,4)', 'Utilização mínima da capacidade (razão); abaixo dela a posição entra em alerta "Abaixo do mínimo".', 'Interno', PG],
+    utilizacao_maxima: ['numeric(5,4)', 'Utilização máxima da capacidade (razão); acima dela a posição entra em alerta "Acima do limite".', 'Interno', PG],
+    atualizado_por: ['varchar(30)', 'Gerente Geral que definiu a configuração.', 'Identificador', PG],
+    atualizado_em: ['timestamptz', 'Instante da última alteração (ISO 8601).', 'Interno', PG],
+  } },
   dim_gerentes: { descricao: 'Pessoas (colaboradores). Perfis: Gerente de Contas ou Gerente Geral (sem posição).', dono: '01', colunas: {
     id_gerente: ['varchar(30)', 'Matrícula/identificador funcional.', 'Identificador', PG],
     nome_completo: ['varchar(150)', 'Nome do colaborador.', 'Pessoal', PG],

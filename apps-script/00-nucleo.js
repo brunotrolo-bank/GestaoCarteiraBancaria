@@ -186,6 +186,10 @@ var CARTEIRA_NUCLEO = (() => {
         ["tipo", "string"]
       ]
     },
+    cfg_metas_posicao: {
+      pk: ["id_posicao"],
+      colunas: [["id_posicao", "string"], ["meta_aum", "number"], ["meta_clientes", "number"], ["utilizacao_minima", "number"], ["utilizacao_maxima", "number"], ["atualizado_por", "string"], ["atualizado_em", "string"]]
+    },
     log_auditoria: {
       pk: ["id_log"],
       colunas: [["id_log", "string"], ["instante", "string"], ["ator", "string"], ["acao", "string"], ["entidade", "string"], ["id_entidade", "string"], ["detalhe", "string"]]
