@@ -9,8 +9,11 @@ export interface Store {
   readonly nome: string;
   db: Db;
   clock: Clock;
-  persistir(): Promise<void>;
-  reiniciar(): Promise<void>;
+  /** Síncrono: grava (Apps Script/memória) ou ENFILEIRA a gravação (Sheets via API em Node). */
+  persistir(): void;
+  reiniciar(): void;
+  /** Aguarda gravações enfileiradas (só adaptadores assíncronos). */
+  drenar?(): Promise<void>;
 }
 
 export class MemoriaStore implements Store {
@@ -21,8 +24,8 @@ export class MemoriaStore implements Store {
     this.db = criarSeed({ cenario });
     this.clock = clock;
   }
-  async persistir(): Promise<void> {}
-  async reiniciar(): Promise<void> {
+  persistir(): void {}
+  reiniciar(): void {
     this.db = criarSeed({ cenario: this.cenario });
   }
 }
@@ -48,20 +51,26 @@ export class SheetsStore implements Store {
   }
 
   /** Grava só as tabelas alteradas, em série (evita escritas concorrentes sobre a mesma planilha). */
-  persistir(): Promise<void> {
+  persistir(): void {
     this.fila = this.fila.then(async () => {
       const alteradas = NOMES_TABELAS.filter((t) => assinatura(this.db, t) !== this.assinaturas.get(t));
       if (alteradas.length === 0) return;
       await gravarDb(this.spreadsheetId, this.db, alteradas);
       for (const t of alteradas) this.assinaturas.set(t, assinatura(this.db, t));
     });
+  }
+
+  drenar(): Promise<void> {
     return this.fila;
   }
 
   /** Reset da demonstração: regrava o cenário demo na planilha. */
-  async reiniciar(): Promise<void> {
+  reiniciar(): void {
     this.db = criarSeed({ cenario: this.cenarioReset });
-    await gravarDb(this.spreadsheetId, this.db);
-    this.marcar();
+    const snapshot = this.db;
+    this.fila = this.fila.then(async () => {
+      await gravarDb(this.spreadsheetId, snapshot);
+      this.marcar();
+    });
   }
 }

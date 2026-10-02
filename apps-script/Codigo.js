@@ -127,11 +127,25 @@ function instanteDe_(dataISO) {
   return dataISO ? new Date(dataISO + 'T12:00:00-03:00') : new Date();
 }
 
-/** Somente para desenvolvimento no editor (sem implantação): ?papel=POS-AG01-002&data=2026-11-05 */
-function doGet(e) {
-  var p = (e && e.parameter) || {};
-  var clientes = getClientesPorPapel(p.papel || 'GG', p.data);
-  return ContentService.createTextOutput(JSON.stringify({ papel: p.papel || 'GG', data: p.data || null, total: clientes.length, clientes: clientes.slice(0, 50) })).setMimeType(ContentService.MimeType.JSON);
+/**
+ * Aplicativo web: serve o front (React, arquivo único index.html gerado por `npm run gas:build`).
+ * O front chama `apiChamar` por google.script.run; o backend (backend.js) é o mesmo núcleo de domínio da API REST.
+ */
+function doGet() {
+  return HtmlService.createHtmlOutputFromFile('index')
+    .setTitle('Gestão de Carteira Bancária — POC')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+/** Única porta de entrada do backend para o front (google.script.run só enxerga funções de nível superior). */
+function apiChamar(req) {
+  return CARTEIRA.apiChamar(req);
+}
+
+/** Consulta JSON auxiliar para depuração no editor (?papel=POS-AG01-002&data=2026-11-05) — use doGetJson_ no console. */
+function consultaJson(papel, data) {
+  return getClientesPorPapel(papel || 'GG', data).slice(0, 50);
 }
 
 /** Teste de vida do projeto (sem acesso a serviços). */

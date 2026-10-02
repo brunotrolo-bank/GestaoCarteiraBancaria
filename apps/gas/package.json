@@ -1,0 +1,1 @@
+{ "name": "@carteira/gas", "version": "0.1.0", "private": true, "type": "module", "dependencies": { "@carteira/core": "*", "@carteira/data": "*", "@carteira/api": "*" } }

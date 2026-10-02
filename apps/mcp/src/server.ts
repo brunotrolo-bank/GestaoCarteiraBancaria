@@ -19,6 +19,7 @@ export function criarServidorMcp(opcoes: OpcoesMcp): McpServer {
       },
       async (args: Record<string, unknown>) => {
         const r = await f.executar(args);
+        await opcoes.store.drenar?.();
         const corpo = r.erro ? { erro: r.erro } : { aviso: r.aviso, dados: r.dados };
         return { isError: Boolean(r.erro), content: [{ type: 'text' as const, text: JSON.stringify(corpo) }] };
       },

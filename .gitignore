@@ -26,3 +26,4 @@ playwright-report/
 reports/
 .stryker-tmp/
 .stryker-*.json
+frontend/shell/dist-gas/

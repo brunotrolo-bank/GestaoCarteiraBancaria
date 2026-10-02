@@ -12,14 +12,16 @@ const store = await SheetsStore.conectar(id, new FixedClock(meioDia('2026-10-01'
 const hashInicial = hashDb(store.db);
 
 posicoes.trocarTitular(store.db, store.clock, { id_posicao: 'POS-AG01-003', id_gerente: 'GER-106', data_inicio: '2026-10-05', tipo_vinculo: 'Titular Efetivo' }, { idGerente: 'GER-100' });
-await store.persistir();
+store.persistir();
+await store.drenar();
 
 const relido = await lerDb(id);
 const ocupacoes = relido.bridge_ocupacao_posicao.filter((o) => o.id_posicao === 'POS-AG01-003');
 const persistiu = ocupacoes.length === 2 && ocupacoes.some((o) => o.id_gerente === 'GER-106' && o.data_fim === null) && relido.log_auditoria.some((l) => l.acao === 'TITULAR_ALTERADO');
 console.log(`Persistência após trocarTitular: ${persistiu ? 'OK' : 'FALHOU'} (${ocupacoes.length} ocupações da POS-003; auditoria ${relido.log_auditoria.length}; eventos ${relido.log_eventos.length})`);
 
-await store.reiniciar();
+store.reiniciar();
+await store.drenar();
 const restaurado = await lerDb(id);
 const igual = hashDb(restaurado) === hashInicial;
 console.log(`Reset do cenário demo: ${igual ? 'OK (hash idêntico ao inicial)' : 'FALHOU'}`);

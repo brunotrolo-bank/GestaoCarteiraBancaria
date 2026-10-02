@@ -140,7 +140,7 @@ export function criarFerramentas(opcoes: OpcoesMcp): FerramentaMcp[] {
           data_fim: String(a.data_fim), motivo: String(a.motivo), escopo: a.escopo as 'Total',
         }, { idGerente: c.idGerente });
         auditar(store.db, c.clock, c.idGerente, 'MCP_DELEGAR_GESTAO', 'fct_delegacoes', nova.id_delegacao, { origem_da_chamada: 'mcp', confirmacao_humana: true });
-        await store.persistir();
+        store.persistir();
         return { aviso: 'Delegação criada como Submetida; aguarda aprovação do Gerente Geral.', dados: { ...nova, situacao: delegacao.situacao(nova, c.instante) } };
       }),
     },

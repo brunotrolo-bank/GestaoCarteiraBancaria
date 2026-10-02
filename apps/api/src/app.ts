@@ -12,6 +12,29 @@ import type { Store } from './store.ts';
  * - Erros em application/problem+json com `codigo_dominio` estável (RFC 9457).
  */
 
+/** Parâmetros de query (substitui URLSearchParams, que o Apps Script não tem). */
+export interface Consulta {
+  get(nome: string): string | null;
+}
+
+/** Requisição já decomposta e SÍNCRONA — o mesmo manipulador roda em Node (fetch) e no Apps Script (google.script.run). */
+export interface RequisicaoApi {
+  metodo: string;
+  /** Caminho sem query, com ou sem o prefixo /api/v1. */
+  caminho: string;
+  consulta: Record<string, string>;
+  /** Cabeçalhos em minúsculas. */
+  headers: Record<string, string>;
+  corpo?: unknown;
+  corpoInvalido?: boolean;
+}
+
+export interface RespostaApi {
+  status: number;
+  headers: Record<string, string>;
+  corpo: unknown;
+}
+
 export interface OpcoesApp {
   store: Store;
   simulacaoPapel: boolean;
@@ -26,11 +49,11 @@ interface Contexto {
   instante: Date;
   corpo: unknown;
   params: Record<string, string>;
-  consulta: URLSearchParams;
+  consulta: Consulta;
   idempotencia: string | undefined;
 }
 
-type Tratador = (c: Contexto) => unknown | Promise<unknown>;
+type Tratador = (c: Contexto) => unknown;
 interface Rota {
   metodo: 'GET' | 'POST';
   caminho: string;
@@ -110,7 +133,7 @@ const ROTAS: Rota[] = [
       };
     },
   },
-  { metodo: 'POST', caminho: '/simulacao/reset', publica: true, escrita: false, tratador: async (c) => { await c.store.reiniciar(); return { reiniciado: true }; } },
+  { metodo: 'POST', caminho: '/simulacao/reset', publica: true, escrita: false, tratador: (c) => { c.store.reiniciar(); return { reiniciado: true }; } },
 
   { metodo: 'GET', caminho: '/posicoes', tratador: (c) => ({ itens: insights.resumoAgencia(c.db, ctxInsights(c)).posicoes }) },
   {
@@ -219,49 +242,54 @@ function compilar(caminho: string): { re: RegExp; nomes: string[] } {
 }
 const COMPILADAS = ROTAS.map((r) => ({ rota: r, ...compilar(r.caminho) }));
 
-function problema(status: number, codigo: string, detalhe: string, correlacao: string, extra: Record<string, unknown> = {}): Response {
-  return new Response(
-    JSON.stringify({ type: `https://carteira.example/erros/${codigo}`, title: codigo, status, detail: detalhe, codigo_dominio: codigo, correlation_id: correlacao, ...extra }),
-    { status, headers: { 'Content-Type': 'application/problem+json', 'X-Correlation-Id': correlacao } },
-  );
+function problema(status: number, codigo: string, detalhe: string, correlacao: string, extra: Record<string, unknown> = {}): RespostaApi {
+  return {
+    status,
+    headers: { 'Content-Type': 'application/problem+json' },
+    corpo: { type: `https://carteira.example/erros/${codigo}`, title: codigo, status, detail: detalhe, codigo_dominio: codigo, correlation_id: correlacao, ...extra },
+  };
 }
 
-export function criarApp(opcoes: OpcoesApp): { fetch: (req: Request) => Promise<Response> } {
+/**
+ * Manipulador SÍNCRONO da API (roda igual em Node e no Apps Script). A persistência assíncrona do Sheets em Node é
+ * enfileirada por `store.persistir()` e aguardada por quem chama (`store.drenar`).
+ */
+export function criarManipulador(opcoes: OpcoesApp): (req: RequisicaoApi) => RespostaApi {
   const log = opcoes.log ?? (() => undefined);
   let contador = 0;
 
-  async function tratar(req: Request): Promise<Response> {
-    const url = new URL(req.url);
-    const correlacao = req.headers.get('x-correlation-id') ?? `c-${Date.now().toString(36)}-${(contador += 1)}`;
+  return function tratar(req: RequisicaoApi): RespostaApi {
+    const correlacao = req.headers['x-correlation-id'] ?? `c-${Date.now().toString(36)}-${(contador += 1)}`;
     const cabecalhos: Record<string, string> = { 'X-Correlation-Id': correlacao };
     if (opcoes.simulacaoPapel) cabecalhos['X-Modo-Simulacao'] = 'true';
     const cors: Record<string, string> = opcoes.simulacaoPapel
-      ? { 'Access-Control-Allow-Origin': req.headers.get('origin') ?? '*', 'Access-Control-Allow-Headers': 'content-type,x-papel-simulado,x-data-simulada,idempotency-key,x-correlation-id', 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS', 'Access-Control-Expose-Headers': 'x-modo-simulacao,x-correlation-id' }
+      ? { 'Access-Control-Allow-Origin': req.headers.origin ?? '*', 'Access-Control-Allow-Headers': 'content-type,x-papel-simulado,x-data-simulada,idempotency-key,x-correlation-id', 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS', 'Access-Control-Expose-Headers': 'x-modo-simulacao,x-correlation-id' }
       : {};
-    if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...cabecalhos, ...cors } });
+    const finalizar = (resp: RespostaApi): RespostaApi => ({ ...resp, headers: { ...resp.headers, ...cabecalhos, ...cors } });
+    if (req.metodo === 'OPTIONS') return finalizar({ status: 204, headers: {}, corpo: null });
 
-    const caminho = url.pathname.replace(/^\/api\/v1/, '') || '/';
-    const alvo = COMPILADAS.find((r) => r.rota.metodo === req.method && r.re.test(caminho));
-    const finalizar = (resp: Response): Response => { for (const [k, v] of Object.entries({ ...cabecalhos, ...cors })) resp.headers.set(k, v); return resp; };
+    const caminho = req.caminho.replace(/^\/api\/v1/, '') || '/';
+    const alvo = COMPILADAS.find((r) => r.rota.metodo === req.metodo && r.re.test(caminho));
     if (!alvo) {
       const existe = COMPILADAS.some((r) => r.re.test(caminho));
-      return finalizar(problema(existe ? 405 : 404, existe ? 'METODO_NAO_PERMITIDO' : 'ROTA_INEXISTENTE', `${req.method} ${url.pathname}`, correlacao));
+      return finalizar(problema(existe ? 405 : 404, existe ? 'METODO_NAO_PERMITIDO' : 'ROTA_INEXISTENTE', `${req.metodo} ${req.caminho}`, correlacao));
     }
     const m = alvo.re.exec(caminho)!;
     const params = Object.fromEntries(alvo.nomes.map((n, i) => [n, decodeURIComponent(m[i + 1]!)]));
+    const consulta: Consulta = { get: (nome) => (Object.prototype.hasOwnProperty.call(req.consulta, nome) ? req.consulta[nome]! : null) };
     const inicio = Date.now();
     let status = 200;
     let ator = '-';
     try {
       const store = opcoes.store;
-      const dataSimulada = opcoes.simulacaoPapel ? req.headers.get('x-data-simulada') : null;
+      const dataSimulada = opcoes.simulacaoPapel ? (req.headers['x-data-simulada'] ?? null) : null;
       if (dataSimulada && !isISODate(dataSimulada)) throw new DomainError('DADOS_INVALIDOS', 'X-Data-Simulada deve estar no formato AAAA-MM-DD');
       const clock: Clock = dataSimulada ? new FixedClock(meioDia(dataSimulada)) : store.clock;
       const instante = clock.agora();
 
       let idGerente = '';
       if (!alvo.rota.publica) {
-        const papel = opcoes.simulacaoPapel ? req.headers.get('x-papel-simulado') : null;
+        const papel = opcoes.simulacaoPapel ? (req.headers['x-papel-simulado'] ?? null) : null;
         if (!opcoes.simulacaoPapel) return finalizar(problema(401, 'NAO_AUTENTICADO', 'Autenticação real ainda não implementada; habilite SIMULACAO_PAPEL somente na POC.', correlacao));
         if (!papel) return finalizar(problema(401, 'NAO_AUTENTICADO', 'Informe o cabeçalho X-Papel-Simulado (GG ou id da posição).', correlacao));
         const g = papel === 'GG'
@@ -272,27 +300,21 @@ export function criarApp(opcoes: OpcoesApp): { fetch: (req: Request) => Promise<
         ator = g;
       }
 
-      let corpo: unknown;
-      if (req.method === 'POST') {
-        const texto = await req.text();
-        if (texto) {
-          try { corpo = JSON.parse(texto); } catch { throw new DomainError('DADOS_INVALIDOS', 'Corpo não é JSON válido.'); }
-        }
-      }
-      const resultado = await alvo.rota.tratador({
-        store, db: store.db, ator: { idGerente }, clock, instante, corpo, params, consulta: url.searchParams,
-        idempotencia: req.headers.get('idempotency-key') ?? undefined,
+      if (req.corpoInvalido) throw new DomainError('DADOS_INVALIDOS', 'Corpo não é JSON válido.');
+      const resultado = alvo.rota.tratador({
+        store, db: store.db, ator: { idGerente }, clock, instante, corpo: req.corpo, params, consulta,
+        idempotencia: req.headers['idempotency-key'],
       });
-      if (alvo.rota.escrita) await store.persistir();
+      if (alvo.rota.escrita) store.persistir();
       status = alvo.rota.status ?? 200;
-      return finalizar(new Response(JSON.stringify(resultado), { status, headers: { 'Content-Type': 'application/json' } }));
+      return finalizar({ status, headers: { 'Content-Type': 'application/json' }, corpo: resultado });
     } catch (erro) {
       if (erro instanceof DomainError) {
         status = STATUS[erro.codigo] ?? 422;
         // FR-ACE-012: decisões de acesso NEGADAS são auditadas (sem corpo nem PII; só rota, código e ator).
         if ((erro.codigo === 'ACESSO_NEGADO' || erro.codigo === 'NAO_AUTORIZADO') && ator !== '-') {
-          auditar(opcoes.store.db, opcoes.store.clock, ator, 'ACESSO_NEGADO', 'api', alvo.rota.caminho, { codigo: erro.codigo, metodo: req.method });
-          await opcoes.store.persistir();
+          auditar(opcoes.store.db, opcoes.store.clock, ator, 'ACESSO_NEGADO', 'api', alvo.rota.caminho, { codigo: erro.codigo, metodo: req.metodo });
+          opcoes.store.persistir();
         }
         return finalizar(problema(status, erro.codigo, erro.message, correlacao, erro.detalhe ? { detalhe: erro.detalhe } : {}));
       }
@@ -302,9 +324,32 @@ export function criarApp(opcoes: OpcoesApp): { fetch: (req: Request) => Promise<
       return finalizar(problema(500, 'ERRO_INTERNO', 'Erro inesperado.', correlacao));
     } finally {
       // Log estruturado sem PII: nunca registra corpo, query de busca nem documentos.
-      log({ nivel: 'info', correlation_id: correlacao, metodo: req.method, rota: alvo.rota.caminho, status, ator, ms: Date.now() - inicio });
+      log({ nivel: 'info', correlation_id: correlacao, metodo: req.metodo, rota: alvo.rota.caminho, status, ator, ms: Date.now() - inicio });
     }
-  }
+  };
+}
 
-  return { fetch: tratar };
+/** Adaptador fetch (Node/testes): decompõe a Request, chama o manipulador síncrono e aguarda a persistência enfileirada. */
+export function criarApp(opcoes: OpcoesApp): { fetch: (req: Request) => Promise<Response> } {
+  const manipular = criarManipulador(opcoes);
+  return {
+    async fetch(req: Request): Promise<Response> {
+      const url = new URL(req.url);
+      const headers: Record<string, string> = {};
+      req.headers.forEach((v, k) => { headers[k.toLowerCase()] = v; });
+      const consulta: Record<string, string> = {};
+      url.searchParams.forEach((v, k) => { if (!(k in consulta)) consulta[k] = v; });
+      let corpo: unknown;
+      let corpoInvalido = false;
+      if (req.method === 'POST') {
+        const texto = await req.text();
+        if (texto) {
+          try { corpo = JSON.parse(texto); } catch { corpoInvalido = true; }
+        }
+      }
+      const r = manipular({ metodo: req.method, caminho: url.pathname, consulta, headers, corpo, corpoInvalido });
+      await opcoes.store.drenar?.();
+      return new Response(r.status === 204 ? null : JSON.stringify(r.corpo), { status: r.status, headers: r.headers });
+    },
+  };
 }

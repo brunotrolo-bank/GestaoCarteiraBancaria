@@ -5,6 +5,7 @@ import type {
 } from './tipos';
 
 export * from './tipos';
+export { ambienteGas, criarFetchGas } from './gas';
 
 /** Erro de API (problem+json, RFC 9457) com `codigo_dominio` estável. */
 export class ApiErro extends Error {

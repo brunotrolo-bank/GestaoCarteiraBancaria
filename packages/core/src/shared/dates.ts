@@ -18,7 +18,14 @@ export function addDays(data: ISODate, dias: number): ISODate {
 
 /** Dia (no fuso de negócio) em que cai um instante. */
 export function diaDe(instante: Date): ISODate {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: FUSO, year: 'numeric', month: '2-digit', day: '2-digit' }).format(instante);
+  try {
+    const dia = new Intl.DateTimeFormat('en-CA', { timeZone: FUSO, year: 'numeric', month: '2-digit', day: '2-digit' }).format(instante);
+    if (RE_DATA.test(dia)) return dia;
+  } catch {
+    /* ambiente sem Intl com fuso (ex.: Apps Script): usa o deslocamento fixo abaixo */
+  }
+  // Brasil sem horário de verão desde 2019: UTC−3 fixo.
+  return new Date(instante.getTime() - 3 * 3600 * 1000).toISOString().slice(0, 10);
 }
 
 /** `inicio <= dia <= fim` (fim nulo = aberto). */

@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { Gauge, Landmark, LayoutDashboard, Presentation, RotateCcw, Users, CalendarClock } from 'lucide-react';
 import { Aviso, Botao, Campo, CampoSelecao, Esqueleto, ProvedorDica, Rotulo, cn, dataBR } from '@carteira/ui';
-import { EVENTO_MFE, criarApi, useConsulta, type EventoMfe, type PropsMfe, type Sessao, type ComandoMfe } from '@carteira/sdk';
+import { EVENTO_MFE, ambienteGas, criarApi, criarFetchGas, useConsulta, type EventoMfe, type PropsMfe, type Sessao, type ComandoMfe } from '@carteira/sdk';
+import Cockpit from '@carteira/mfe-cockpit';
+import Posicoes from '@carteira/mfe-posicoes';
+import Carteira from '@carteira/mfe-carteira';
+import Delegacao from '@carteira/mfe-delegacao';
 import { Capa } from './paginas/Capa';
 
 /**
@@ -10,10 +14,6 @@ import { Capa } from './paginas/Capa';
  * (contrato PropsMfe) e eventos tipados — nunca por estado global ad hoc (FR-UX-004).
  * Composição em build-time via workspaces; Module Federation em runtime fica como evolução (ADR no 03-decisoes).
  */
-const Cockpit = React.lazy(() => import('@carteira/mfe-cockpit'));
-const Posicoes = React.lazy(() => import('@carteira/mfe-posicoes'));
-const Carteira = React.lazy(() => import('@carteira/mfe-carteira'));
-const Delegacao = React.lazy(() => import('@carteira/mfe-delegacao'));
 
 type Rota = 'capa' | 'cockpit' | 'posicoes' | 'carteira' | 'delegacoes';
 const ROTAS: { id: Rota; rotulo: string; icone: React.ReactNode }[] = [
@@ -45,7 +45,7 @@ export function App() {
   const sessaoRef = React.useRef(sessao);
   sessaoRef.current = sessao;
 
-  const api = React.useMemo(() => criarApi({ baseUrl: '/api/v1', obterSessao: () => sessaoRef.current }), []);
+  const api = React.useMemo(() => criarApi({ baseUrl: '/api/v1', obterSessao: () => sessaoRef.current, fetchImpl: ambienteGas() ? criarFetchGas() : undefined }), []);
   const atores = useConsulta(() => api.atores(), [sessao.dataSimulada, versao]);
 
   React.useEffect(() => {

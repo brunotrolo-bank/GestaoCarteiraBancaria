@@ -60,6 +60,13 @@ npm run apps-script:push   # publica o código do Apps Script (clasp)
 ```
 No editor do Apps Script, `homologar()` produz o mesmo resultado. O web app **não é implantado** (publicação manual do usuário).
 
+## Aplicativo no Google Apps Script (testar sem rodar nada local)
+O app completo (front React + backend com o mesmo núcleo de domínio) roda **dentro do Apps Script**, lendo e gravando a planilha:
+- `apps-script/index.html` — front em arquivo único (gerado); `apps-script/backend.js` — núcleo + API (gerado); `Codigo.js` — `doGet` e `apiChamar`.
+- Gerar e publicar: `npm run gas:build && npm run apps-script:push` e, para uma versão estável, `clasp deploy` (dentro de `apps-script/`).
+- Teste do backend em sandbox sem Node/Intl/URL: `npx tsx scripts/gas-smoke.ts`.
+- Acesso: somente o dono da conta (`access: MYSELF`); a primeira abertura pede autorização dos escopos da planilha.
+
 ## Limitações conhecidas (honestas)
 - **Persistência em Sheets não é transacional**: a atomicidade de lotes é garantida na aplicação (validação antes de gravar + rollback em memória). O DDL Postgres alvo ([`data/ddl/postgres.sql`](data/ddl/postgres.sql)) é validado sintaticamente, mas **não foi executado** em um Postgres (sem Docker/servidor no ambiente) e o adaptador Postgres **ainda não foi implementado**.
 - **Execução remota do Apps Script** (`clasp run`) falhou neste projeto; a homologação roda o mesmo código em sandbox Node sobre os dados vivos e também pode ser executada no editor.

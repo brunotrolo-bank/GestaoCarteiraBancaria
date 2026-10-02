@@ -1,13 +1,13 @@
 import { execFileSync } from 'node:child_process';
-import { criarDbVazio, NOMES_TABELAS, TABELAS, type Db, type NomeTabela } from '@carteira/core';
+import { criarDbVazio, NOMES_TABELAS, type Db, type NomeTabela } from '@carteira/core';
+import { matrizParaTabela, tabelaParaMatriz } from './matriz.ts';
+
+export { matrizParaTabela, tabelaParaMatriz } from './matriz.ts';
 
 /** Adaptador Google Sheets (D-02): lê/escreve as tabelas do modelo em abas de mesmo nome, via Sheets API. */
 
 export const SERVICE_ACCOUNT = 'carteira-pipeline@gestao-carteira-poc.iam.gserviceaccount.com';
 const ESCOPOS = 'https://www.googleapis.com/auth/spreadsheets,https://www.googleapis.com/auth/drive';
-
-/** Colunas que representam "ausência de valor" (célula vazia ⇔ null). */
-const NULAVEIS = new Set(['data_fim', 'fim_em', 'decidida_por', 'decidida_em', 'revogada_em']);
 
 let cacheToken: { valor: string; expira: number } | null = null;
 
@@ -33,38 +33,6 @@ async function chamar<T>(spreadsheetId: string, caminho: string, init: RequestIn
   return (await resposta.json()) as T;
 }
 
-function celula(valor: unknown): string | number {
-  if (valor === null || valor === undefined) return '';
-  return typeof valor === 'number' ? valor : String(valor);
-}
-
-export function tabelaParaMatriz(db: Db, tabela: NomeTabela): (string | number)[][] {
-  const colunas = TABELAS[tabela].colunas;
-  const cabecalho = colunas.map(([nome]) => nome);
-  const linhas = (db[tabela] as unknown as Record<string, unknown>[]).map((linha) => colunas.map(([nome]) => celula(linha[nome])));
-  return [cabecalho, ...linhas];
-}
-
-export function matrizParaTabela(tabela: NomeTabela, matriz: unknown[][]): Record<string, unknown>[] {
-  const colunas = TABELAS[tabela].colunas;
-  const [cabecalho = [], ...linhas] = matriz;
-  const indice = new Map(cabecalho.map((nome, i) => [String(nome), i]));
-  for (const [nome] of colunas) {
-    if (!indice.has(nome)) throw new Error(`Aba ${tabela}: coluna ausente "${nome}"`);
-  }
-  return linhas
-    .filter((l) => l.some((c) => c !== '' && c !== undefined))
-    .map((l) => {
-      const obj: Record<string, unknown> = {};
-      for (const [nome, tipo] of colunas) {
-        const bruto = l[indice.get(nome)!];
-        const vazio = bruto === undefined || bruto === '';
-        if (tipo === 'number') obj[nome] = vazio ? 0 : Number(bruto);
-        else obj[nome] = vazio ? (NULAVEIS.has(nome) ? null : '') : String(bruto);
-      }
-      return obj;
-    });
-}
 
 export async function lerDb(spreadsheetId: string): Promise<Db> {
   const faixas = NOMES_TABELAS.map((t) => `ranges=${encodeURIComponent(`${t}!A:Z`)}`).join('&');

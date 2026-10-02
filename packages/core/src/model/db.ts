@@ -66,13 +66,18 @@ export function criarDbVazio(): Db {
   return Object.fromEntries(NOMES_TABELAS.map((t) => [t, []])) as unknown as Db;
 }
 
+/** Clone profundo por JSON (o banco só contém strings, números e null) — funciona também no Apps Script, que não tem `structuredClone`. */
+function clonarJson<T>(valor: T): T {
+  return JSON.parse(JSON.stringify(valor)) as T;
+}
+
 export function clonarDb(db: Db): Db {
-  return structuredClone(db);
+  return clonarJson(db);
 }
 
 /** Executa `fn` de forma atômica: se lançar, todas as tabelas voltam ao estado anterior (nenhuma escrita parcial). */
 export function emTransacao<T>(db: Db, fn: () => T): T {
-  const snapshot = structuredClone(db);
+  const snapshot = clonarJson(db);
   try {
     return fn();
   } catch (erro) {
