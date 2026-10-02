@@ -148,15 +148,27 @@ async function front(): Promise<void> {
     <base target="_top" />
     <title>Gestão de Carteira Bancária — POC</title>
     <?!= incluir('estilos') ?>
+    <script>
+      // diagnóstico de carga: registra erros de cada script (arquivo em carga = window.__etapa) e o shell os mostra se algo faltar
+      window.CARTEIRA_ERROS = [];
+      window.__etapa = 'inicio';
+      window.addEventListener('error', function (e) { window.CARTEIRA_ERROS.push(window.__etapa + ': ' + e.message + ' (linha ' + e.lineno + ':' + e.colno + ')'); });
+    </script>
   </head>
   <body>
     <div id="raiz"><p style="font-family:sans-serif;padding:24px;color:#273951">Carregando…</p></div>
     <!-- Runtime compartilhado, depois cada micro-frontend (um arquivo cada) e, por fim, o shell que os compõe -->
+    <script>window.__etapa = 'runtime';</script>
     <?!= incluir('runtime') ?>
+    <script>window.__etapa = 'mfe-posicoes';</script>
     <?!= incluir('mfe-posicoes') ?>
+    <script>window.__etapa = 'mfe-delegacao';</script>
     <?!= incluir('mfe-delegacao') ?>
+    <script>window.__etapa = 'mfe-carteira';</script>
     <?!= incluir('mfe-carteira') ?>
+    <script>window.__etapa = 'mfe-cockpit';</script>
     <?!= incluir('mfe-cockpit') ?>
+    <script>window.__etapa = 'shell';</script>
     <?!= incluir('shell') ?>
   </body>
 </html>

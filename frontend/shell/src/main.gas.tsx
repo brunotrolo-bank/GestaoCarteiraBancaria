@@ -6,7 +6,8 @@ const mfes = (window as unknown as { CARTEIRA_MFES?: Partial<Mfes> }).CARTEIRA_M
 const faltando = (['cockpit', 'posicoes', 'carteira', 'delegacao'] as const).filter((k) => !mfes[k]);
 const raiz = document.getElementById('raiz')!;
 if (faltando.length > 0) {
-  raiz.textContent = `Micro-frontends ausentes: ${faltando.join(', ')}`;
+  const erros = (window as unknown as { CARTEIRA_ERROS?: string[] }).CARTEIRA_ERROS ?? [];
+  raiz.textContent = `Micro-frontends ausentes: ${faltando.join(', ')}${erros.length ? ` | erros de carga: ${erros.join(' ; ')}` : ''}`;
 } else {
   createRoot(raiz).render(<App mfes={mfes as Mfes} />);
 }

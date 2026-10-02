@@ -142,11 +142,11 @@
     return value !== null && value !== void 0;
   }
   function buildLucideIconNode(icon, params = {}) {
-    var _a2, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
-    const attributeNames = (_a2 = params.attributeNames) != null ? _a2 : {};
+    var _a3, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
+    const attributeNames = (_a3 = params.attributeNames) != null ? _a3 : {};
     const getAttributeName = (attributeName) => {
-      var _a3;
-      return (_a3 = attributeNames[attributeName]) != null ? _a3 : attributeName;
+      var _a4;
+      return (_a4 = attributeNames[attributeName]) != null ? _a4 : attributeName;
     };
     const viewBoxWidth = (_c = (_b = icon.size) != null ? _b : icon.width) != null ? _c : defaultAttributes["width"];
     const viewBoxHeight = (_e = (_d = icon.size) != null ? _d : icon.height) != null ? _e : defaultAttributes["height"];
@@ -244,7 +244,7 @@
       },
       ...rest
     }, ref) => {
-      var _a2, _b, _c;
+      var _a3, _b, _c;
       const {
         size: contextSize = 24,
         strokeWidth: contextStrokeWidth = 2,
@@ -252,7 +252,7 @@
         nonScalingStroke: contextNonScalingStroke = false,
         color: contextColor = "currentColor",
         className: contextClass = ""
-      } = (_a2 = useLucideContext()) != null ? _a2 : {};
+      } = (_a3 = useLucideContext()) != null ? _a3 : {};
       const hasAccessibleProp = Boolean(children) || hasA11yProp(rest);
       const [name, svgAttributes, builtIconNode = []] = buildLucideIconForReact(icon, {
         color: color != null ? color : contextColor,
@@ -518,7 +518,7 @@
     return { papel: "GG", dataSimulada: null };
   }
   function App({ mfes: mfes2 }) {
-    var _a2, _b, _c;
+    var _a3, _b, _c;
     const { cockpit: Cockpit, posicoes: Posicoes, carteira: Carteira, delegacao: Delegacao } = mfes2;
     const [rota, setRota] = React.useState(rotaDoHash);
     const [sessao, setSessao] = React.useState(lerSessao);
@@ -540,8 +540,8 @@
       }
     }, [sessao]);
     React.useEffect(() => {
-      var _a3;
-      const lista = (_a3 = atores.dados) == null ? void 0 : _a3.atores;
+      var _a4;
+      const lista = (_a4 = atores.dados) == null ? void 0 : _a4.atores;
       if (lista && !lista.some((a) => a.papel === sessao.papel && (a.papel === "GG" || a.id_gerente))) setSessao((s) => ({ ...s, papel: "GG" }));
     }, [atores.dados, sessao.papel]);
     const navegar = React.useCallback((destino) => {
@@ -597,7 +597,7 @@
               className: "w-full max-w-sm sm:w-80",
               valor: sessao.papel,
               aoMudar: (papel) => setSessao((s) => ({ ...s, papel })),
-              opcoes: ((_b = (_a2 = atores.dados) == null ? void 0 : _a2.atores) != null ? _b : [{ papel: "GG", rotulo: "Gerente Geral", id_gerente: null }]).filter((a) => a.papel === "GG" || a.id_gerente).map((a) => ({ valor: a.papel, rotulo: a.rotulo }))
+              opcoes: ((_b = (_a3 = atores.dados) == null ? void 0 : _a3.atores) != null ? _b : [{ papel: "GG", rotulo: "Gerente Geral", id_gerente: null }]).filter((a) => a.papel === "GG" || a.id_gerente).map((a) => ({ valor: a.papel, rotulo: a.rotulo }))
             }
           ),
           /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
@@ -642,8 +642,10 @@
   var mfes = (_a = window.CARTEIRA_MFES) != null ? _a : {};
   var faltando = ["cockpit", "posicoes", "carteira", "delegacao"].filter((k) => !mfes[k]);
   var raiz = document.getElementById("raiz");
+  var _a2;
   if (faltando.length > 0) {
-    raiz.textContent = `Micro-frontends ausentes: ${faltando.join(", ")}`;
+    const erros = (_a2 = window.CARTEIRA_ERROS) != null ? _a2 : [];
+    raiz.textContent = `Micro-frontends ausentes: ${faltando.join(", ")}${erros.length ? ` | erros de carga: ${erros.join(" ; ")}` : ""}`;
   } else {
     (0, import_client.createRoot)(raiz).render(/* @__PURE__ */ (0, import_jsx_runtime3.jsx)(App, { mfes }));
   }
