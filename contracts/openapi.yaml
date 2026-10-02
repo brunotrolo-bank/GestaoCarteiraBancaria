@@ -166,6 +166,12 @@ paths:
       tags: [Simulação]
       parameters: [{ $ref: '#/components/parameters/DataSimulada' }]
       responses: { '200': { description: Lista de papéis e titulares na data simulada } }
+  /simulacao/recarregar:
+    post:
+      operationId: post_simulacao_recarregar
+      summary: Descarta o cache e relê a planilha (após edição manual das abas; só no Apps Script)
+      tags: [Simulação]
+      responses: { '200': { description: Recarregado } }
   /simulacao/reset:
     post:
       operationId: post_simulacao_reset

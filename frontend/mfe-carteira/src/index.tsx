@@ -60,7 +60,7 @@ export default function Carteira({ api, sessao, versao, ehGerenteGeral, emitir, 
 
       <Gaveta open={cliente !== null} onOpenChange={(a) => { if (!a) setCliente(null); }}>
         {cliente ? (
-          <GavetaConteudo titulo="Visão 360° do cliente" descricao={cliente}>
+          <GavetaConteudo titulo="Visão 360° do cliente" descricao={cliente} className="max-w-6xl lg:w-[min(96vw,76rem)]">
             <Visao360Painel api={api} idCliente={cliente} sessao={sessao} versao={versao} ehGerenteGeral={ehGerenteGeral} aoMudar={() => emitir({ tipo: 'dados-alterados', origem: 'carteira' })} />
           </GavetaConteudo>
         ) : null}
@@ -68,7 +68,7 @@ export default function Carteira({ api, sessao, versao, ehGerenteGeral, emitir, 
 
       {assistente ? (
         <Gaveta open onOpenChange={(a) => { if (!a) setAssistente(null); }}>
-          <GavetaConteudo titulo="Redistribuir clientes" descricao="Simule primeiro; só depois confirme. Cada movimentação fica registrada em auditoria.">
+          <GavetaConteudo className="max-w-3xl" titulo="Redistribuir clientes" descricao="Simule primeiro; só depois confirme. Cada movimentação fica registrada em auditoria.">
             <AssistenteRedistribuicao api={api} origemInicial={assistente.origem} aoConcluir={() => emitir({ tipo: 'dados-alterados', origem: 'carteira' })} />
           </GavetaConteudo>
         </Gaveta>
@@ -153,7 +153,8 @@ function Visao360Painel({ api, idCliente, sessao, versao, ehGerenteGeral, aoMuda
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+      <div className="flex flex-col gap-6">
       <Cartao>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -185,7 +186,9 @@ function Visao360Painel({ api, idCliente, sessao, versao, ehGerenteGeral, aoMuda
           ))}
         </ul>
       </section>
+      </div>
 
+      <div className="flex flex-col gap-6">
       <section aria-label="Histórico de posições">
         <h2 className="text-heading-md text-foreground">Histórico de posições</h2>
         <ol className="mt-3 flex flex-col gap-3 border-l border-border pl-4">
@@ -214,8 +217,12 @@ function Visao360Painel({ api, idCliente, sessao, versao, ehGerenteGeral, aoMuda
         )}
       </section>
 
+      </div>
+
+      <div className="lg:col-span-2">
       {escrita ? <Botao onClick={() => setTransferindo(true)}><ArrowRightLeft aria-hidden className="size-4" /> Transferir de posição</Botao> : <Aviso variante="informativo">Seu acesso a este cliente é somente leitura.</Aviso>}
       {transferindo ? <Transferir api={api} cliente={c} aoFechar={() => setTransferindo(false)} aoConcluir={() => { setTransferindo(false); aoMudar(); }} /> : null}
+      </div>
     </div>
   );
 }

@@ -66,6 +66,8 @@ O app completo (front React + backend com o mesmo núcleo de domínio) roda **de
 - Gerar e publicar: `npm run gas:build && npm run apps-script:push` e, para uma versão estável, `clasp deploy` (dentro de `apps-script/`).
 - Teste do backend em sandbox sem Node/Intl/URL: `npx tsx scripts/gas-smoke.ts`.
 - Acesso: somente o dono da conta (`access: MYSELF`); a primeira abertura pede autorização dos escopos da planilha.
+- **Transferível**: o projeto é autocontido (a planilha é criada e populada por `instalar()` em qualquer conta). Veja [`docs/transferencia-para-outra-conta.md`](docs/transferencia-para-outra-conta.md).
+- Desempenho: leituras vêm de cache (CacheService, 15 min) e escritas gravam só o que mudou.
 
 ## Limitações conhecidas (honestas)
 - **Persistência em Sheets não é transacional**: a atomicidade de lotes é garantida na aplicação (validação antes de gravar + rollback em memória). O DDL Postgres alvo ([`data/ddl/postgres.sql`](data/ddl/postgres.sql)) é validado sintaticamente, mas **não foi executado** em um Postgres (sem Docker/servidor no ambiente) e o adaptador Postgres **ainda não foi implementado**.

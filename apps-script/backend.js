@@ -24,7 +24,8 @@ var CARTEIRA = (() => {
   // apps/gas/src/entrada.ts
   var entrada_exports = {};
   __export(entrada_exports, {
-    apiChamar: () => apiChamar
+    apiChamar: () => apiChamar,
+    instalarEm: () => instalarEm
   });
 
   // node_modules/zod/v4/classic/external.js
@@ -21100,6 +21101,11 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
         };
       }
     },
+    { metodo: "POST", caminho: "/simulacao/recarregar", publica: true, tratador: (c) => {
+      var _a5, _b;
+      (_b = (_a5 = c.store).recarregar) == null ? void 0 : _b.call(_a5);
+      return { recarregado: Boolean(c.store.recarregar) };
+    } },
     { metodo: "POST", caminho: "/simulacao/reset", publica: true, escrita: false, tratador: (c) => {
       c.store.reiniciar();
       return { reiniciado: true };
@@ -21588,14 +21594,32 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
   }
 
   // apps/gas/src/gas-store.ts
+  var CHAVE_CACHE = "carteira:db:v3";
+  var TAMANHO_BLOCO = 9e4;
+  var TTL_SEGUNDOS = 900;
+  var SO_ANEXA = ["log_auditoria", "log_eventos", "fct_movimentacao_carteira"];
   var GasStore = class {
-    constructor(planilhaId) {
-      __publicField(this, "planilhaId", planilhaId);
+    /** `semear`: cria/popula todas as abas com o cenário demo (instalação em uma conta nova). */
+    constructor(planilhaId2, opcoes = {}) {
+      __publicField(this, "planilhaId", planilhaId2);
       __publicField(this, "nome", "gas-sheets");
       __publicField(this, "db");
       __publicField(this, "clock", new SystemClock());
       __publicField(this, "assinaturas", /* @__PURE__ */ new Map());
-      this.db = this.ler();
+      __publicField(this, "linhasAnexaveis", /* @__PURE__ */ new Map());
+      if (opcoes.semear) {
+        this.db = criarSeed({ cenario: "demo" });
+        this.gravar(NOMES_TABELAS, true);
+        this.salvarCache();
+      } else {
+        const doCache = opcoes.ignorarCache ? null : this.lerCache();
+        if (doCache) {
+          this.db = doCache;
+        } else {
+          this.db = this.lerPlanilha();
+          this.salvarCache();
+        }
+      }
       this.marcar();
     }
     assinatura(t) {
@@ -21604,15 +21628,68 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
         return (_a5 = l[c]) != null ? _a5 : null;
       })));
     }
+    assinaturasDeLinhas(t) {
+      return this.db[t].map((l) => JSON.stringify(TABELAS[t].colunas.map(([c]) => {
+        var _a5;
+        return (_a5 = l[c]) != null ? _a5 : null;
+      })));
+    }
     marcar() {
       for (const t of NOMES_TABELAS) this.assinaturas.set(t, this.assinatura(t));
+      for (const t of SO_ANEXA) this.linhasAnexaveis.set(t, this.assinaturasDeLinhas(t));
     }
-    ler() {
+    // ---------- cache ----------
+    lerCache() {
+      try {
+        const cache = CacheService.getScriptCache();
+        const n = Number(cache.get(`${CHAVE_CACHE}:n`));
+        if (!n) return null;
+        const chaves = Array.from({ length: n }, (_, i) => `${CHAVE_CACHE}:${i}`);
+        const blocos = cache.getAll(chaves);
+        let b64 = "";
+        for (const k of chaves) {
+          if (blocos[k] === void 0) return null;
+          b64 += blocos[k];
+        }
+        const bytes = Utilities.base64Decode(b64);
+        const json2 = Utilities.ungzip(Utilities.newBlob(bytes, "application/x-gzip")).getDataAsString();
+        return JSON.parse(json2);
+      } catch (e) {
+        return null;
+      }
+    }
+    salvarCache() {
+      try {
+        const cache = CacheService.getScriptCache();
+        const gz = Utilities.gzip(Utilities.newBlob(JSON.stringify(this.db), "application/octet-stream", "db.json"));
+        const b64 = Utilities.base64Encode(gz.getBytes());
+        const itens = {};
+        const n = Math.ceil(b64.length / TAMANHO_BLOCO);
+        for (let i = 0; i < n; i += 1) itens[`${CHAVE_CACHE}:${i}`] = b64.slice(i * TAMANHO_BLOCO, (i + 1) * TAMANHO_BLOCO);
+        itens[`${CHAVE_CACHE}:n`] = String(n);
+        cache.putAll(itens, TTL_SEGUNDOS);
+      } catch (e) {
+      }
+    }
+    /** Descarta o cache e relê a planilha (após edição manual das abas). */
+    recarregar() {
+      try {
+        const cache = CacheService.getScriptCache();
+        const n = Number(cache.get(`${CHAVE_CACHE}:n`)) || 0;
+        cache.removeAll([`${CHAVE_CACHE}:n`, ...Array.from({ length: n }, (_, i) => `${CHAVE_CACHE}:${i}`)]);
+      } catch (e) {
+      }
+      this.db = this.lerPlanilha();
+      this.salvarCache();
+      this.marcar();
+    }
+    // ---------- planilha ----------
+    lerPlanilha() {
       const ss = SpreadsheetApp.openById(this.planilhaId);
       const db = criarDbVazio();
       for (const t of NOMES_TABELAS) {
         const aba = ss.getSheetByName(t);
-        if (!aba) throw new Error(`Aba ausente na planilha: ${t}. Rode a carga do cen\xE1rio demo.`);
+        if (!aba) throw new Error(`Aba ausente na planilha: ${t}. Execute "instalar" no editor do Apps Script.`);
         const valores = aba.getDataRange().getValues().map(
           (linha) => linha.map((v) => v instanceof Date ? Utilities.formatDate(v, "America/Sao_Paulo", "yyyy-MM-dd") : v)
         );
@@ -21620,22 +21697,41 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
       }
       return db;
     }
-    gravar(tabelas) {
-      var _a5;
+    formatarTexto(aba, t, primeiraLinha, linhas) {
+      if (linhas <= 0) return;
+      TABELAS[t].colunas.forEach(([, tipo], j) => {
+        if (tipo === "string") aba.getRange(primeiraLinha, j + 1, linhas, 1).setNumberFormat("@");
+      });
+    }
+    gravar(tabelas, criarAbas = false) {
       const ss = SpreadsheetApp.openById(this.planilhaId);
       for (const t of tabelas) {
-        const aba = (_a5 = ss.getSheetByName(t)) != null ? _a5 : ss.insertSheet(t);
+        let aba = ss.getSheetByName(t);
+        if (!aba) {
+          if (!criarAbas && !SO_ANEXA.includes(t)) throw new Error(`Aba ausente: ${t}`);
+          aba = ss.insertSheet(t);
+        }
         const matriz = tabelaParaMatriz(this.db, t);
         const linhas = matriz.length;
         const colunas = matriz[0].length;
+        const antes = this.linhasAnexaveis.get(t);
+        if (antes && !criarAbas) {
+          const agora = this.assinaturasDeLinhas(t);
+          const prefixoIgual = agora.length >= antes.length && antes.every((s, i) => s === agora[i]);
+          if (prefixoIgual) {
+            const novas = matriz.slice(antes.length + 1);
+            if (novas.length === 0) continue;
+            const inicio = antes.length + 2;
+            if (aba.getMaxRows() < inicio + novas.length - 1) aba.insertRowsAfter(aba.getMaxRows(), inicio + novas.length - 1 - aba.getMaxRows());
+            this.formatarTexto(aba, t, inicio, novas.length);
+            aba.getRange(inicio, 1, novas.length, colunas).setValues(novas);
+            continue;
+          }
+        }
         if (aba.getMaxRows() < linhas) aba.insertRowsAfter(aba.getMaxRows(), linhas - aba.getMaxRows());
         if (aba.getMaxColumns() < colunas) aba.insertColumnsAfter(aba.getMaxColumns(), colunas - aba.getMaxColumns());
         aba.clearContents();
-        if (linhas > 1) {
-          TABELAS[t].colunas.forEach(([, tipo], j) => {
-            if (tipo === "string") aba.getRange(2, j + 1, linhas - 1, 1).setNumberFormat("@");
-          });
-        }
+        this.formatarTexto(aba, t, 2, linhas - 1);
         aba.getRange(1, 1, linhas, colunas).setValues(matriz);
         aba.getRange(1, 1, 1, colunas).setFontWeight("bold");
         aba.setFrozenRows(1);
@@ -21645,20 +21741,32 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
       const alteradas = NOMES_TABELAS.filter((t) => this.assinatura(t) !== this.assinaturas.get(t));
       if (alteradas.length === 0) return;
       this.gravar(alteradas);
-      for (const t of alteradas) this.assinaturas.set(t, this.assinatura(t));
+      this.salvarCache();
+      this.marcar();
     }
     /** Reset da demonstração: regrava o cenário demo na planilha. */
     reiniciar() {
       this.db = criarSeed({ cenario: "demo" });
-      this.gravar(NOMES_TABELAS);
+      this.gravar(NOMES_TABELAS, true);
+      this.salvarCache();
       this.marcar();
     }
   };
 
   // apps/gas/src/entrada.ts
   function apiChamar(req) {
-    const store = new GasStore(SPREADSHEET_ID);
-    return criarManipulador({ store, simulacaoPapel: true })(req);
+    const escrita = req.metodo === "POST";
+    const lock = escrita ? LockService.getScriptLock() : null;
+    if (lock) lock.waitLock(25e3);
+    try {
+      const store = new GasStore(planilhaId());
+      return criarManipulador({ store, simulacaoPapel: true })(req);
+    } finally {
+      if (lock) lock.releaseLock();
+    }
+  }
+  function instalarEm(id) {
+    new GasStore(id, { semear: true });
   }
   return __toCommonJS(entrada_exports);
 })();

@@ -26,7 +26,29 @@ export interface ConfigApi {
 export function criarApi(cfg: ConfigApi) {
   const f = cfg.fetchImpl ?? ((...a: Parameters<typeof fetch>) => fetch(...a));
 
+  /**
+   * Cache de leituras em memória (chave = papel + data + rota): navegar entre telas não repete chamadas ao servidor — no
+   * Apps Script cada chamada custa ~0,5–2 s. Qualquer POST bem-sucedido limpa o cache (o dado pode ter mudado).
+   */
+  const leituras = new Map<string, Promise<unknown>>();
+
   async function chamar<T>(metodo: 'GET' | 'POST', caminho: string, opcoes: { corpo?: unknown; chave?: string; semSessao?: boolean } = {}): Promise<T> {
+    if (metodo === 'GET') {
+      const s = cfg.obterSessao();
+      const chaveCache = `${opcoes.semSessao ? '' : s.papel}|${s.dataSimulada ?? ''}|${caminho}`;
+      const existente = leituras.get(chaveCache);
+      if (existente) return existente as Promise<T>;
+      const promessa = executar<T>(metodo, caminho, opcoes);
+      leituras.set(chaveCache, promessa);
+      promessa.catch(() => leituras.delete(chaveCache));
+      return promessa;
+    }
+    const r = await executar<T>(metodo, caminho, opcoes);
+    leituras.clear();
+    return r;
+  }
+
+  async function executar<T>(metodo: 'GET' | 'POST', caminho: string, opcoes: { corpo?: unknown; chave?: string; semSessao?: boolean } = {}): Promise<T> {
     const sessao = cfg.obterSessao();
     const headers: Record<string, string> = { Accept: 'application/json' };
     if (opcoes.corpo !== undefined) headers['Content-Type'] = 'application/json';
@@ -54,6 +76,7 @@ export function criarApi(cfg: ConfigApi) {
 
   return {
     atores: () => chamar<AtoresResposta>('GET', '/simulacao/atores', { semSessao: true }),
+    recarregarDados: () => chamar<{ recarregado: boolean }>('POST', '/simulacao/recarregar', { semSessao: true }),
     reiniciarCenario: () => chamar<{ reiniciado: boolean }>('POST', '/simulacao/reset', { semSessao: true }),
 
     posicoes: () => chamar<{ itens: ResumoPosicao[] }>('GET', '/posicoes'),

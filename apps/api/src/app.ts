@@ -133,6 +133,7 @@ const ROTAS: Rota[] = [
       };
     },
   },
+  { metodo: 'POST', caminho: '/simulacao/recarregar', publica: true, tratador: (c) => { c.store.recarregar?.(); return { recarregado: Boolean(c.store.recarregar) }; } },
   { metodo: 'POST', caminho: '/simulacao/reset', publica: true, escrita: false, tratador: (c) => { c.store.reiniciar(); return { reiniciado: true }; } },
 
   { metodo: 'GET', caminho: '/posicoes', tratador: (c) => ({ itens: insights.resumoAgencia(c.db, ctxInsights(c)).posicoes }) },

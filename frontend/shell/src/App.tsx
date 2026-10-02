@@ -81,6 +81,11 @@ export function App() {
     setVersao((v) => v + 1);
   }
 
+  async function recarregar() {
+    await api.recarregarDados();
+    setVersao((v) => v + 1);
+  }
+
   return (
     <ProvedorDica>
       <div className="min-h-screen md:grid md:grid-cols-[15rem_1fr]">
@@ -118,7 +123,10 @@ export function App() {
               <Campo id="data-simulada" type="date" className="tnum w-44" value={sessao.dataSimulada ?? ''} onChange={(e) => setSessao((s) => ({ ...s, dataSimulada: e.target.value || null }))} />
             </div>
             {sessao.dataSimulada ? <Botao variante="fantasma" onClick={() => setSessao((s) => ({ ...s, dataSimulada: null }))}>Voltar para hoje</Botao> : null}
-            <Botao variante="secundario" className="ml-auto" onClick={() => void reiniciar()}><RotateCcw aria-hidden className="size-4" /> Reiniciar cenário</Botao>
+            <div className="ml-auto flex flex-wrap gap-2">
+              {ambienteGas() ? <Botao variante="fantasma" onClick={() => void recarregar()}>Recarregar da planilha</Botao> : null}
+              <Botao variante="secundario" onClick={() => void reiniciar()}><RotateCcw aria-hidden className="size-4" /> Reiniciar cenário</Botao>
+            </div>
           </header>
 
           <div className="px-6 pt-4">

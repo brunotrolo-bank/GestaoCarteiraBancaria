@@ -12,6 +12,8 @@ export interface Store {
   /** Síncrono: grava (Apps Script/memória) ou ENFILEIRA a gravação (Sheets via API em Node). */
   persistir(): void;
   reiniciar(): void;
+  /** Opcional: descarta caches e relê a planilha (adaptador do Apps Script). */
+  recarregar?(): void;
   /** Aguarda gravações enfileiradas (só adaptadores assíncronos). */
   drenar?(): Promise<void>;
 }

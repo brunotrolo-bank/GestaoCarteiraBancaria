@@ -3,11 +3,64 @@
  * Regras em rules.js (testadas em Node contra o núcleo TypeScript); esquema em schema.js (gerado).
  * Não há implantação de web app: execute `homologar` pelo editor (▶) ou publique manualmente quando precisar.
  */
-var SPREADSHEET_ID = '1ftzp2MniTBOxbn8IX6dYPpeZEZKPSc5AX5Q5zVw4W8g';
+/**
+ * Planilha de dados. O projeto é AUTOCONTIDO e transferível entre contas Google:
+ *  - usa a planilha guardada nas propriedades do script (PLANILHA_ID);
+ *  - se não houver, tenta a planilha de homologação abaixo (somente se a conta tiver acesso);
+ *  - se a conta não enxerga nenhuma, CRIA uma nova planilha no Drive de quem executa e a popula com o cenário demo.
+ * Para trocar de conta: copie/transfira o projeto, abra o app (ou rode `instalar`) e publique novamente o web app.
+ */
+var PLANILHA_PADRAO = '1ftzp2MniTBOxbn8IX6dYPpeZEZKPSc5AX5Q5zVw4W8g';
+var NOME_PLANILHA = 'Gestão de Carteira Bancária — POC (dados sintéticos)';
 var ABA_RESULTADO = 'homologacao_resultado';
 
+
+function acessivel_(id) {
+  try { SpreadsheetApp.openById(id).getName(); return true; } catch (e) { return false; }
+}
+
+/** Resolve (e memoriza) o id da planilha desta conta; cria e popula uma nova se necessário. */
+function planilhaId() {
+  var cache = CacheService.getScriptCache();
+  var emCache = cache.get('carteira:planilha');
+  if (emCache) return emCache;
+  var props = PropertiesService.getScriptProperties();
+  var id = props.getProperty('PLANILHA_ID');
+  if (!id && acessivel_(PLANILHA_PADRAO)) id = PLANILHA_PADRAO;
+  if (!id || !acessivel_(id)) id = instalar();
+  props.setProperty('PLANILHA_ID', id);
+  cache.put('carteira:planilha', id, 21600);
+  return id;
+}
+
+/**
+ * INSTALAÇÃO: cria uma planilha nova no Drive de quem executa, com as 14 abas e o cenário demo (dados sintéticos).
+ * Rode no editor (▶) em uma conta nova, ou deixe o app rodar sozinho na primeira abertura.
+ */
+function instalar() {
+  var ss = SpreadsheetApp.create(NOME_PLANILHA);
+  var id = ss.getId();
+  PropertiesService.getScriptProperties().setProperty('PLANILHA_ID', id);
+  CacheService.getScriptCache().put('carteira:planilha', id, 21600);
+  CARTEIRA.instalarEm(id);
+  Logger.log('Planilha criada: ' + ss.getUrl());
+  return id;
+}
+
+/** Aponta o app para outra planilha existente (com as 14 abas). */
+function usarPlanilha(id) {
+  PropertiesService.getScriptProperties().setProperty('PLANILHA_ID', id);
+  CacheService.getScriptCache().removeAll(['carteira:planilha']);
+  return acessivel_(id);
+}
+
+/** URL da planilha em uso (para conferir os dados). */
+function urlDaPlanilha() {
+  return SpreadsheetApp.openById(planilhaId()).getUrl();
+}
+
 function lerTabelas_() {
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var ss = SpreadsheetApp.openById(planilhaId());
   var t = {};
   Object.keys(ESQUEMA).forEach(function (nome) {
     var aba = ss.getSheetByName(nome);
@@ -35,7 +88,7 @@ function lerTabelas_() {
 
 /** Verificação de esquema: cabeçalhos exatamente iguais ao dicionário de dados (domínio 06). */
 function verificarEsquema_() {
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var ss = SpreadsheetApp.openById(planilhaId());
   return Object.keys(ESQUEMA).map(function (nome) {
     var aba = ss.getSheetByName(nome);
     if (!aba) return { check: 'Esquema ' + nome, status: 'FALHA', detalhe: 'Aba ausente' };
@@ -66,7 +119,7 @@ function avaliarHomologacao(t, resultadosEsquema) {
 function homologar() {
   var inicio = new Date();
   var resultados = avaliarHomologacao(lerTabelas_(), verificarEsquema_());
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var ss = SpreadsheetApp.openById(planilhaId());
   var aba = ss.getSheetByName(ABA_RESULTADO) || ss.insertSheet(ABA_RESULTADO);
   aba.clear();
   var carimbo = Utilities.formatDate(new Date(), FUSO, "yyyy-MM-dd'T'HH:mm:ssXXX");
@@ -87,14 +140,14 @@ function homologar() {
 
 /** Diagnóstico de acesso: quem executa o script e se enxerga a planilha (útil quando openById falha). */
 function diagnostico() {
-  var saida = { executando_como: Session.getEffectiveUser().getEmail(), spreadsheet_id: SPREADSHEET_ID };
+  var saida = { executando_como: Session.getEffectiveUser().getEmail(), spreadsheet_id: planilhaId() };
   try {
-    var f = DriveApp.getFileById(SPREADSHEET_ID);
+    var f = DriveApp.getFileById(planilhaId());
     saida.arquivo = f.getName();
     saida.dono = f.getOwner() ? f.getOwner().getEmail() : '(sem dono visível)';
   } catch (e) { saida.erro_drive = String(e); }
   try {
-    saida.abas = SpreadsheetApp.openById(SPREADSHEET_ID).getSheets().map(function (s) { return s.getName(); });
+    saida.abas = SpreadsheetApp.openById(planilhaId()).getSheets().map(function (s) { return s.getName(); });
   } catch (e) { saida.erro_planilha = String(e); }
   Logger.log(JSON.stringify(saida));
   return saida;
