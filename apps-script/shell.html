@@ -446,19 +446,21 @@
   ];
   function Capa({ definirSessao, navegar }) {
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-10", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-labelledby": "titulo-capa", className: "overflow-hidden rounded-xl border border-border bg-card", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-labelledby": "titulo-capa", className: "relative overflow-hidden rounded-xl border border-border", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "img",
           {
             src: PortoBank_Banner_default,
-            alt: "Porto Seguro Bank \u2014 cart\xF5es",
-            className: "h-52 w-full object-cover object-center md:h-72"
+            alt: "",
+            "aria-hidden": true,
+            className: "absolute inset-0 size-full object-cover object-center"
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "px-6 py-8 md:px-12 md:py-10", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-micro-cap uppercase text-secondary-foreground", children: "Porto Bank \xB7 Prova de conceito \xB7 dados sint\xE9ticos" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { id: "titulo-capa", className: "mt-3 max-w-3xl text-display-xl text-foreground", children: "Gest\xE3o de carteira por Posi\xE7\xE3o, n\xE3o por pessoa" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-4 max-w-2xl text-body-lg text-secondary-foreground", children: "Cinco mesas de atendimento, uma carteira por mesa. Trocar o gerente, cobrir f\xE9rias ou rebalancear a ag\xEAncia n\xE3o exige migrar um \xFAnico cliente." })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { "aria-hidden": true, className: "absolute inset-0 bg-brand-dark-900/60" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "relative px-6 py-12 md:px-12 md:py-16", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-micro-cap uppercase text-sidebar-muted", children: "Porto Bank \xB7 Prova de conceito" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { id: "titulo-capa", className: "mt-3 max-w-3xl text-display-xl text-on-primary", children: "Gest\xE3o de carteira por Posi\xE7\xE3o, n\xE3o por pessoa" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-4 max-w-2xl text-body-lg text-sidebar-muted", children: "Uma carteira por mesa: turnover, f\xE9rias e rebalanceamento sem migrar um \xFAnico cliente." })
         ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Fluxo funcional", className: "flex flex-col gap-4", children: [

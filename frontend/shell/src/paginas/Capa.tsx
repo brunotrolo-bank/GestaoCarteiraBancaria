@@ -42,18 +42,19 @@ const JORNADAS = [
 export function Capa({ definirSessao, navegar }: { definirSessao: (s: Sessao) => void; navegar: (d: 'cockpit' | 'carteira' | 'posicoes') => void }) {
   return (
     <div className="flex flex-col gap-10">
-      <section aria-labelledby="titulo-capa" className="overflow-hidden rounded-xl border border-border bg-card">
+      <section aria-labelledby="titulo-capa" className="relative overflow-hidden rounded-xl border border-border">
         <img
           src={bannerPortoBank}
-          alt="Porto Seguro Bank — cartões"
-          className="h-52 w-full object-cover object-center md:h-72"
+          alt=""
+          aria-hidden
+          className="absolute inset-0 size-full object-cover object-center"
         />
-        <div className="px-6 py-8 md:px-12 md:py-10">
-          <p className="text-micro-cap uppercase text-secondary-foreground">Porto Bank · Prova de conceito · dados sintéticos</p>
-          <h1 id="titulo-capa" className="mt-3 max-w-3xl text-display-xl text-foreground">Gestão de carteira por Posição, não por pessoa</h1>
-          <p className="mt-4 max-w-2xl text-body-lg text-secondary-foreground">
-            Cinco mesas de atendimento, uma carteira por mesa. Trocar o gerente, cobrir férias ou rebalancear a agência
-            não exige migrar um único cliente.
+        <div aria-hidden className="absolute inset-0 bg-brand-dark-900/60" />
+        <div className="relative px-6 py-12 md:px-12 md:py-16">
+          <p className="text-micro-cap uppercase text-sidebar-muted">Porto Bank · Prova de conceito</p>
+          <h1 id="titulo-capa" className="mt-3 max-w-3xl text-display-xl text-on-primary">Gestão de carteira por Posição, não por pessoa</h1>
+          <p className="mt-4 max-w-2xl text-body-lg text-sidebar-muted">
+            Uma carteira por mesa: turnover, férias e rebalanceamento sem migrar um único cliente.
           </p>
         </div>
       </section>
