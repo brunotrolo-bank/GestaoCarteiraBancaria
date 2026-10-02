@@ -1,4 +1,652 @@
 <script>
-"use strict";(()=>{var Oa=Object.create;var oa=Object.defineProperty;var Ha=Object.getOwnPropertyDescriptor;var Ga=Object.getOwnPropertyNames;var Ea=Object.getPrototypeOf,Va=Object.prototype.hasOwnProperty;var G=(e,a)=>()=>{try{return a||e((a={exports:{}}).exports,a),a.exports}catch(d){throw a=0,d}};var Wa=(e,a,d,l)=>{if(a&&typeof a=="object"||typeof a=="function")for(let c of Ga(a))!Va.call(e,c)&&c!==d&&oa(e,c,{get:()=>a[c],enumerable:!(l=Ha(a,c))||l.enumerable});return e};var p=(e,a,d)=>(d=e!=null?Oa(Ea(e)):{},Wa(a||!e||!e.__esModule?oa(d,"default",{value:e,enumerable:!0}):d,e));var da=G((Za,ua)=>{ua.exports=CARTEIRA_RUNTIME.ReactDOM});var E=G((Qa,la)=>{la.exports=CARTEIRA_RUNTIME.React});var aa=G((Ve,Pa)=>{Pa.exports=CARTEIRA_RUNTIME.UI});var Aa=G((We,wa)=>{wa.exports=CARTEIRA_RUNTIME.SDK});var y=G((ze,Ba)=>{Ba.exports=CARTEIRA_RUNTIME.JsxRuntime});var ba=p(da(),1);var i=p(E(),1);var Y=p(E(),1);var sa=e=>e==null?void 0:e.replace(/([a-z0-9])([A-Z])/g,"$1-$2").toLowerCase();function ra(e,a,d=[]){if(a==null)throw new Error("[lucide]: iconNode is required when icon name is used");return{name:sa(e),size:24,node:a,...d.length>0?{aliases:d}:{}}}var fa=e=>{let a="",d=!1;for(let l of e){if(l==="-"||l==="_"||l<=" "){d=a.length>0;continue}a.length===0?a+=l.toLowerCase():a+=d?l.toUpperCase():l,d=!1}return a};var ia=e=>{let a=fa(e);return a.charAt(0).toUpperCase()+a.slice(1)};var W=p(E(),1);var V=(...e)=>e.filter((a,d,l)=>!!a&&a.trim()!==""&&l.indexOf(a)===d).join(" ").trim();var B={xmlns:"http://www.w3.org/2000/svg",width:24,height:24,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor","stroke-width":2,"stroke-linecap":"round","stroke-linejoin":"round"};function j(e){return e!=null}function ca(e,a={}){var T,k,h,P,S,q,b,g,v,U,F,w,A,t,I;let d=(T=a.attributeNames)!=null?T:{},l=f=>{var R;return(R=d[f])!=null?R:f},c=(h=(k=e.size)!=null?k:e.width)!=null?h:B.width,n=(S=(P=e.size)!=null?P:e.height)!=null?S:B.height,C=(b=(q=e.aliases)==null?void 0:q.filter(f=>typeof f=="string"&&f.trim()!=="").map(f=>`lucide-${f}`))!=null?b:[],r=[...e.name?[`lucide-${e.name}`]:[],...C],L=(v=(g=a.className)==null?void 0:g.split(" ").filter(Boolean))!=null?v:[],M=a.includeDefaultClasses===!1?V(...L):V("lucide",...r,...L),D=a.absoluteStrokeWidth?Number((U=a.strokeWidth)!=null?U:B["stroke-width"])*Number((w=(F=e.size)!=null?F:e.width)!=null?w:B.width)/Number((t=(A=a.size)!=null?A:a.width)!=null?t:B.width):(I=a.strokeWidth)!=null?I:B["stroke-width"];return["svg",{...Object.entries(B).reduce((f,[R,_])=>(f[l(R)]=_,f),{}),..."color"in a&&a.color&&{[l("stroke")]:a.color},..."size"in a&&j(a.size)&&{[l("width")]:a.size,[l("height")]:a.size},..."width"in a&&j(a.width)&&{[l("width")]:a.width},..."height"in a&&j(a.height)&&{[l("height")]:a.height},[l("stroke-width")]:D,...M&&{[l("class")]:M},[l("viewBox")]:`0 0 ${c} ${n}`,...a.hasA11yProp===!1?{[l("aria-hidden")]:"true"}:{},..."attributes"in a&&a.attributes},e.node.map(f=>{let[R,_,ea]=f,ta=a.nonScalingStroke?{[l("vector-effect")]:"non-scaling-stroke",..._}:_;return ea?[R,ta,ea]:[R,ta]})]}function na(e,a={}){return ca(e,{...a,attributeNames:{...a.attributeNames,class:"className","stroke-width":"strokeWidth","stroke-linecap":"strokeLinecap","stroke-linejoin":"strokeLinejoin","vector-effect":"vectorEffect"}})}var pa=e=>{for(let a in e)if(a.startsWith("aria-")||a==="role"||a==="title")return!0;return!1};var O=p(E(),1);var za=(0,O.createContext)({});var ma=()=>(0,O.useContext)(za);var La=(0,W.forwardRef)(({color:e,size:a,width:d,height:l,strokeWidth:c,absoluteStrokeWidth:n,nonScalingStroke:C,className:r="",children:L,iconNode:M=[],icon:D={node:M,aliases:[],size:24},...H},T)=>{var w,A,t;let{size:k=24,strokeWidth:h=2,absoluteStrokeWidth:P=!1,nonScalingStroke:S=!1,color:q="currentColor",className:b=""}=(w=ma())!=null?w:{},g=!!L||pa(H),[v,U,F=[]]=na(D,{color:e!=null?e:q,width:(A=d!=null?d:a)!=null?A:k,height:(t=l!=null?l:a)!=null?t:k,strokeWidth:c!=null?c:h,absoluteStrokeWidth:n!=null?n:P,nonScalingStroke:C!=null?C:S,className:V(b,r),hasA11yProp:g,attributes:H});return(0,W.createElement)(v,{ref:T,...U},[...F.map(([I,f])=>(0,W.createElement)(I,f)),...Array.isArray(L)?L:[L]])});function m(e,a=[],d=[]){let l=typeof e=="string"?ra(e,a,d):e,c=(0,Y.forwardRef)(({className:n,...C},r)=>(0,Y.createElement)(La,{ref:r,icon:l,className:n,...C}));return l.name&&(c.displayName=ia(l.name)),c}var Ia={name:"calendar-clock",size:24,node:[["path",{d:"M16 14v2.2l1.6 1",key:"fo4ql5"}],["path",{d:"M16 2v3",key:"otl347"}],["path",{d:"M21 7.338V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h2.338",key:"7hb8p4"}],["path",{d:"M3 9h5.859",key:"numkqi"}],["path",{d:"M8 2v3",key:"1ioesn"}],["circle",{cx:"16",cy:"16",r:"6",key:"qoo3c4"}]]};Ia.node;var z=m(Ia);var xa={name:"gauge",size:24,node:[["path",{d:"m12 14 4-4",key:"9kzdfg"}],["path",{d:"M3.34 19a10 10 0 1 1 17.32 0",key:"19p75a"}]]};xa.node;var N=m(xa);var Ca={name:"landmark",size:24,node:[["path",{d:"M10 18v-7",key:"wt116b"}],["path",{d:"M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z",key:"yxxwt6"}],["path",{d:"M14 18v-7",key:"vav6t3"}],["path",{d:"M18 18v-7",key:"aexdmj"}],["path",{d:"M3 22h18",key:"8prr45"}],["path",{d:"M6 18v-7",key:"1ivflk"}]]};Ca.node;var X=m(Ca);var ha={name:"layout-dashboard",size:24,node:[["rect",{width:"7",height:"9",x:"3",y:"3",rx:"1",key:"10lvy0"}],["rect",{width:"7",height:"5",x:"14",y:"3",rx:"1",key:"16une8"}],["rect",{width:"7",height:"9",x:"14",y:"12",rx:"1",key:"1hutg5"}],["rect",{width:"7",height:"5",x:"3",y:"16",rx:"1",key:"ldoo1y"}]]};ha.node;var K=m(ha);var Sa={name:"presentation",size:24,node:[["path",{d:"M2 3h20",key:"91anmk"}],["path",{d:"M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3",key:"2k9sn8"}],["path",{d:"m7 21 5-5 5 5",key:"bip4we"}]]};Sa.node;var Z=m(Sa);var ga={name:"rotate-ccw",size:24,node:[["path",{d:"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8",key:"1357e3"}],["path",{d:"M3 3v5h5",key:"1xhq8a"}]]};ga.node;var Q=m(ga);var ka={name:"users",size:24,node:[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",key:"1yyitq"}],["path",{d:"M16 3.128a4 4 0 0 1 0 7.744",key:"16gr8j"}],["path",{d:"M22 21v-2a4 4 0 0 0-3-3.87",key:"kshegd"}],["circle",{cx:"9",cy:"7",r:"4",key:"nufk8"}]]};ka.node;var J=m(ka);var s=p(aa(),1),x=p(Aa(),1);var $=p(aa(),1),o=p(y(),1),Na=[{id:"j-cotidiano",titulo:"1. Opera\xE7\xE3o cotidiana",cena:"Cada gerente abre a sua tela e enxerga estritamente os clientes da sua Posi\xE7\xE3o. O Gerente Geral v\xEA a ag\xEAncia inteira.",mensagem:"Quem atende quem \xE9 uma regra da mesa, n\xE3o da pessoa.",prova:'Alternar "Visualizar como" entre as posi\xE7\xF5es e o Gerente Geral.',acao:"Abrir Torre de Controle",sessao:{papel:"GG",dataSimulada:null},destino:"cockpit"},{id:"j-ferias",titulo:"2. F\xE9rias ou afastamento",cena:"A Posi\xE7\xE3o 01 sai de f\xE9rias de 01/11 a 15/11 e a Posi\xE7\xE3o 02 assume a cobertura.",mensagem:"No 16\xBA dia o acesso termina sozinho, sem chamado para a TI.",prova:'Em 05/11 a Posi\xE7\xE3o 02 v\xEA "Minha Carteira" e "Carteira Delegada"; em 16/11 s\xF3 a pr\xF3pria.',acao:"Ver cobertura em 05/11",sessao:{papel:"POS-AG01-002",dataSimulada:"2026-11-05"},destino:"carteira"},{id:"j-turnover",titulo:"3. Sa\xEDda ou troca de gerente",cena:"Um colaborador \xE9 desligado ou promovido; troca-se apenas o nome ligado \xE0 Posi\xE7\xE3o.",mensagem:"A carteira, o hist\xF3rico e as m\xE9tricas continuam 100% preservados.",prova:"Trocar o titular da Posi\xE7\xE3o 03 e conferir que os clientes seguem os mesmos.",acao:"Trocar titular da Posi\xE7\xE3o 03",sessao:{papel:"GG",dataSimulada:null},destino:"posicoes"}];function Ma({definirSessao:e,navegar:a}){return(0,o.jsxs)("div",{className:"flex flex-col gap-10",children:[(0,o.jsxs)("section",{"aria-labelledby":"titulo-capa",className:"relative overflow-hidden rounded-xl border border-border bg-card",children:[(0,o.jsxs)("svg",{"aria-hidden":!0,className:"absolute inset-0 size-full",preserveAspectRatio:"none",viewBox:"0 0 1200 360",children:[(0,o.jsx)("defs",{children:(0,o.jsx)("filter",{id:"desfoque",x:"-20%",y:"-20%",width:"140%",height:"140%",children:(0,o.jsx)("feGaussianBlur",{stdDeviation:"55"})})}),(0,o.jsxs)("g",{filter:"url(#desfoque)",opacity:"0.9",children:[(0,o.jsx)("ellipse",{cx:"120",cy:"90",rx:"260",ry:"150",fill:"var(--color-canvas-cream)"}),(0,o.jsx)("ellipse",{cx:"380",cy:"230",rx:"230",ry:"120",fill:"var(--color-lemon)",opacity:"0.35"}),(0,o.jsx)("ellipse",{cx:"620",cy:"80",rx:"250",ry:"130",fill:"var(--color-primary-bg-subdued-hover)"}),(0,o.jsx)("ellipse",{cx:"860",cy:"210",rx:"240",ry:"130",fill:"var(--color-primary)",opacity:"0.55"}),(0,o.jsx)("ellipse",{cx:"1060",cy:"90",rx:"220",ry:"120",fill:"var(--color-ruby)",opacity:"0.5"}),(0,o.jsx)("ellipse",{cx:"1130",cy:"270",rx:"160",ry:"90",fill:"var(--color-magenta)",opacity:"0.45"})]})]}),(0,o.jsxs)("div",{className:"relative px-6 py-12 md:px-12 md:py-16",children:[(0,o.jsx)("p",{className:"text-micro-cap uppercase text-secondary-foreground",children:"Prova de conceito \xB7 dados sint\xE9ticos"}),(0,o.jsx)("h1",{id:"titulo-capa",className:"mt-3 max-w-3xl text-display-xl text-foreground",children:"Gest\xE3o de carteira por Posi\xE7\xE3o, n\xE3o por pessoa"}),(0,o.jsx)("p",{className:"mt-4 max-w-2xl text-body-lg text-secondary-foreground",children:"Cinco mesas de atendimento, uma carteira por mesa. Trocar o gerente, cobrir f\xE9rias ou rebalancear a ag\xEAncia n\xE3o exige migrar um \xFAnico cliente."})]})]}),(0,o.jsxs)("section",{"aria-label":"Fluxo funcional",className:"flex flex-col gap-4",children:[(0,o.jsx)("h2",{className:"text-display-md text-foreground",children:"O que o gestor precisa ver \u2014 em 10 minutos"}),(0,o.jsx)("div",{className:"grid grid-cols-1 gap-4 lg:grid-cols-3",children:Na.map(d=>(0,o.jsxs)($.Cartao,{className:"flex flex-col gap-3","aria-labelledby":d.id,children:[(0,o.jsx)("h3",{id:d.id,className:"text-heading-lg text-foreground",children:d.titulo}),(0,o.jsxs)("dl",{className:"flex flex-1 flex-col gap-3 text-body-md",children:[(0,o.jsxs)("div",{children:[(0,o.jsx)("dt",{className:"text-caption text-muted-foreground",children:"Cena"}),(0,o.jsx)("dd",{className:"text-foreground",children:d.cena})]}),(0,o.jsxs)("div",{children:[(0,o.jsx)("dt",{className:"text-caption text-muted-foreground",children:"Mensagem de neg\xF3cio"}),(0,o.jsx)("dd",{className:"text-foreground",children:d.mensagem})]}),(0,o.jsxs)("div",{children:[(0,o.jsx)("dt",{className:"text-caption text-muted-foreground",children:"Prova na tela"}),(0,o.jsx)("dd",{className:"text-secondary-foreground",children:d.prova})]})]}),(0,o.jsx)($.Botao,{variante:"secundario",onClick:()=>{e(d.sessao),a(d.destino)},children:d.acao})]},d.id))})]}),(0,o.jsxs)("section",{"aria-label":"Roteiro de demonstra\xE7\xE3o",className:"flex flex-col gap-3",children:[(0,o.jsx)("h2",{className:"text-heading-lg text-foreground",children:"Roteiro sugerido"}),(0,o.jsxs)("ol",{className:"flex list-decimal flex-col gap-2 pl-6 text-body-md text-secondary-foreground",children:[(0,o.jsx)("li",{children:"Torre de Controle como Gerente Geral: totais da ag\xEAncia e as posi\xE7\xF5es fora do limite de capacidade (2 min)."}),(0,o.jsx)("li",{children:"Redistribuir 20 clientes da Posi\xE7\xE3o 01 para a Posi\xE7\xE3o 04: simular, confirmar, ver o alerta sumir e desfazer (3 min)."}),(0,o.jsx)("li",{children:"Trocar o titular da Posi\xE7\xE3o 03 e provar que a carteira n\xE3o mudou (2 min)."}),(0,o.jsx)("li",{children:"Visualizar como Posi\xE7\xE3o 02 em 05/11 e em 16/11: a cobertura entra e sai sozinha (2 min)."}),(0,o.jsx)("li",{children:"Abrir a vis\xE3o 360\xB0 de um cliente: documento mascarado, produtos, hist\xF3rico e CRM (1 min)."})]}),(0,o.jsx)("p",{className:"text-caption text-secondary-foreground",children:'Use "Reiniciar cen\xE1rio" no topo para voltar ao estado inicial entre apresenta\xE7\xF5es.'})]})]})}var u=p(y(),1),Fa=[{id:"capa",rotulo:"Apresenta\xE7\xE3o",icone:(0,u.jsx)(Z,{"aria-hidden":!0,className:"size-4"})},{id:"cockpit",rotulo:"Torre de Controle",icone:(0,u.jsx)(N,{"aria-hidden":!0,className:"size-4"})},{id:"posicoes",rotulo:"Posi\xE7\xF5es",icone:(0,u.jsx)(X,{"aria-hidden":!0,className:"size-4"})},{id:"carteira",rotulo:"Carteira",icone:(0,u.jsx)(J,{"aria-hidden":!0,className:"size-4"})},{id:"delegacoes",rotulo:"Delega\xE7\xF5es",icone:(0,u.jsx)(z,{"aria-hidden":!0,className:"size-4"})}],Da=()=>{let e=window.location.hash.replace(/^#\/?/,"");return Fa.some(a=>a.id===e)?e:"capa"};function Xa(){try{let e=window.localStorage.getItem("carteira.sessao");if(e)return JSON.parse(e)}catch{}return{papel:"GG",dataSimulada:null}}function Ra({mfes:e}){var F,w,A;let{cockpit:a,posicoes:d,carteira:l,delegacao:c}=e,[n,C]=i.useState(Da),[r,L]=i.useState(Xa),[M,D]=i.useState(0),[H,T]=i.useState(),k=i.useRef(r);k.current=r;let h=i.useMemo(()=>(0,x.criarApi)({baseUrl:"/api/v1",obterSessao:()=>k.current,fetchImpl:(0,x.ambienteGas)()?(0,x.criarFetchGas)():void 0}),[]),P=(0,x.useConsulta)(()=>h.atores(),[r.dataSimulada,M]);i.useEffect(()=>{let t=()=>C(Da());return window.addEventListener("hashchange",t),()=>window.removeEventListener("hashchange",t)},[]),i.useEffect(()=>{try{window.localStorage.setItem("carteira.sessao",JSON.stringify(r))}catch{}},[r]),i.useEffect(()=>{var I;let t=(I=P.dados)==null?void 0:I.atores;t&&!t.some(f=>f.papel===r.papel&&(f.papel==="GG"||f.id_gerente))&&L(f=>({...f,papel:"GG"}))},[P.dados,r.papel]);let S=i.useCallback(t=>{window.location.hash=`/${t}`,C(t)},[]),q=i.useCallback(t=>{window.dispatchEvent(new CustomEvent(x.EVENTO_MFE,{detail:t})),t.tipo==="navegar"?S(t.destino==="cockpit"?"cockpit":t.destino):t.tipo==="abrir-redistribuicao"?(T({tipo:"abrir-redistribuicao",idPosicaoOrigem:t.idPosicaoOrigem,nonce:Date.now()}),S("carteira")):t.tipo==="dados-alterados"&&D(I=>I+1)},[S]),b=r.papel==="GG",g={api:h,sessao:r,ehGerenteGeral:b,versao:M,emitir:q,comando:H};async function v(){await h.reiniciarCenario(),D(t=>t+1)}async function U(){await h.recarregarDados(),D(t=>t+1)}return(0,u.jsx)(s.ProvedorDica,{children:(0,u.jsxs)("div",{className:"min-h-screen md:grid md:grid-cols-[15rem_1fr]",children:[(0,u.jsxs)("nav",{"aria-label":"Principal",className:"flex gap-1 overflow-x-auto bg-sidebar p-3 text-sidebar-foreground md:sticky md:top-0 md:h-screen md:flex-col md:gap-2 md:p-4",children:[(0,u.jsxs)("div",{className:"hidden items-center gap-2 px-2 pb-4 pt-2 md:flex",children:[(0,u.jsx)(K,{"aria-hidden":!0,className:"size-5"}),(0,u.jsx)("span",{className:"text-heading-sm",children:"Carteira Banc\xE1ria"})]}),Fa.map(t=>(0,u.jsxs)("a",{href:`#/${t.id}`,"aria-current":n===t.id?"page":void 0,className:(0,s.cn)("flex min-h-10 items-center gap-2 whitespace-nowrap rounded-md px-3 text-button-sm hover:bg-sidebar-active",n===t.id?"bg-sidebar-active text-sidebar-foreground":"text-sidebar-muted"),children:[t.icone,t.rotulo]},t.id)),(0,u.jsx)("p",{className:"mt-auto hidden px-3 pb-2 text-micro text-sidebar-muted md:block",children:"POC \xB7 dados sint\xE9ticos"})]}),(0,u.jsxs)("div",{className:"flex min-w-0 flex-col",children:[(0,u.jsxs)("header",{className:"sticky top-0 z-20 flex flex-wrap items-end gap-4 border-b border-border bg-card px-6 py-3",children:[(0,u.jsx)(s.CampoSelecao,{id:"visualizar-como",rotulo:"Visualizar como",className:"w-full max-w-sm sm:w-80",valor:r.papel,aoMudar:t=>L(I=>({...I,papel:t})),opcoes:((w=(F=P.dados)==null?void 0:F.atores)!=null?w:[{papel:"GG",rotulo:"Gerente Geral",id_gerente:null}]).filter(t=>t.papel==="GG"||t.id_gerente).map(t=>({valor:t.papel,rotulo:t.rotulo}))}),(0,u.jsxs)("div",{children:[(0,u.jsx)(s.Rotulo,{htmlFor:"data-simulada",children:"Data da demonstra\xE7\xE3o"}),(0,u.jsx)(s.Campo,{id:"data-simulada",type:"date",className:"tnum w-44",value:(A=r.dataSimulada)!=null?A:"",onChange:t=>L(I=>({...I,dataSimulada:t.target.value||null}))})]}),r.dataSimulada?(0,u.jsx)(s.Botao,{variante:"fantasma",onClick:()=>L(t=>({...t,dataSimulada:null})),children:"Voltar para hoje"}):null,(0,u.jsxs)("div",{className:"ml-auto flex flex-wrap gap-2",children:[(0,x.ambienteGas)()?(0,u.jsx)(s.Botao,{variante:"fantasma",onClick:()=>{U()},children:"Recarregar da planilha"}):null,(0,u.jsxs)(s.Botao,{variante:"secundario",onClick:()=>{v()},children:[(0,u.jsx)(Q,{"aria-hidden":!0,className:"size-4"})," Reiniciar cen\xE1rio"]})]})]}),(0,u.jsx)("div",{className:"px-6 pt-4",children:(0,u.jsxs)(s.Aviso,{variante:"atencao",titulo:"Modo simula\xE7\xE3o",children:["O papel e a data s\xE3o simulados para a demonstra\xE7\xE3o; n\xE3o h\xE1 autentica\xE7\xE3o real nesta POC.",r.dataSimulada?(0,u.jsxs)(u.Fragment,{children:[" Data simulada: ",(0,u.jsx)("strong",{className:"tnum font-normal text-foreground",children:(0,s.dataBR)(r.dataSimulada)}),"."]}):null," Todos os dados s\xE3o sint\xE9ticos."]})}),(0,u.jsx)("main",{className:"mx-auto w-full max-w-[1440px] flex-1 p-6",id:"conteudo",children:(0,u.jsxs)(i.Suspense,{fallback:(0,u.jsxs)("div",{"aria-busy":"true",className:"flex flex-col gap-4",children:[(0,u.jsx)(s.Esqueleto,{className:"h-10 w-72"}),(0,u.jsx)(s.Esqueleto,{className:"h-96"})]}),children:[n==="capa"?(0,u.jsx)(Ma,{definirSessao:L,navegar:S}):null,n==="cockpit"?(0,u.jsx)(a,{...g}):null,n==="posicoes"?(0,u.jsx)(d,{...g}):null,n==="carteira"?(0,u.jsx)(l,{...g}):null,n==="delegacoes"?(0,u.jsx)(c,{...g}):null]})})]})]})})}var Ua=p(y(),1),qa,va=(qa=window.CARTEIRA_MFES)!=null?qa:{},ya=["cockpit","posicoes","carteira","delegacao"].filter(e=>!va[e]),Ta=document.getElementById("raiz");ya.length>0?Ta.textContent=`Micro-frontends ausentes: ${ya.join(", ")}`:(0,ba.createRoot)(Ta).render((0,Ua.jsx)(Ra,{mfes:va}));})();
+"use strict";
+(() => {
+  var __create = Object.create;
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getProtoOf = Object.getPrototypeOf;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __commonJS = (cb, mod) => function __require() {
+    try {
+      return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+    } catch (e) {
+      throw mod = 0, e;
+    }
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+    mod
+  ));
+
+  // global:react-dom/client
+  var require_client = __commonJS({
+    "global:react-dom/client"(exports, module) {
+      module.exports = CARTEIRA_RUNTIME.ReactDOM;
+    }
+  });
+
+  // global:react
+  var require_react = __commonJS({
+    "global:react"(exports, module) {
+      module.exports = CARTEIRA_RUNTIME.React;
+    }
+  });
+
+  // global:@carteira/ui
+  var require_ui = __commonJS({
+    "global:@carteira/ui"(exports, module) {
+      module.exports = CARTEIRA_RUNTIME.UI;
+    }
+  });
+
+  // global:@carteira/sdk
+  var require_sdk = __commonJS({
+    "global:@carteira/sdk"(exports, module) {
+      module.exports = CARTEIRA_RUNTIME.SDK;
+    }
+  });
+
+  // global:react/jsx-runtime
+  var require_jsx_runtime = __commonJS({
+    "global:react/jsx-runtime"(exports, module) {
+      module.exports = CARTEIRA_RUNTIME.JsxRuntime;
+    }
+  });
+
+  // frontend/shell/src/main.gas.tsx
+  var import_client = __toESM(require_client(), 1);
+
+  // frontend/shell/src/App.tsx
+  var React = __toESM(require_react(), 1);
+
+  // node_modules/lucide-react/dist/esm/createLucideIcon.mjs
+  var import_react3 = __toESM(require_react(), 1);
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toKebabCase.mjs
+  var toKebabCase = (string) => string == null ? void 0 : string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toLucideIconData.mjs
+  function toLucideIconData(iconName, iconNode, aliases = []) {
+    if (iconNode == null) {
+      throw new Error("[lucide]: iconNode is required when icon name is used");
+    }
+    return {
+      name: toKebabCase(iconName),
+      size: 24,
+      node: iconNode,
+      ...aliases.length > 0 ? { aliases } : {}
+    };
+  }
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toCamelCase.mjs
+  var toCamelCase = (string) => {
+    let out = "";
+    let upperNext = false;
+    for (const ch of string) {
+      if (ch === "-" || ch === "_" || ch <= " ") {
+        upperNext = out.length > 0;
+        continue;
+      }
+      if (out.length === 0) {
+        out += ch.toLowerCase();
+      } else {
+        out += upperNext ? ch.toUpperCase() : ch;
+      }
+      upperNext = false;
+    }
+    return out;
+  };
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toPascalCase.mjs
+  var toPascalCase = (string) => {
+    const camelCase = toCamelCase(string);
+    return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
+  };
+
+  // node_modules/lucide-react/dist/esm/Icon.mjs
+  var import_react2 = __toESM(require_react(), 1);
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/mergeClasses.mjs
+  var mergeClasses = (...classes) => classes.filter((className, index, array) => {
+    return Boolean(className) && className.trim() !== "" && array.indexOf(className) === index;
+  }).join(" ").trim();
+
+  // node_modules/lucide-react/dist/esm/shared/src/build/defaultAttributes.mjs
+  var defaultAttributes = {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 24,
+    height: 24,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    "stroke-width": 2,
+    "stroke-linecap": "round",
+    "stroke-linejoin": "round"
+  };
+
+  // node_modules/lucide-react/dist/esm/shared/src/build/buildLucideIconNode.mjs
+  function isDefined(value) {
+    return value !== null && value !== void 0;
+  }
+  function buildLucideIconNode(icon, params = {}) {
+    var _a2, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
+    const attributeNames = (_a2 = params.attributeNames) != null ? _a2 : {};
+    const getAttributeName = (attributeName) => {
+      var _a3;
+      return (_a3 = attributeNames[attributeName]) != null ? _a3 : attributeName;
+    };
+    const viewBoxWidth = (_c = (_b = icon.size) != null ? _b : icon.width) != null ? _c : defaultAttributes["width"];
+    const viewBoxHeight = (_e = (_d = icon.size) != null ? _d : icon.height) != null ? _e : defaultAttributes["height"];
+    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => `lucide-${alias}`)) != null ? _g : [];
+    const iconClassNames = [...icon.name ? [`lucide-${icon.name}`] : [], ...aliasClassNames];
+    const classNamesFromClassName = (_i = (_h = params.className) == null ? void 0 : _h.split(" ").filter(Boolean)) != null ? _i : [];
+    const className = params.includeDefaultClasses === false ? mergeClasses(...classNamesFromClassName) : mergeClasses("lucide", ...iconClassNames, ...classNamesFromClassName);
+    const calculatedStrokeWidth = params.absoluteStrokeWidth ? Number((_j = params.strokeWidth) != null ? _j : defaultAttributes["stroke-width"]) * Number((_l = (_k = icon.size) != null ? _k : icon.width) != null ? _l : defaultAttributes["width"]) / Number((_n = (_m = params.size) != null ? _m : params.width) != null ? _n : defaultAttributes["width"]) : (_o = params.strokeWidth) != null ? _o : defaultAttributes["stroke-width"];
+    const attributes = {
+      ...Object.entries(defaultAttributes).reduce((attrs, [attrName, value]) => {
+        attrs[getAttributeName(attrName)] = value;
+        return attrs;
+      }, {}),
+      ..."color" in params && params.color && {
+        [getAttributeName("stroke")]: params.color
+      },
+      ..."size" in params && isDefined(params.size) && {
+        [getAttributeName("width")]: params.size,
+        [getAttributeName("height")]: params.size
+      },
+      ..."width" in params && isDefined(params.width) && {
+        [getAttributeName("width")]: params.width
+      },
+      ..."height" in params && isDefined(params.height) && {
+        [getAttributeName("height")]: params.height
+      },
+      [getAttributeName("stroke-width")]: calculatedStrokeWidth,
+      ...className && {
+        [getAttributeName("class")]: className
+      },
+      [getAttributeName("viewBox")]: `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+      ...params.hasA11yProp === false ? {
+        [getAttributeName("aria-hidden")]: "true"
+      } : {},
+      ..."attributes" in params && params.attributes
+    };
+    return [
+      "svg",
+      attributes,
+      icon.node.map((child) => {
+        const [name, attrs, children] = child;
+        const nextAttrs = params.nonScalingStroke ? { [getAttributeName("vector-effect")]: "non-scaling-stroke", ...attrs } : attrs;
+        return children ? [name, nextAttrs, children] : [name, nextAttrs];
+      })
+    ];
+  }
+
+  // node_modules/lucide-react/dist/esm/shared/src/build/buildLucideIconForReact.mjs
+  function buildLucideIconForReact(icon, params = {}) {
+    return buildLucideIconNode(icon, {
+      ...params,
+      attributeNames: {
+        ...params.attributeNames,
+        class: "className",
+        "stroke-width": "strokeWidth",
+        "stroke-linecap": "strokeLinecap",
+        "stroke-linejoin": "strokeLinejoin",
+        "vector-effect": "vectorEffect"
+      }
+    });
+  }
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/hasA11yProp.mjs
+  var hasA11yProp = (props) => {
+    for (const prop in props) {
+      if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  // node_modules/lucide-react/dist/esm/context.mjs
+  var import_react = __toESM(require_react(), 1);
+  var LucideContext = (0, import_react.createContext)({});
+  var useLucideContext = () => (0, import_react.useContext)(LucideContext);
+
+  // node_modules/lucide-react/dist/esm/Icon.mjs
+  var Icon = (0, import_react2.forwardRef)(
+    ({
+      color,
+      size,
+      width,
+      height,
+      strokeWidth,
+      absoluteStrokeWidth,
+      nonScalingStroke,
+      className = "",
+      children,
+      iconNode = [],
+      icon = {
+        node: iconNode,
+        aliases: [],
+        size: 24
+      },
+      ...rest
+    }, ref) => {
+      var _a2, _b, _c;
+      const {
+        size: contextSize = 24,
+        strokeWidth: contextStrokeWidth = 2,
+        absoluteStrokeWidth: contextAbsoluteStrokeWidth = false,
+        nonScalingStroke: contextNonScalingStroke = false,
+        color: contextColor = "currentColor",
+        className: contextClass = ""
+      } = (_a2 = useLucideContext()) != null ? _a2 : {};
+      const hasAccessibleProp = Boolean(children) || hasA11yProp(rest);
+      const [name, svgAttributes, builtIconNode = []] = buildLucideIconForReact(icon, {
+        color: color != null ? color : contextColor,
+        width: (_b = width != null ? width : size) != null ? _b : contextSize,
+        height: (_c = height != null ? height : size) != null ? _c : contextSize,
+        strokeWidth: strokeWidth != null ? strokeWidth : contextStrokeWidth,
+        absoluteStrokeWidth: absoluteStrokeWidth != null ? absoluteStrokeWidth : contextAbsoluteStrokeWidth,
+        nonScalingStroke: nonScalingStroke != null ? nonScalingStroke : contextNonScalingStroke,
+        className: mergeClasses(contextClass, className),
+        hasA11yProp: hasAccessibleProp,
+        attributes: rest
+      });
+      return (0, import_react2.createElement)(
+        name,
+        {
+          ref,
+          ...svgAttributes
+        },
+        [
+          ...builtIconNode.map(([tag, attrs]) => (0, import_react2.createElement)(tag, attrs)),
+          ...Array.isArray(children) ? children : [children]
+        ]
+      );
+    }
+  );
+
+  // node_modules/lucide-react/dist/esm/createLucideIcon.mjs
+  function createLucideIcon(iconDataOrName, iconNode = [], aliases = []) {
+    const iconData = typeof iconDataOrName === "string" ? toLucideIconData(iconDataOrName, iconNode, aliases) : iconDataOrName;
+    const Component = (0, import_react3.forwardRef)(
+      ({ className, ...props }, ref) => (0, import_react3.createElement)(Icon, {
+        ref,
+        icon: iconData,
+        className,
+        ...props
+      })
+    );
+    if (iconData.name) {
+      Component.displayName = toPascalCase(iconData.name);
+    }
+    return Component;
+  }
+
+  // node_modules/lucide-react/dist/esm/icons/calendar-clock.mjs
+  var __iconData = {
+    name: "calendar-clock",
+    size: 24,
+    node: [
+      ["path", { d: "M16 14v2.2l1.6 1", key: "fo4ql5" }],
+      ["path", { d: "M16 2v3", key: "otl347" }],
+      ["path", { d: "M21 7.338V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h2.338", key: "7hb8p4" }],
+      ["path", { d: "M3 9h5.859", key: "numkqi" }],
+      ["path", { d: "M8 2v3", key: "1ioesn" }],
+      ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
+    ]
+  };
+  __iconData.node;
+  var CalendarClock = createLucideIcon(__iconData);
+
+  // node_modules/lucide-react/dist/esm/icons/gauge.mjs
+  var __iconData2 = {
+    name: "gauge",
+    size: 24,
+    node: [
+      ["path", { d: "m12 14 4-4", key: "9kzdfg" }],
+      ["path", { d: "M3.34 19a10 10 0 1 1 17.32 0", key: "19p75a" }]
+    ]
+  };
+  __iconData2.node;
+  var Gauge = createLucideIcon(__iconData2);
+
+  // node_modules/lucide-react/dist/esm/icons/landmark.mjs
+  var __iconData3 = {
+    name: "landmark",
+    size: 24,
+    node: [
+      ["path", { d: "M10 18v-7", key: "wt116b" }],
+      [
+        "path",
+        {
+          d: "M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z",
+          key: "yxxwt6"
+        }
+      ],
+      ["path", { d: "M14 18v-7", key: "vav6t3" }],
+      ["path", { d: "M18 18v-7", key: "aexdmj" }],
+      ["path", { d: "M3 22h18", key: "8prr45" }],
+      ["path", { d: "M6 18v-7", key: "1ivflk" }]
+    ]
+  };
+  __iconData3.node;
+  var Landmark = createLucideIcon(__iconData3);
+
+  // node_modules/lucide-react/dist/esm/icons/layout-dashboard.mjs
+  var __iconData4 = {
+    name: "layout-dashboard",
+    size: 24,
+    node: [
+      ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
+      ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
+      ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
+      ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
+    ]
+  };
+  __iconData4.node;
+  var LayoutDashboard = createLucideIcon(__iconData4);
+
+  // node_modules/lucide-react/dist/esm/icons/presentation.mjs
+  var __iconData5 = {
+    name: "presentation",
+    size: 24,
+    node: [
+      ["path", { d: "M2 3h20", key: "91anmk" }],
+      ["path", { d: "M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3", key: "2k9sn8" }],
+      ["path", { d: "m7 21 5-5 5 5", key: "bip4we" }]
+    ]
+  };
+  __iconData5.node;
+  var Presentation = createLucideIcon(__iconData5);
+
+  // node_modules/lucide-react/dist/esm/icons/rotate-ccw.mjs
+  var __iconData6 = {
+    name: "rotate-ccw",
+    size: 24,
+    node: [
+      ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
+      ["path", { d: "M3 3v5h5", key: "1xhq8a" }]
+    ]
+  };
+  __iconData6.node;
+  var RotateCcw = createLucideIcon(__iconData6);
+
+  // node_modules/lucide-react/dist/esm/icons/users.mjs
+  var __iconData7 = {
+    name: "users",
+    size: 24,
+    node: [
+      ["path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", key: "1yyitq" }],
+      ["path", { d: "M16 3.128a4 4 0 0 1 0 7.744", key: "16gr8j" }],
+      ["path", { d: "M22 21v-2a4 4 0 0 0-3-3.87", key: "kshegd" }],
+      ["circle", { cx: "9", cy: "7", r: "4", key: "nufk8" }]
+    ]
+  };
+  __iconData7.node;
+  var Users = createLucideIcon(__iconData7);
+
+  // frontend/shell/src/App.tsx
+  var import_ui2 = __toESM(require_ui(), 1);
+  var import_sdk = __toESM(require_sdk(), 1);
+
+  // frontend/shell/src/paginas/Capa.tsx
+  var import_ui = __toESM(require_ui(), 1);
+  var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
+  var JORNADAS = [
+    {
+      id: "j-cotidiano",
+      titulo: "1. Opera\xE7\xE3o cotidiana",
+      cena: "Cada gerente abre a sua tela e enxerga estritamente os clientes da sua Posi\xE7\xE3o. O Gerente Geral v\xEA a ag\xEAncia inteira.",
+      mensagem: "Quem atende quem \xE9 uma regra da mesa, n\xE3o da pessoa.",
+      prova: 'Alternar "Visualizar como" entre as posi\xE7\xF5es e o Gerente Geral.',
+      acao: "Abrir Torre de Controle",
+      sessao: { papel: "GG", dataSimulada: null },
+      destino: "cockpit"
+    },
+    {
+      id: "j-ferias",
+      titulo: "2. F\xE9rias ou afastamento",
+      cena: "A Posi\xE7\xE3o 01 sai de f\xE9rias de 01/11 a 15/11 e a Posi\xE7\xE3o 02 assume a cobertura.",
+      mensagem: "No 16\xBA dia o acesso termina sozinho, sem chamado para a TI.",
+      prova: 'Em 05/11 a Posi\xE7\xE3o 02 v\xEA "Minha Carteira" e "Carteira Delegada"; em 16/11 s\xF3 a pr\xF3pria.',
+      acao: "Ver cobertura em 05/11",
+      sessao: { papel: "POS-AG01-002", dataSimulada: "2026-11-05" },
+      destino: "carteira"
+    },
+    {
+      id: "j-turnover",
+      titulo: "3. Sa\xEDda ou troca de gerente",
+      cena: "Um colaborador \xE9 desligado ou promovido; troca-se apenas o nome ligado \xE0 Posi\xE7\xE3o.",
+      mensagem: "A carteira, o hist\xF3rico e as m\xE9tricas continuam 100% preservados.",
+      prova: "Trocar o titular da Posi\xE7\xE3o 03 e conferir que os clientes seguem os mesmos.",
+      acao: "Trocar titular da Posi\xE7\xE3o 03",
+      sessao: { papel: "GG", dataSimulada: null },
+      destino: "posicoes"
+    }
+  ];
+  function Capa({ definirSessao, navegar }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-labelledby": "titulo-capa", className: "relative overflow-hidden rounded-xl border border-border bg-card", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { "aria-hidden": true, className: "absolute inset-0 size-full", preserveAspectRatio: "none", viewBox: "0 0 1200 360", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("defs", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("filter", { id: "desfoque", x: "-20%", y: "-20%", width: "140%", height: "140%", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("feGaussianBlur", { stdDeviation: "55" }) }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", { filter: "url(#desfoque)", opacity: "0.9", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ellipse", { cx: "120", cy: "90", rx: "260", ry: "150", fill: "var(--color-canvas-cream)" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ellipse", { cx: "380", cy: "230", rx: "230", ry: "120", fill: "var(--color-lemon)", opacity: "0.35" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ellipse", { cx: "620", cy: "80", rx: "250", ry: "130", fill: "var(--color-primary-bg-subdued-hover)" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ellipse", { cx: "860", cy: "210", rx: "240", ry: "130", fill: "var(--color-primary)", opacity: "0.55" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ellipse", { cx: "1060", cy: "90", rx: "220", ry: "120", fill: "var(--color-ruby)", opacity: "0.5" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ellipse", { cx: "1130", cy: "270", rx: "160", ry: "90", fill: "var(--color-magenta)", opacity: "0.45" })
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "relative px-6 py-12 md:px-12 md:py-16", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-micro-cap uppercase text-secondary-foreground", children: "Prova de conceito \xB7 dados sint\xE9ticos" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { id: "titulo-capa", className: "mt-3 max-w-3xl text-display-xl text-foreground", children: "Gest\xE3o de carteira por Posi\xE7\xE3o, n\xE3o por pessoa" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-4 max-w-2xl text-body-lg text-secondary-foreground", children: "Cinco mesas de atendimento, uma carteira por mesa. Trocar o gerente, cobrir f\xE9rias ou rebalancear a ag\xEAncia n\xE3o exige migrar um \xFAnico cliente." })
+        ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Fluxo funcional", className: "flex flex-col gap-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { className: "text-display-md text-foreground", children: "O que o gestor precisa ver \u2014 em 10 minutos" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "grid grid-cols-1 gap-4 lg:grid-cols-3", children: JORNADAS.map((j) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { className: "flex flex-col gap-3", "aria-labelledby": j.id, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", { id: j.id, className: "text-heading-lg text-foreground", children: j.titulo }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("dl", { className: "flex flex-1 flex-col gap-3 text-body-md", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dt", { className: "text-caption text-muted-foreground", children: "Cena" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", { className: "text-foreground", children: j.cena })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dt", { className: "text-caption text-muted-foreground", children: "Mensagem de neg\xF3cio" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", { className: "text-foreground", children: j.mensagem })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dt", { className: "text-caption text-muted-foreground", children: "Prova na tela" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", { className: "text-secondary-foreground", children: j.prova })
+            ] })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { variante: "secundario", onClick: () => {
+            definirSessao(j.sessao);
+            navegar(j.destino);
+          }, children: j.acao })
+        ] }, j.id)) })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Roteiro de demonstra\xE7\xE3o", className: "flex flex-col gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { className: "text-heading-lg text-foreground", children: "Roteiro sugerido" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ol", { className: "flex list-decimal flex-col gap-2 pl-6 text-body-md text-secondary-foreground", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: "Torre de Controle como Gerente Geral: totais da ag\xEAncia e as posi\xE7\xF5es fora do limite de capacidade (2 min)." }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: "Redistribuir 20 clientes da Posi\xE7\xE3o 01 para a Posi\xE7\xE3o 04: simular, confirmar, ver o alerta sumir e desfazer (3 min)." }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: "Trocar o titular da Posi\xE7\xE3o 03 e provar que a carteira n\xE3o mudou (2 min)." }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: "Visualizar como Posi\xE7\xE3o 02 em 05/11 e em 16/11: a cobertura entra e sai sozinha (2 min)." }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: "Abrir a vis\xE3o 360\xB0 de um cliente: documento mascarado, produtos, hist\xF3rico e CRM (1 min)." })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-caption text-secondary-foreground", children: 'Use "Reiniciar cen\xE1rio" no topo para voltar ao estado inicial entre apresenta\xE7\xF5es.' })
+      ] })
+    ] });
+  }
+
+  // frontend/shell/src/App.tsx
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
+  var ROTAS = [
+    { id: "capa", rotulo: "Apresenta\xE7\xE3o", icone: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Presentation, { "aria-hidden": true, className: "size-4" }) },
+    { id: "cockpit", rotulo: "Torre de Controle", icone: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Gauge, { "aria-hidden": true, className: "size-4" }) },
+    { id: "posicoes", rotulo: "Posi\xE7\xF5es", icone: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Landmark, { "aria-hidden": true, className: "size-4" }) },
+    { id: "carteira", rotulo: "Carteira", icone: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Users, { "aria-hidden": true, className: "size-4" }) },
+    { id: "delegacoes", rotulo: "Delega\xE7\xF5es", icone: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(CalendarClock, { "aria-hidden": true, className: "size-4" }) }
+  ];
+  var rotaDoHash = () => {
+    const h = window.location.hash.replace(/^#\/?/, "");
+    return ROTAS.some((r) => r.id === h) ? h : "capa";
+  };
+  function lerSessao() {
+    try {
+      const bruto = window.localStorage.getItem("carteira.sessao");
+      if (bruto) return JSON.parse(bruto);
+    } catch {
+    }
+    return { papel: "GG", dataSimulada: null };
+  }
+  function App({ mfes: mfes2 }) {
+    var _a2, _b, _c;
+    const { cockpit: Cockpit, posicoes: Posicoes, carteira: Carteira, delegacao: Delegacao } = mfes2;
+    const [rota, setRota] = React.useState(rotaDoHash);
+    const [sessao, setSessao] = React.useState(lerSessao);
+    const [versao, setVersao] = React.useState(0);
+    const [comando, setComando] = React.useState();
+    const sessaoRef = React.useRef(sessao);
+    sessaoRef.current = sessao;
+    const api = React.useMemo(() => (0, import_sdk.criarApi)({ baseUrl: "/api/v1", obterSessao: () => sessaoRef.current, fetchImpl: (0, import_sdk.ambienteGas)() ? (0, import_sdk.criarFetchGas)() : void 0 }), []);
+    const atores = (0, import_sdk.useConsulta)(() => api.atores(), [sessao.dataSimulada, versao]);
+    React.useEffect(() => {
+      const aoMudarHash = () => setRota(rotaDoHash());
+      window.addEventListener("hashchange", aoMudarHash);
+      return () => window.removeEventListener("hashchange", aoMudarHash);
+    }, []);
+    React.useEffect(() => {
+      try {
+        window.localStorage.setItem("carteira.sessao", JSON.stringify(sessao));
+      } catch {
+      }
+    }, [sessao]);
+    React.useEffect(() => {
+      var _a3;
+      const lista = (_a3 = atores.dados) == null ? void 0 : _a3.atores;
+      if (lista && !lista.some((a) => a.papel === sessao.papel && (a.papel === "GG" || a.id_gerente))) setSessao((s) => ({ ...s, papel: "GG" }));
+    }, [atores.dados, sessao.papel]);
+    const navegar = React.useCallback((destino) => {
+      window.location.hash = `/${destino}`;
+      setRota(destino);
+    }, []);
+    const emitir = React.useCallback((e) => {
+      window.dispatchEvent(new CustomEvent(import_sdk.EVENTO_MFE, { detail: e }));
+      if (e.tipo === "navegar") navegar(e.destino === "cockpit" ? "cockpit" : e.destino);
+      else if (e.tipo === "abrir-redistribuicao") {
+        setComando({ tipo: "abrir-redistribuicao", idPosicaoOrigem: e.idPosicaoOrigem, nonce: Date.now() });
+        navegar("carteira");
+      } else if (e.tipo === "dados-alterados") setVersao((v) => v + 1);
+    }, [navegar]);
+    const ehGerenteGeral = sessao.papel === "GG";
+    const props = { api, sessao, ehGerenteGeral, versao, emitir, comando };
+    async function reiniciar() {
+      await api.reiniciarCenario();
+      setVersao((v) => v + 1);
+    }
+    async function recarregar() {
+      await api.recarregarDados();
+      setVersao((v) => v + 1);
+    }
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.ProvedorDica, { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "min-h-screen md:grid md:grid-cols-[15rem_1fr]", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("nav", { "aria-label": "Principal", className: "flex gap-1 overflow-x-auto bg-sidebar p-3 text-sidebar-foreground md:sticky md:top-0 md:h-screen md:flex-col md:gap-2 md:p-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "hidden items-center gap-2 px-2 pb-4 pt-2 md:flex", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(LayoutDashboard, { "aria-hidden": true, className: "size-5" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-heading-sm", children: "Carteira Banc\xE1ria" })
+        ] }),
+        ROTAS.map((r) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+          "a",
+          {
+            href: `#/${r.id}`,
+            "aria-current": rota === r.id ? "page" : void 0,
+            className: (0, import_ui2.cn)("flex min-h-10 items-center gap-2 whitespace-nowrap rounded-md px-3 text-button-sm hover:bg-sidebar-active", rota === r.id ? "bg-sidebar-active text-sidebar-foreground" : "text-sidebar-muted"),
+            children: [
+              r.icone,
+              r.rotulo
+            ]
+          },
+          r.id
+        )),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mt-auto hidden px-3 pb-2 text-micro text-sidebar-muted md:block", children: "POC \xB7 dados sint\xE9ticos" })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex min-w-0 flex-col", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("header", { className: "sticky top-0 z-20 flex flex-wrap items-end gap-4 border-b border-border bg-card px-6 py-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+            import_ui2.CampoSelecao,
+            {
+              id: "visualizar-como",
+              rotulo: "Visualizar como",
+              className: "w-full max-w-sm sm:w-80",
+              valor: sessao.papel,
+              aoMudar: (papel) => setSessao((s) => ({ ...s, papel })),
+              opcoes: ((_b = (_a2 = atores.dados) == null ? void 0 : _a2.atores) != null ? _b : [{ papel: "GG", rotulo: "Gerente Geral", id_gerente: null }]).filter((a) => a.papel === "GG" || a.id_gerente).map((a) => ({ valor: a.papel, rotulo: a.rotulo }))
+            }
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Rotulo, { htmlFor: "data-simulada", children: "Data da demonstra\xE7\xE3o" }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Campo, { id: "data-simulada", type: "date", className: "tnum w-44", value: (_c = sessao.dataSimulada) != null ? _c : "", onChange: (e) => setSessao((s) => ({ ...s, dataSimulada: e.target.value || null })) })
+          ] }),
+          sessao.dataSimulada ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { variante: "fantasma", onClick: () => setSessao((s) => ({ ...s, dataSimulada: null })), children: "Voltar para hoje" }) : null,
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "ml-auto flex flex-wrap gap-2", children: [
+            (0, import_sdk.ambienteGas)() ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Botao, { variante: "fantasma", onClick: () => void recarregar(), children: "Recarregar da planilha" }) : null,
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Botao, { variante: "secundario", onClick: () => void reiniciar(), children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(RotateCcw, { "aria-hidden": true, className: "size-4" }),
+              " Reiniciar cen\xE1rio"
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "px-6 pt-4", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_ui2.Aviso, { variante: "atencao", titulo: "Modo simula\xE7\xE3o", children: [
+          "O papel e a data s\xE3o simulados para a demonstra\xE7\xE3o; n\xE3o h\xE1 autentica\xE7\xE3o real nesta POC.",
+          sessao.dataSimulada ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
+            " Data simulada: ",
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("strong", { className: "tnum font-normal text-foreground", children: (0, import_ui2.dataBR)(sessao.dataSimulada) }),
+            "."
+          ] }) : null,
+          " Todos os dados s\xE3o sint\xE9ticos."
+        ] }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("main", { className: "mx-auto w-full max-w-[1440px] flex-1 p-6", id: "conteudo", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(React.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { "aria-busy": "true", className: "flex flex-col gap-4", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-10 w-72" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_ui2.Esqueleto, { className: "h-96" })
+        ] }), children: [
+          rota === "capa" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Capa, { definirSessao: setSessao, navegar }) : null,
+          rota === "cockpit" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Cockpit, { ...props }) : null,
+          rota === "posicoes" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Posicoes, { ...props }) : null,
+          rota === "carteira" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Carteira, { ...props }) : null,
+          rota === "delegacoes" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Delegacao, { ...props }) : null
+        ] }) })
+      ] })
+    ] }) });
+  }
+
+  // frontend/shell/src/main.gas.tsx
+  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+  var _a;
+  var mfes = (_a = window.CARTEIRA_MFES) != null ? _a : {};
+  var faltando = ["cockpit", "posicoes", "carteira", "delegacao"].filter((k) => !mfes[k]);
+  var raiz = document.getElementById("raiz");
+  if (faltando.length > 0) {
+    raiz.textContent = `Micro-frontends ausentes: ${faltando.join(", ")}`;
+  } else {
+    (0, import_client.createRoot)(raiz).render(/* @__PURE__ */ (0, import_jsx_runtime3.jsx)(App, { mfes }));
+  }
+})();
 
 </script>

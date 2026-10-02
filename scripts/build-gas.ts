@@ -115,11 +115,12 @@ const EXTERNOS_FRONT: Record<string, string> = {
   '@carteira/sdk': 'CARTEIRA_RUNTIME.SDK',
 };
 
-const comoScript = (js: string): string => `<script>\n${js.replace(/<\/script/gi, '<\\/script')}\n</script>\n`;
+// O HtmlService trata `&nome;` como entidade HTML (ex.: `a&&n;` do recharts quebra o JS): separa o `&` do identificador.
+const comoScript = (js: string): string => `<script>\n${js.replace(/<\/script/gi, '<\\/script').replace(/&([A-Za-z_$][\w$]*);/g, '& $1;')}\n</script>\n`;
 
 async function jsFront(entrada: string, externalizar: boolean): Promise<string> {
   const r = await esbuild({
-    entryPoints: [src(entrada)], bundle: true, write: false, format: 'iife', platform: 'browser', target: 'es2019', minify: true, legalComments: 'none',
+    entryPoints: [src(entrada)], bundle: true, write: false, format: 'iife', platform: 'browser', target: 'es2019', minify: !externalizar /* só o runtime (bibliotecas) é minificado; MFEs e shell ficam legíveis */, charset: 'ascii', legalComments: 'none',
     jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"' }, logLevel: 'error',
     plugins: externalizar ? [globais((esp) => EXTERNOS_FRONT[esp] ?? null)] : [],
   });

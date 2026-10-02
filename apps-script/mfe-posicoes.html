@@ -1,4 +1,442 @@
 <script>
-"use strict";(()=>{var pa=Object.create;var Q=Object.defineProperty;var ma=Object.getOwnPropertyDescriptor;var La=Object.getOwnPropertyNames;var Ia=Object.getPrototypeOf,xa=Object.prototype.hasOwnProperty;var V=(e,a)=>()=>{try{return a||e((a={exports:{}}).exports,a),a.exports}catch(d){throw a=0,d}};var Ca=(e,a,d,u)=>{if(a&&typeof a=="object"||typeof a=="function")for(let c of La(a))!xa.call(e,c)&&c!==d&&Q(e,c,{get:()=>a[c],enumerable:!(u=ma(a,c))||u.enumerable});return e};var B=(e,a,d)=>(d=e!=null?pa(Ia(e)):{},Ca(a||!e||!e.__esModule?Q(d,"default",{value:e,enumerable:!0}):d,e));var O=V((Pa,J)=>{J.exports=CARTEIRA_RUNTIME.React});var ra=V(($a,fa)=>{fa.exports=CARTEIRA_RUNTIME.UI});var ia=V((Ya,sa)=>{sa.exports=CARTEIRA_RUNTIME.SDK});var X=V((ae,ca)=>{ca.exports=CARTEIRA_RUNTIME.JsxRuntime});var k=B(O(),1);var W=B(O(),1);var _=e=>e==null?void 0:e.replace(/([a-z0-9])([A-Z])/g,"$1-$2").toLowerCase();function j(e,a,d=[]){if(a==null)throw new Error("[lucide]: iconNode is required when icon name is used");return{name:_(e),size:24,node:a,...d.length>0?{aliases:d}:{}}}var $=e=>{let a="",d=!1;for(let u of e){if(u==="-"||u==="_"||u<=" "){d=a.length>0;continue}a.length===0?a+=u.toLowerCase():a+=d?u.toUpperCase():u,d=!1}return a};var Y=e=>{let a=$(e);return a.charAt(0).toUpperCase()+a.slice(1)};var G=B(O(),1);var H=(...e)=>e.filter((a,d,u)=>!!a&&a.trim()!==""&&u.indexOf(a)===d).join(" ").trim();var D={xmlns:"http://www.w3.org/2000/svg",width:24,height:24,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor","stroke-width":2,"stroke-linecap":"round","stroke-linejoin":"round"};function z(e){return e!=null}function aa(e,a={}){var m,L,l,r,I,F,P,q,R,T,s,w,A,g,b;let d=(m=a.attributeNames)!=null?m:{},u=p=>{var y;return(y=d[p])!=null?y:p},c=(l=(L=e.size)!=null?L:e.width)!=null?l:D.width,i=(I=(r=e.size)!=null?r:e.height)!=null?I:D.height,f=(P=(F=e.aliases)==null?void 0:F.filter(p=>typeof p=="string"&&p.trim()!=="").map(p=>`lucide-${p}`))!=null?P:[],x=[...e.name?[`lucide-${e.name}`]:[],...f],n=(R=(q=a.className)==null?void 0:q.split(" ").filter(Boolean))!=null?R:[],S=a.includeDefaultClasses===!1?H(...n):H("lucide",...x,...n),C=a.absoluteStrokeWidth?Number((T=a.strokeWidth)!=null?T:D["stroke-width"])*Number((w=(s=e.size)!=null?s:e.width)!=null?w:D.width)/Number((g=(A=a.size)!=null?A:a.width)!=null?g:D.width):(b=a.strokeWidth)!=null?b:D["stroke-width"];return["svg",{...Object.entries(D).reduce((p,[y,E])=>(p[u(y)]=E,p),{}),..."color"in a&&a.color&&{[u("stroke")]:a.color},..."size"in a&&z(a.size)&&{[u("width")]:a.size,[u("height")]:a.size},..."width"in a&&z(a.width)&&{[u("width")]:a.width},..."height"in a&&z(a.height)&&{[u("height")]:a.height},[u("stroke-width")]:C,...S&&{[u("class")]:S},[u("viewBox")]:`0 0 ${c} ${i}`,...a.hasA11yProp===!1?{[u("aria-hidden")]:"true"}:{},..."attributes"in a&&a.attributes},e.node.map(p=>{let[y,E,K]=p,Z=a.nonScalingStroke?{[u("vector-effect")]:"non-scaling-stroke",...E}:E;return K?[y,Z,K]:[y,Z]})]}function ea(e,a={}){return aa(e,{...a,attributeNames:{...a.attributeNames,class:"className","stroke-width":"strokeWidth","stroke-linecap":"strokeLinecap","stroke-linejoin":"strokeLinejoin","vector-effect":"vectorEffect"}})}var ta=e=>{for(let a in e)if(a.startsWith("aria-")||a==="role"||a==="title")return!0;return!1};var U=B(O(),1);var ha=(0,U.createContext)({});var oa=()=>(0,U.useContext)(ha);var ua=(0,G.forwardRef)(({color:e,size:a,width:d,height:u,strokeWidth:c,absoluteStrokeWidth:i,nonScalingStroke:f,className:x="",children:n,iconNode:S=[],icon:C={node:S,aliases:[],size:24},...h},m)=>{var w,A,g;let{size:L=24,strokeWidth:l=2,absoluteStrokeWidth:r=!1,nonScalingStroke:I=!1,color:F="currentColor",className:P=""}=(w=oa())!=null?w:{},q=!!n||ta(h),[R,T,s=[]]=ea(C,{color:e!=null?e:F,width:(A=d!=null?d:a)!=null?A:L,height:(g=u!=null?u:a)!=null?g:L,strokeWidth:c!=null?c:l,absoluteStrokeWidth:i!=null?i:r,nonScalingStroke:f!=null?f:I,className:H(P,x),hasA11yProp:q,attributes:h});return(0,G.createElement)(R,{ref:m,...T},[...s.map(([b,p])=>(0,G.createElement)(b,p)),...Array.isArray(n)?n:[n]])});function da(e,a=[],d=[]){let u=typeof e=="string"?j(e,a,d):e,c=(0,W.forwardRef)(({className:i,...f},x)=>(0,W.createElement)(ua,{ref:x,icon:u,className:i,...f}));return u.name&&(c.displayName=Y(u.name)),c}var la={name:"user-round-cog",size:24,node:[["path",{d:"m14.305 19.53.923-.382",key:"3m78fa"}],["path",{d:"m15.228 16.852-.923-.383",key:"npixar"}],["path",{d:"m16.852 15.228-.383-.923",key:"5xggr7"}],["path",{d:"m16.852 20.772-.383.924",key:"dpfhf9"}],["path",{d:"m19.148 15.228.383-.923",key:"1reyyz"}],["path",{d:"m19.53 21.696-.382-.924",key:"1goivc"}],["path",{d:"M2 21a8 8 0 0 1 10.434-7.62",key:"1yezr2"}],["path",{d:"m20.772 16.852.924-.383",key:"htqkph"}],["path",{d:"m20.772 19.148.924.383",key:"9w9pjp"}],["circle",{cx:"10",cy:"8",r:"5",key:"o932ke"}],["circle",{cx:"18",cy:"18",r:"3",key:"1xkwt0"}]],aliases:["user-cog-2"]};la.node;var M=da(la);var t=B(ra(),1),v=B(ia(),1),o=B(X(),1);function N({api:e,sessao:a,versao:d,ehGerenteGeral:u,emitir:c}){var C,h,m,L;let i=(0,v.useConsulta)(()=>e.posicoes(),[a.papel,a.dataSimulada,d]),[f,x]=k.useState(null);if(i.carregando&&!i.dados)return(0,o.jsx)("div",{"aria-busy":"true",children:(0,o.jsx)(t.Esqueleto,{className:"h-96"})});if(i.erro)return i.erro instanceof v.ApiErro&&i.erro.status===403?(0,o.jsx)(t.SemPermissao,{}):(0,o.jsx)(t.EstadoErro,{mensagem:i.erro.message,aoTentar:i.recarregar});let n=(h=(C=i.dados)==null?void 0:C.itens)!=null?h:[];return(0,o.jsxs)("div",{className:"flex flex-col gap-6",children:[(0,o.jsxs)("header",{children:[(0,o.jsx)("h1",{className:"text-display-lg text-foreground",children:"Posi\xE7\xF5es"}),(0,o.jsx)("p",{className:"mt-1 text-body-md text-secondary-foreground",children:"A carteira pertence \xE0 posi\xE7\xE3o (a cadeira), nunca \xE0 pessoa. Trocar o titular n\xE3o altera nenhum cliente."})]}),(0,o.jsx)(t.TabelaDados,{colunas:[{id:"posicao",header:"Posi\xE7\xE3o",accessorFn:l=>l.nome_posicao,cell:({row:l})=>(0,o.jsxs)("div",{children:[(0,o.jsx)("p",{className:"text-body-md text-foreground",children:l.original.nome_posicao}),(0,o.jsx)("p",{className:"text-caption text-muted-foreground",children:l.original.id_posicao})]}),meta:{rotulo:"Posi\xE7\xE3o"}},{id:"titular",header:"Titular atual",accessorFn:l=>{var r,I;return(I=(r=l.titular)==null?void 0:r.nome)!=null?I:"Vaga"},cell:({row:l})=>{var r,I;return(I=(r=l.original.titular)==null?void 0:r.nome)!=null?I:(0,o.jsx)(t.Selo,{variante:"atencao",children:"Vaga"})},meta:{rotulo:"Titular atual"}},{accessorKey:"segmento_especialidade",header:"Especialidade",meta:{rotulo:"Especialidade"}},{accessorKey:"clientes_ativos",header:"Clientes ativos",cell:({getValue:l})=>(0,t.inteiro)(l()),meta:{numerica:!0,rotulo:"Clientes ativos"}},{accessorKey:"utilizacao",header:"Capacidade",cell:({row:l})=>`${(0,t.percentual)(l.original.utilizacao)} de ${(0,t.inteiro)(l.original.capacidade)}`,meta:{numerica:!0,rotulo:"Capacidade"}},{accessorKey:"status",header:"Status",cell:({getValue:l})=>(0,o.jsx)(t.Selo,{variante:"neutro",children:l()}),meta:{rotulo:"Status"}}],dados:n,rotulo:"Posi\xE7\xF5es",tamanhoPagina:10,aoClicarLinha:l=>x(l.id_posicao),buscaPlaceholder:"Buscar posi\xE7\xE3o ou titular\u2026"}),(0,o.jsx)(t.Gaveta,{open:f!==null,onOpenChange:l=>{l||x(null)},children:f?(0,o.jsx)(t.GavetaConteudo,{titulo:(L=(m=n.find(l=>l.id_posicao===f))==null?void 0:m.nome_posicao)!=null?L:f,descricao:f,children:(0,o.jsx)(Sa,{api:e,posicao:n.find(l=>l.id_posicao===f),sessao:a,versao:d,ehGerenteGeral:u,aoTrocar:()=>c({tipo:"dados-alterados",origem:"posicoes"})})}):null})]})}function Sa({api:e,posicao:a,sessao:d,versao:u,ehGerenteGeral:c,aoTrocar:i}){var h,m,L,l;let f=(0,v.useConsulta)(()=>e.historico(a.id_posicao),[a.id_posicao,d.papel,u]),[x,n]=k.useState(!1),[S,C]=k.useState(null);return(0,o.jsxs)("div",{className:"flex flex-col gap-6",children:[(0,o.jsxs)(t.Cartao,{children:[(0,o.jsx)(t.CartaoTitulo,{children:"Titular vigente"}),(0,o.jsx)("p",{className:"mt-2 text-display-md text-foreground",children:(m=(h=a.titular)==null?void 0:h.nome)!=null?m:"Posi\xE7\xE3o vaga"}),(0,o.jsxs)(t.CartaoDescricao,{children:["A carteira com ",(0,t.inteiro)(a.clientes_ativos)," clientes ativos permanece com a posi\xE7\xE3o em qualquer troca ou vac\xE2ncia."]}),c?(0,o.jsxs)(t.Botao,{className:"mt-4",onClick:()=>n(!0),children:[(0,o.jsx)(M,{"aria-hidden":!0,className:"size-4"})," Trocar titular"]}):null]}),S?(0,o.jsx)(t.Aviso,{titulo:"Titular alterado",children:S}):null,(0,o.jsxs)("section",{"aria-label":"Hist\xF3rico de titularidade",children:[(0,o.jsx)("h2",{className:"text-heading-md text-foreground",children:"Hist\xF3rico de titularidade"}),f.carregando?(0,o.jsx)(t.Esqueleto,{className:"mt-3 h-24"}):f.erro?(0,o.jsx)(t.EstadoErro,{mensagem:f.erro.message,aoTentar:f.recarregar}):(0,o.jsx)("ol",{className:"mt-3 flex flex-col gap-4 border-l border-border pl-4",children:[...(l=(L=f.dados)==null?void 0:L.itens)!=null?l:[]].reverse().map(r=>(0,o.jsxs)("li",{className:"relative",children:[(0,o.jsx)("span",{"aria-hidden":!0,className:"absolute -left-[21px] top-1.5 size-2.5 rounded-pill bg-primary"}),(0,o.jsx)("p",{className:"text-body-md text-foreground",children:r.nome_gerente}),(0,o.jsxs)("p",{className:"tnum text-caption text-muted-foreground",children:[(0,t.dataBR)(r.data_inicio)," \u2192 ",r.data_fim?(0,t.dataBR)(r.data_fim):"atual"," \xB7 ",r.tipo_vinculo]})]},r.id_ocupacao))})]}),x?(0,o.jsx)(ga,{api:e,posicao:a,dataPadrao:d.dataSimulada,aoFechar:()=>n(!1),aoConcluir:r=>{n(!1),C(r),i()}}):null]})}function ga({api:e,posicao:a,dataPadrao:d,aoFechar:u,aoConcluir:c}){var R,T;let i=(0,v.useConsulta)(()=>e.gerentes(),[]),[f,x]=k.useState(""),[n,S]=k.useState(d!=null?d:new Date().toISOString().slice(0,10)),[C,h]=k.useState("Titular Efetivo"),[m,L]=k.useState(""),[l,r]=k.useState(null),[I,F]=k.useState(!1),P=((T=(R=i.dados)==null?void 0:R.itens)!=null?T:[]).filter(s=>s.status==="Ativo"&&s.perfil!=="Gerente Geral"&&s.posicao===null);async function q(s){var w,A;s.preventDefault(),r(null),F(!0);try{await e.trocarTitular(a.id_posicao,{id_gerente:f,data_inicio:n,tipo_vinculo:C,motivo:m||void 0});let g=(A=(w=P.find(b=>b.id_gerente===f))==null?void 0:w.nome_completo)!=null?A:f;c(`${g} assume a posi\xE7\xE3o em ${(0,t.dataBR)(n)}. Os ${(0,t.inteiro)(a.clientes_ativos)} clientes ativos continuam intactos na posi\xE7\xE3o.`)}catch(g){r(g instanceof Error?g.message:"Falha ao trocar o titular.")}finally{F(!1)}}return(0,o.jsx)(t.Dialogo,{open:!0,onOpenChange:s=>{s||u()},children:(0,o.jsx)(t.DialogoConteudo,{titulo:"Trocar titular",descricao:`${a.nome_posicao}. Nenhum cliente ser\xE1 alterado.`,children:(0,o.jsxs)("form",{onSubmit:q,className:"flex flex-col gap-4",children:[i.carregando?(0,o.jsx)(t.Esqueleto,{className:"h-10"}):P.length===0?(0,o.jsx)(t.Aviso,{variante:"atencao",children:"N\xE3o h\xE1 gerente ativo dispon\xEDvel (sem posi\xE7\xE3o). Cadastre ou desligue o titular de outra posi\xE7\xE3o antes."}):(0,o.jsx)(t.CampoSelecao,{id:"novo-titular",rotulo:"Novo titular (gerente sem posi\xE7\xE3o)",valor:f,aoMudar:x,opcoes:P.map(s=>({valor:s.id_gerente,rotulo:s.nome_completo}))}),(0,o.jsxs)("div",{children:[(0,o.jsx)(t.Rotulo,{htmlFor:"inicio-titular",children:"In\xEDcio da titularidade"}),(0,o.jsx)(t.Campo,{id:"inicio-titular",type:"date",value:n,onChange:s=>S(s.target.value),required:!0})]}),(0,o.jsx)(t.CampoSelecao,{id:"tipo-vinculo",rotulo:"Tipo de v\xEDnculo",valor:C,aoMudar:h,opcoes:["Titular Efetivo","Trainee","Interino"].map(s=>({valor:s,rotulo:s}))}),(0,o.jsxs)("div",{children:[(0,o.jsx)(t.Rotulo,{htmlFor:"motivo-titular",children:"Motivo (obrigat\xF3rio em troca retroativa)"}),(0,o.jsx)(t.AreaTexto,{id:"motivo-titular",value:m,onChange:s=>L(s.target.value)})]}),l?(0,o.jsx)(t.Aviso,{variante:"critico",children:l}):null,(0,o.jsxs)("div",{className:"flex justify-end gap-3",children:[(0,o.jsx)(t.Botao,{type:"button",variante:"secundario",onClick:u,children:"Cancelar"}),(0,o.jsx)(t.Botao,{type:"submit",disabled:!f||I,children:I?"Trocando\u2026":"Confirmar troca"})]})]})})})}var na=window;na.CARTEIRA_MFES={...na.CARTEIRA_MFES,posicoes:N};})();
+"use strict";
+(() => {
+  var __create = Object.create;
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getProtoOf = Object.getPrototypeOf;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __commonJS = (cb, mod) => function __require() {
+    try {
+      return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+    } catch (e) {
+      throw mod = 0, e;
+    }
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+    mod
+  ));
+
+  // global:react
+  var require_react = __commonJS({
+    "global:react"(exports, module) {
+      module.exports = CARTEIRA_RUNTIME.React;
+    }
+  });
+
+  // global:@carteira/ui
+  var require_ui = __commonJS({
+    "global:@carteira/ui"(exports, module) {
+      module.exports = CARTEIRA_RUNTIME.UI;
+    }
+  });
+
+  // global:@carteira/sdk
+  var require_sdk = __commonJS({
+    "global:@carteira/sdk"(exports, module) {
+      module.exports = CARTEIRA_RUNTIME.SDK;
+    }
+  });
+
+  // global:react/jsx-runtime
+  var require_jsx_runtime = __commonJS({
+    "global:react/jsx-runtime"(exports, module) {
+      module.exports = CARTEIRA_RUNTIME.JsxRuntime;
+    }
+  });
+
+  // frontend/mfe-posicoes/src/index.tsx
+  var React = __toESM(require_react(), 1);
+
+  // node_modules/lucide-react/dist/esm/createLucideIcon.mjs
+  var import_react3 = __toESM(require_react(), 1);
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toKebabCase.mjs
+  var toKebabCase = (string) => string == null ? void 0 : string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toLucideIconData.mjs
+  function toLucideIconData(iconName, iconNode, aliases = []) {
+    if (iconNode == null) {
+      throw new Error("[lucide]: iconNode is required when icon name is used");
+    }
+    return {
+      name: toKebabCase(iconName),
+      size: 24,
+      node: iconNode,
+      ...aliases.length > 0 ? { aliases } : {}
+    };
+  }
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toCamelCase.mjs
+  var toCamelCase = (string) => {
+    let out = "";
+    let upperNext = false;
+    for (const ch of string) {
+      if (ch === "-" || ch === "_" || ch <= " ") {
+        upperNext = out.length > 0;
+        continue;
+      }
+      if (out.length === 0) {
+        out += ch.toLowerCase();
+      } else {
+        out += upperNext ? ch.toUpperCase() : ch;
+      }
+      upperNext = false;
+    }
+    return out;
+  };
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toPascalCase.mjs
+  var toPascalCase = (string) => {
+    const camelCase = toCamelCase(string);
+    return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
+  };
+
+  // node_modules/lucide-react/dist/esm/Icon.mjs
+  var import_react2 = __toESM(require_react(), 1);
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/mergeClasses.mjs
+  var mergeClasses = (...classes) => classes.filter((className, index, array) => {
+    return Boolean(className) && className.trim() !== "" && array.indexOf(className) === index;
+  }).join(" ").trim();
+
+  // node_modules/lucide-react/dist/esm/shared/src/build/defaultAttributes.mjs
+  var defaultAttributes = {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 24,
+    height: 24,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    "stroke-width": 2,
+    "stroke-linecap": "round",
+    "stroke-linejoin": "round"
+  };
+
+  // node_modules/lucide-react/dist/esm/shared/src/build/buildLucideIconNode.mjs
+  function isDefined(value) {
+    return value !== null && value !== void 0;
+  }
+  function buildLucideIconNode(icon, params = {}) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
+    const attributeNames = (_a = params.attributeNames) != null ? _a : {};
+    const getAttributeName = (attributeName) => {
+      var _a2;
+      return (_a2 = attributeNames[attributeName]) != null ? _a2 : attributeName;
+    };
+    const viewBoxWidth = (_c = (_b = icon.size) != null ? _b : icon.width) != null ? _c : defaultAttributes["width"];
+    const viewBoxHeight = (_e = (_d = icon.size) != null ? _d : icon.height) != null ? _e : defaultAttributes["height"];
+    const aliasClassNames = (_g = (_f = icon.aliases) == null ? void 0 : _f.filter((alias) => typeof alias === "string" && alias.trim() !== "").map((alias) => `lucide-${alias}`)) != null ? _g : [];
+    const iconClassNames = [...icon.name ? [`lucide-${icon.name}`] : [], ...aliasClassNames];
+    const classNamesFromClassName = (_i = (_h = params.className) == null ? void 0 : _h.split(" ").filter(Boolean)) != null ? _i : [];
+    const className = params.includeDefaultClasses === false ? mergeClasses(...classNamesFromClassName) : mergeClasses("lucide", ...iconClassNames, ...classNamesFromClassName);
+    const calculatedStrokeWidth = params.absoluteStrokeWidth ? Number((_j = params.strokeWidth) != null ? _j : defaultAttributes["stroke-width"]) * Number((_l = (_k = icon.size) != null ? _k : icon.width) != null ? _l : defaultAttributes["width"]) / Number((_n = (_m = params.size) != null ? _m : params.width) != null ? _n : defaultAttributes["width"]) : (_o = params.strokeWidth) != null ? _o : defaultAttributes["stroke-width"];
+    const attributes = {
+      ...Object.entries(defaultAttributes).reduce((attrs, [attrName, value]) => {
+        attrs[getAttributeName(attrName)] = value;
+        return attrs;
+      }, {}),
+      ..."color" in params && params.color && {
+        [getAttributeName("stroke")]: params.color
+      },
+      ..."size" in params && isDefined(params.size) && {
+        [getAttributeName("width")]: params.size,
+        [getAttributeName("height")]: params.size
+      },
+      ..."width" in params && isDefined(params.width) && {
+        [getAttributeName("width")]: params.width
+      },
+      ..."height" in params && isDefined(params.height) && {
+        [getAttributeName("height")]: params.height
+      },
+      [getAttributeName("stroke-width")]: calculatedStrokeWidth,
+      ...className && {
+        [getAttributeName("class")]: className
+      },
+      [getAttributeName("viewBox")]: `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+      ...params.hasA11yProp === false ? {
+        [getAttributeName("aria-hidden")]: "true"
+      } : {},
+      ..."attributes" in params && params.attributes
+    };
+    return [
+      "svg",
+      attributes,
+      icon.node.map((child) => {
+        const [name, attrs, children] = child;
+        const nextAttrs = params.nonScalingStroke ? { [getAttributeName("vector-effect")]: "non-scaling-stroke", ...attrs } : attrs;
+        return children ? [name, nextAttrs, children] : [name, nextAttrs];
+      })
+    ];
+  }
+
+  // node_modules/lucide-react/dist/esm/shared/src/build/buildLucideIconForReact.mjs
+  function buildLucideIconForReact(icon, params = {}) {
+    return buildLucideIconNode(icon, {
+      ...params,
+      attributeNames: {
+        ...params.attributeNames,
+        class: "className",
+        "stroke-width": "strokeWidth",
+        "stroke-linecap": "strokeLinecap",
+        "stroke-linejoin": "strokeLinejoin",
+        "vector-effect": "vectorEffect"
+      }
+    });
+  }
+
+  // node_modules/lucide-react/dist/esm/shared/src/utils/hasA11yProp.mjs
+  var hasA11yProp = (props) => {
+    for (const prop in props) {
+      if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  // node_modules/lucide-react/dist/esm/context.mjs
+  var import_react = __toESM(require_react(), 1);
+  var LucideContext = (0, import_react.createContext)({});
+  var useLucideContext = () => (0, import_react.useContext)(LucideContext);
+
+  // node_modules/lucide-react/dist/esm/Icon.mjs
+  var Icon = (0, import_react2.forwardRef)(
+    ({
+      color,
+      size,
+      width,
+      height,
+      strokeWidth,
+      absoluteStrokeWidth,
+      nonScalingStroke,
+      className = "",
+      children,
+      iconNode = [],
+      icon = {
+        node: iconNode,
+        aliases: [],
+        size: 24
+      },
+      ...rest
+    }, ref) => {
+      var _a, _b, _c;
+      const {
+        size: contextSize = 24,
+        strokeWidth: contextStrokeWidth = 2,
+        absoluteStrokeWidth: contextAbsoluteStrokeWidth = false,
+        nonScalingStroke: contextNonScalingStroke = false,
+        color: contextColor = "currentColor",
+        className: contextClass = ""
+      } = (_a = useLucideContext()) != null ? _a : {};
+      const hasAccessibleProp = Boolean(children) || hasA11yProp(rest);
+      const [name, svgAttributes, builtIconNode = []] = buildLucideIconForReact(icon, {
+        color: color != null ? color : contextColor,
+        width: (_b = width != null ? width : size) != null ? _b : contextSize,
+        height: (_c = height != null ? height : size) != null ? _c : contextSize,
+        strokeWidth: strokeWidth != null ? strokeWidth : contextStrokeWidth,
+        absoluteStrokeWidth: absoluteStrokeWidth != null ? absoluteStrokeWidth : contextAbsoluteStrokeWidth,
+        nonScalingStroke: nonScalingStroke != null ? nonScalingStroke : contextNonScalingStroke,
+        className: mergeClasses(contextClass, className),
+        hasA11yProp: hasAccessibleProp,
+        attributes: rest
+      });
+      return (0, import_react2.createElement)(
+        name,
+        {
+          ref,
+          ...svgAttributes
+        },
+        [
+          ...builtIconNode.map(([tag, attrs]) => (0, import_react2.createElement)(tag, attrs)),
+          ...Array.isArray(children) ? children : [children]
+        ]
+      );
+    }
+  );
+
+  // node_modules/lucide-react/dist/esm/createLucideIcon.mjs
+  function createLucideIcon(iconDataOrName, iconNode = [], aliases = []) {
+    const iconData = typeof iconDataOrName === "string" ? toLucideIconData(iconDataOrName, iconNode, aliases) : iconDataOrName;
+    const Component = (0, import_react3.forwardRef)(
+      ({ className, ...props }, ref) => (0, import_react3.createElement)(Icon, {
+        ref,
+        icon: iconData,
+        className,
+        ...props
+      })
+    );
+    if (iconData.name) {
+      Component.displayName = toPascalCase(iconData.name);
+    }
+    return Component;
+  }
+
+  // node_modules/lucide-react/dist/esm/icons/user-round-cog.mjs
+  var __iconData = {
+    name: "user-round-cog",
+    size: 24,
+    node: [
+      ["path", { d: "m14.305 19.53.923-.382", key: "3m78fa" }],
+      ["path", { d: "m15.228 16.852-.923-.383", key: "npixar" }],
+      ["path", { d: "m16.852 15.228-.383-.923", key: "5xggr7" }],
+      ["path", { d: "m16.852 20.772-.383.924", key: "dpfhf9" }],
+      ["path", { d: "m19.148 15.228.383-.923", key: "1reyyz" }],
+      ["path", { d: "m19.53 21.696-.382-.924", key: "1goivc" }],
+      ["path", { d: "M2 21a8 8 0 0 1 10.434-7.62", key: "1yezr2" }],
+      ["path", { d: "m20.772 16.852.924-.383", key: "htqkph" }],
+      ["path", { d: "m20.772 19.148.924.383", key: "9w9pjp" }],
+      ["circle", { cx: "10", cy: "8", r: "5", key: "o932ke" }],
+      ["circle", { cx: "18", cy: "18", r: "3", key: "1xkwt0" }]
+    ],
+    aliases: ["user-cog-2"]
+  };
+  __iconData.node;
+  var UserRoundCog = createLucideIcon(__iconData);
+
+  // frontend/mfe-posicoes/src/index.tsx
+  var import_ui = __toESM(require_ui(), 1);
+  var import_sdk = __toESM(require_sdk(), 1);
+  var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
+  function Posicoes({ api, sessao, versao, ehGerenteGeral, emitir }) {
+    var _a, _b, _c, _d;
+    const lista = (0, import_sdk.useConsulta)(() => api.posicoes(), [sessao.papel, sessao.dataSimulada, versao]);
+    const [selecionada, setSelecionada] = React.useState(null);
+    if (lista.carregando && !lista.dados) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { "aria-busy": "true", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-96" }) });
+    if (lista.erro) return lista.erro instanceof import_sdk.ApiErro && lista.erro.status === 403 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.SemPermissao, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.EstadoErro, { mensagem: lista.erro.message, aoTentar: lista.recarregar });
+    const itens = (_b = (_a = lista.dados) == null ? void 0 : _a.itens) != null ? _b : [];
+    const colunas = [
+      { id: "posicao", header: "Posi\xE7\xE3o", accessorFn: (p) => p.nome_posicao, cell: ({ row }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-body-md text-foreground", children: row.original.nome_posicao }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-caption text-muted-foreground", children: row.original.id_posicao })
+      ] }), meta: { rotulo: "Posi\xE7\xE3o" } },
+      { id: "titular", header: "Titular atual", accessorFn: (p) => {
+        var _a2, _b2;
+        return (_b2 = (_a2 = p.titular) == null ? void 0 : _a2.nome) != null ? _b2 : "Vaga";
+      }, cell: ({ row }) => {
+        var _a2, _b2;
+        return (_b2 = (_a2 = row.original.titular) == null ? void 0 : _a2.nome) != null ? _b2 : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "atencao", children: "Vaga" });
+      }, meta: { rotulo: "Titular atual" } },
+      { accessorKey: "segmento_especialidade", header: "Especialidade", meta: { rotulo: "Especialidade" } },
+      { accessorKey: "clientes_ativos", header: "Clientes ativos", cell: ({ getValue }) => (0, import_ui.inteiro)(getValue()), meta: { numerica: true, rotulo: "Clientes ativos" } },
+      { accessorKey: "utilizacao", header: "Capacidade", cell: ({ row }) => `${(0, import_ui.percentual)(row.original.utilizacao)} de ${(0, import_ui.inteiro)(row.original.capacidade)}`, meta: { numerica: true, rotulo: "Capacidade" } },
+      { accessorKey: "status", header: "Status", cell: ({ getValue }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Selo, { variante: "neutro", children: getValue() }), meta: { rotulo: "Status" } }
+    ];
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-6", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "text-display-lg text-foreground", children: "Posi\xE7\xF5es" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-1 text-body-md text-secondary-foreground", children: "A carteira pertence \xE0 posi\xE7\xE3o (a cadeira), nunca \xE0 pessoa. Trocar o titular n\xE3o altera nenhum cliente." })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.TabelaDados, { colunas, dados: itens, rotulo: "Posi\xE7\xF5es", tamanhoPagina: 10, aoClicarLinha: (p) => setSelecionada(p.id_posicao), buscaPlaceholder: "Buscar posi\xE7\xE3o ou titular\u2026" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Gaveta, { open: selecionada !== null, onOpenChange: (a) => {
+        if (!a) setSelecionada(null);
+      }, children: selecionada ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.GavetaConteudo, { titulo: (_d = (_c = itens.find((p) => p.id_posicao === selecionada)) == null ? void 0 : _c.nome_posicao) != null ? _d : selecionada, descricao: selecionada, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DetalhePosicao, { api, posicao: itens.find((p) => p.id_posicao === selecionada), sessao, versao, ehGerenteGeral, aoTrocar: () => emitir({ tipo: "dados-alterados", origem: "posicoes" }) }) }) : null })
+    ] });
+  }
+  function DetalhePosicao({ api, posicao, sessao, versao, ehGerenteGeral, aoTrocar }) {
+    var _a, _b, _c, _d;
+    const hist = (0, import_sdk.useConsulta)(() => api.historico(posicao.id_posicao), [posicao.id_posicao, sessao.papel, versao]);
+    const [trocando, setTrocando] = React.useState(false);
+    const [resultado, setResultado] = React.useState(null);
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-6", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Cartao, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CartaoTitulo, { children: "Titular vigente" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-2 text-display-md text-foreground", children: (_b = (_a = posicao.titular) == null ? void 0 : _a.nome) != null ? _b : "Posi\xE7\xE3o vaga" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.CartaoDescricao, { children: [
+          "A carteira com ",
+          (0, import_ui.inteiro)(posicao.clientes_ativos),
+          " clientes ativos permanece com a posi\xE7\xE3o em qualquer troca ou vac\xE2ncia."
+        ] }),
+        ehGerenteGeral ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_ui.Botao, { className: "mt-4", onClick: () => setTrocando(true), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserRoundCog, { "aria-hidden": true, className: "size-4" }),
+          " Trocar titular"
+        ] }) : null
+      ] }),
+      resultado ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { titulo: "Titular alterado", children: resultado }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "aria-label": "Hist\xF3rico de titularidade", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { className: "text-heading-md text-foreground", children: "Hist\xF3rico de titularidade" }),
+        hist.carregando ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "mt-3 h-24" }) : hist.erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.EstadoErro, { mensagem: hist.erro.message, aoTentar: hist.recarregar }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ol", { className: "mt-3 flex flex-col gap-4 border-l border-border pl-4", children: [...(_d = (_c = hist.dados) == null ? void 0 : _c.itens) != null ? _d : []].reverse().map((o) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { className: "relative", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, className: "absolute -left-[21px] top-1.5 size-2.5 rounded-pill bg-primary" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-body-md text-foreground", children: o.nome_gerente }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "tnum text-caption text-muted-foreground", children: [
+            (0, import_ui.dataBR)(o.data_inicio),
+            " \u2192 ",
+            o.data_fim ? (0, import_ui.dataBR)(o.data_fim) : "atual",
+            " \xB7 ",
+            o.tipo_vinculo
+          ] })
+        ] }, o.id_ocupacao)) })
+      ] }),
+      trocando ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TrocarTitular, { api, posicao, dataPadrao: sessao.dataSimulada, aoFechar: () => setTrocando(false), aoConcluir: (msg) => {
+        setTrocando(false);
+        setResultado(msg);
+        aoTrocar();
+      } }) : null
+    ] });
+  }
+  function TrocarTitular({ api, posicao, dataPadrao, aoFechar, aoConcluir }) {
+    var _a, _b;
+    const gerentes = (0, import_sdk.useConsulta)(() => api.gerentes(), []);
+    const [gerente, setGerente] = React.useState("");
+    const [inicio, setInicio] = React.useState(dataPadrao != null ? dataPadrao : (/* @__PURE__ */ new Date()).toISOString().slice(0, 10));
+    const [tipo, setTipo] = React.useState("Titular Efetivo");
+    const [motivo, setMotivo] = React.useState("");
+    const [erro, setErro] = React.useState(null);
+    const [enviando, setEnviando] = React.useState(false);
+    const disponiveis = ((_b = (_a = gerentes.dados) == null ? void 0 : _a.itens) != null ? _b : []).filter((g) => g.status === "Ativo" && g.perfil !== "Gerente Geral" && g.posicao === null);
+    async function confirmar(e) {
+      var _a2, _b2;
+      e.preventDefault();
+      setErro(null);
+      setEnviando(true);
+      try {
+        await api.trocarTitular(posicao.id_posicao, { id_gerente: gerente, data_inicio: inicio, tipo_vinculo: tipo, motivo: motivo || void 0 });
+        const nome = (_b2 = (_a2 = disponiveis.find((g) => g.id_gerente === gerente)) == null ? void 0 : _a2.nome_completo) != null ? _b2 : gerente;
+        aoConcluir(`${nome} assume a posi\xE7\xE3o em ${(0, import_ui.dataBR)(inicio)}. Os ${(0, import_ui.inteiro)(posicao.clientes_ativos)} clientes ativos continuam intactos na posi\xE7\xE3o.`);
+      } catch (x) {
+        setErro(x instanceof Error ? x.message : "Falha ao trocar o titular.");
+      } finally {
+        setEnviando(false);
+      }
+    }
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Dialogo, { open: true, onOpenChange: (a) => {
+      if (!a) aoFechar();
+    }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.DialogoConteudo, { titulo: "Trocar titular", descricao: `${posicao.nome_posicao}. Nenhum cliente ser\xE1 alterado.`, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", { onSubmit: confirmar, className: "flex flex-col gap-4", children: [
+      gerentes.carregando ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Esqueleto, { className: "h-10" }) : disponiveis.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "atencao", children: "N\xE3o h\xE1 gerente ativo dispon\xEDvel (sem posi\xE7\xE3o). Cadastre ou desligue o titular de outra posi\xE7\xE3o antes." }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "novo-titular", rotulo: "Novo titular (gerente sem posi\xE7\xE3o)", valor: gerente, aoMudar: setGerente, opcoes: disponiveis.map((g) => ({ valor: g.id_gerente, rotulo: g.nome_completo })) }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "inicio-titular", children: "In\xEDcio da titularidade" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Campo, { id: "inicio-titular", type: "date", value: inicio, onChange: (e) => setInicio(e.target.value), required: true })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.CampoSelecao, { id: "tipo-vinculo", rotulo: "Tipo de v\xEDnculo", valor: tipo, aoMudar: setTipo, opcoes: ["Titular Efetivo", "Trainee", "Interino"].map((t) => ({ valor: t, rotulo: t })) }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Rotulo, { htmlFor: "motivo-titular", children: "Motivo (obrigat\xF3rio em troca retroativa)" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.AreaTexto, { id: "motivo-titular", value: motivo, onChange: (e) => setMotivo(e.target.value) })
+      ] }),
+      erro ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Aviso, { variante: "critico", children: erro }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex justify-end gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { type: "button", variante: "secundario", onClick: aoFechar, children: "Cancelar" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ui.Botao, { type: "submit", disabled: !gerente || enviando, children: enviando ? "Trocando\u2026" : "Confirmar troca" })
+      ] })
+    ] }) }) });
+  }
+
+  // frontend/mfe-posicoes/src/gas.ts
+  var w = window;
+  w.CARTEIRA_MFES = { ...w.CARTEIRA_MFES, posicoes: Posicoes };
+})();
 
 </script>
