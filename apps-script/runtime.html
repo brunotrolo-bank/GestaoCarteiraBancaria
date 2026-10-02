@@ -56928,7 +56928,10 @@
         reject(new Error("google.script.run indispon\xEDvel"));
         return;
       }
-      servidor.withSuccessHandler((r2) => resolve(new Response(r2.status === 204 ? null : JSON.stringify(r2.corpo), { status: r2.status, headers: r2.headers }))).withFailureHandler((e) => {
+      servidor.withSuccessHandler((r2) => {
+        var _a4;
+        return resolve(new Response(r2.status === 204 ? null : (_a4 = r2.corpoJson) != null ? _a4 : JSON.stringify(r2.corpo), { status: r2.status, headers: r2.headers }));
+      }).withFailureHandler((e) => {
         var _a4;
         return reject(new Error((_a4 = e == null ? void 0 : e.message) != null ? _a4 : "Falha ao chamar o servidor do Apps Script"));
       }).apiChamar({ metodo: (_a3 = init == null ? void 0 : init.method) != null ? _a3 : "GET", caminho: url.pathname, consulta, headers, corpo, corpoInvalido });

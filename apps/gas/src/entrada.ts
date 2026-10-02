@@ -16,7 +16,9 @@ export function apiChamar(req: RequisicaoApi): RespostaApi {
   if (lock) lock.waitLock(25_000);
   try {
     const store = new GasStore(planilhaId());
-    return criarManipulador({ store, simulacaoPapel: true })(req);
+    const r = criarManipulador({ store, simulacaoPapel: true })(req);
+    // google.script.run descarta campos null/undefined do objeto: o corpo viaja como texto JSON e o front o interpreta
+    return { status: r.status, headers: r.headers, corpoJson: r.corpo === undefined ? null : JSON.stringify(r.corpo) } as unknown as RespostaApi;
   } finally {
     if (lock) lock.releaseLock();
   }

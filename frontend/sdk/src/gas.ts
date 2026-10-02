@@ -3,7 +3,7 @@
  * `apiChamar` por `google.script.run`. Este adaptador expõe a mesma interface de `fetch`, então o SDK não muda.
  */
 interface GoogleRun {
-  withSuccessHandler(fn: (r: { status: number; headers: Record<string, string>; corpo: unknown }) => void): GoogleRun;
+  withSuccessHandler(fn: (r: { status: number; headers: Record<string, string>; corpo?: unknown; corpoJson?: string | null }) => void): GoogleRun;
   withFailureHandler(fn: (e: { message?: string }) => void): GoogleRun;
   apiChamar(req: unknown): void;
 }
@@ -30,7 +30,7 @@ export function criarFetchGas(): typeof fetch {
       const servidor = run();
       if (!servidor) { reject(new Error('google.script.run indisponível')); return; }
       servidor
-        .withSuccessHandler((r) => resolve(new Response(r.status === 204 ? null : JSON.stringify(r.corpo), { status: r.status, headers: r.headers })))
+        .withSuccessHandler((r) => resolve(new Response(r.status === 204 ? null : r.corpoJson ?? JSON.stringify(r.corpo), { status: r.status, headers: r.headers })))
         .withFailureHandler((e) => reject(new Error(e?.message ?? 'Falha ao chamar o servidor do Apps Script')))
         .apiChamar({ metodo: init?.method ?? 'GET', caminho: url.pathname, consulta, headers, corpo, corpoInvalido });
     })) as typeof fetch;

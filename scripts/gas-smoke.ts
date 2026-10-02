@@ -56,7 +56,11 @@ const ordem = (JSON.parse(readFileSync(new URL('../apps-script/.clasp.json', imp
 const arquivosBackend = ordem.filter((n) => n.endsWith('.js') && !['schema.js', 'rules.js', 'Codigo.js'].includes(n));
 for (const n of arquivosBackend) vm.runInContext(readFileSync(new URL(`../apps-script/${n}`, import.meta.url), 'utf8'), ctx, { filename: n });
 console.log(`Backend carregado em ${arquivosBackend.length} arquivos: ${arquivosBackend.join(', ')}`);
-const apiChamar = vm.runInContext('CARTEIRA.apiChamar', ctx) as (r: unknown) => { status: number; corpo: any; headers: Record<string, string> };
+const apiChamarBruto = vm.runInContext('CARTEIRA.apiChamar', ctx) as (r: unknown) => { status: number; corpoJson: string | null; headers: Record<string, string> };
+const apiChamar = (r: unknown): { status: number; corpo: any; headers: Record<string, string> } => {
+  const b = apiChamarBruto(r);
+  return { status: b.status, headers: b.headers, corpo: b.corpoJson === null ? undefined : JSON.parse(b.corpoJson) };
+};
 
 const chamar = (metodo: string, caminho: string, extra: { papel?: string; data?: string; corpo?: unknown; consulta?: Record<string, string> } = {}) =>
   apiChamar({ metodo, caminho, consulta: extra.consulta ?? {}, headers: { ...(extra.papel ? { 'x-papel-simulado': extra.papel } : {}), ...(extra.data ? { 'x-data-simulada': extra.data } : {}) }, corpo: extra.corpo });

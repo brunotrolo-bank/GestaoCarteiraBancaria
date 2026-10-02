@@ -64,7 +64,8 @@ var CARTEIRA = (() => {
     if (lock) lock.waitLock(25e3);
     try {
       const store = new import_gas_store.GasStore(planilhaId());
-      return (0, import_api.criarManipulador)({ store, simulacaoPapel: true })(req);
+      const r = (0, import_api.criarManipulador)({ store, simulacaoPapel: true })(req);
+      return { status: r.status, headers: r.headers, corpoJson: r.corpo === void 0 ? null : JSON.stringify(r.corpo) };
     } finally {
       if (lock) lock.releaseLock();
     }
